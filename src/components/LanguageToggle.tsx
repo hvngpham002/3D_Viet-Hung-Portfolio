@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +37,7 @@ const LanguageToggle = () => {
       {/* Dropdown Menu */}
       {isOpen && (
         <ul
-          className="absolute -mt-10 top-full left-0 w-10 bg-gray-200 dark:border-2 rounded-full shadow-lg overflow-hidden"
+          className="absolute -mt-10 top-full left-0 w-10 bg-gray-200 dark:border-2 rounded-full dark:bg-gray-800 shadow-lg overflow-hidden"
         >
           {availableLanguages.map((lang) => (
             <li key={lang.code}>
