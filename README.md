@@ -71,7 +71,7 @@ git clone https://github.com/HungVPham/3D_Viet-Hung-Portfolio.git
 
 2. Install dependencies:
 ```bash
-cd 3d-portfolio
+cd 3D_Viet-Hung-Portfolio
 npm install
 ```
 
