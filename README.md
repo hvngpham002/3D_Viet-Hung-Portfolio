@@ -66,7 +66,7 @@ A modern, interactive 3D portfolio website built with React, Three.js, and React
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/3d-portfolio.git
+git clone https://github.com/HungVPham/3D_Viet-Hung-Portfolio.git
 ```
 
 2. Install dependencies:
