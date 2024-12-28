@@ -110,8 +110,15 @@ npm run build
 * **Source**: [Sketchfab](https://sketchfab.com/3d-models/ciri-chibi-d1ab30ad4e4e42a9a96a5758e6eac9e7)
 * **License**: CC-BY-4.0
 
-### Dragon and Sky models
-* Additional attribution information needed
+### Dragon Flying Cycle
+* **Author**: RedCoreTimber
+* **Source**: [Sketchfab](https://sketchfab.com/3d-models/dragon-flying-cycle-ae0831702eac462a9969ff4f8bd57710)
+* **License**: CC-BY-4.0
+
+### FREE - SkyBox Anime Sky
+* **Author**: Paul
+* **Source**: [Sketchfab](https://sketchfab.com/3d-models/free-skybox-anime-sky-56a60c1d1e8b44eabff138374f996d8f)
+* **License**: CC-BY-4.0
 
 ## 🙏 Acknowledgements
 
@@ -139,7 +146,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📫 Contact
 
-Your Name - [hung.v.pham002](mailto:hung.v.pham002@gmail.com)
+Viet Hung Pham - [hung.v.pham002](mailto:hung.v.pham002@gmail.com)
 
 Project Link: [https://github.com/HungVPham/3D_Viet-Hung-Portfolio](https://github.com/HungVPham/3D_Viet-Hung-Portfolio)
 
