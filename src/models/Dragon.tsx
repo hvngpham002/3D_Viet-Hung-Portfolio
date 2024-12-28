@@ -36,7 +36,7 @@ const Dragon = (props) => {
     
         // Define motion parameters
         const radiusX = 4; // Horizontal radius (longer)
-        const radiusZ = 1.5; // Depth radius (shorter)
+        const radiusZ = 1.2; // Depth radius (shorter)
         const speed = 0.5; // Speed of the dragon
         const baseYOffset = 0.4; // Base height above the island/book
         const zOffset = -0.75; // Distance away from camera

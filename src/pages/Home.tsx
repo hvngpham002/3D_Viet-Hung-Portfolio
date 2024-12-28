@@ -1,4 +1,5 @@
-import React, { Suspense, useState, useRef } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React, { Suspense, useState} from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { Canvas } from '@react-three/fiber';
@@ -94,8 +95,20 @@ const Home = () => {
         <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
           POPUP
         </div>
-        
-        <Canvas shadows className={`w-full h-screen bg-transparent ${isRotating ? 'cursor-grabbing' : 'cursor-grab'}`} camera={{ near: 0.1, far: 1000 }}>
+        <Canvas 
+          shadows 
+          className={`w-full h-screen ${themeMode === 'light' ? 'bg-gray-100' : 'bg-gray-800'} ${isRotating ? 'cursor-grabbing' : 'cursor-grab'}`} 
+          camera={{ near: 0.1, far: 1000 }}
+          gl={{
+            antialias: window.innerHeight <= 1080,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: true
+          }}
+          // Add performance attributes
+          dpr={[1, window.innerHeight > 1080 ? 1.5 : 2]} 
+          performance={{ min: 0.5 }} 
+          >
           <Suspense fallback={<Loader />}>
             <directionalLight 
               shadow-mapSize-width={1024} 

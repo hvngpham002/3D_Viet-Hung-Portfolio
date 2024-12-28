@@ -41,11 +41,11 @@ const Sky = ({ isDay, isRotating }) => {
     }
   }, [isDay, skyColor, emissiveColor]);
 
-  useFrame((_, delta) => {
-    if(isRotating) {
-      skyRef.current.rotation.y += 0.15 * delta;
-    }
-  })
+  // useFrame((_, delta) => {
+  //   if(isRotating) {
+  //     skyRef.current.rotation.y += 0.15 * delta;
+  //   }
+  // })
 
   return (
     <primitive 

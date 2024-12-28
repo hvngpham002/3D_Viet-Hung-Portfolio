@@ -28,7 +28,7 @@ const LanguageToggle = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 border flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 shadow-md cursor-pointer text-lg"
+        className="w-10 h-10 border flex items-center justify-center rounded-full shadow-md cursor-pointer text-lg"
         aria-label="Toggle Language Menu"
       >
         {currentLanguage?.flag}
@@ -37,7 +37,7 @@ const LanguageToggle = () => {
       {/* Dropdown Menu */}
       {isOpen && (
         <ul
-          className="absolute -mt-10 top-full left-0 w-10 bg-gray-200 dark:border-2 rounded-full dark:bg-gray-800 shadow-lg overflow-hidden"
+          className="absolute -mt-10 top-full left-0 w-10 bg-gray-100 dark:border-2 rounded-full shadow-lg overflow-hidden"
         >
           {availableLanguages.map((lang) => (
             <li key={lang.code}>

@@ -8,44 +8,207 @@ Source: https://sketchfab.com/3d-models/ciri-chibi-d1ab30ad4e4e42a9a96a5758e6eac
 Title: Ciri Chibi
 */
 
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { GLTF } from 'three-stdlib';
 
 import ciriScene from '../assets/3d/ciri.glb'
 import ciriMat from '../assets/3d/ciri1.glb'
-import bookScene from '../assets/3d/book.glb';
+
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 
 type GLTFResult = GLTF & {
-    nodes: Record<string, THREE.Mesh>;
+    nodes: Record<string, THREE.Mesh | THREE.SkinnedMesh>;
     materials: Record<string, THREE.Material>;
 };
 
-const Ciri = (props) => {
-
-  const group = useRef<any>();
-  const { nodes, animations  } = useGLTF(ciriScene) as GLTFResult;
-  const { materials } = useGLTF(ciriMat);
-
-  const { actions } = useAnimations(animations, group);
+const Ciri = ({ isRotating, setIsRotating, ...props }) => {
+    const group = useRef<any>();
+    const { nodes, animations } = useGLTF(ciriScene) as GLTFResult;
+    const { materials } = useGLTF(ciriMat);
+    const { actions } = useAnimations(animations, group);
+    const { gl, viewport } = useThree();
+  
+    const pathProgress = useRef(0);
+    const lastX = useRef(0);
+    const movementSpeed = useRef(0);
+    const movingForward = useRef(true);
+    const dampingFactor = 0.95;
+  
+    // Define the path points for Ciri to follow
+    const pathPoints = [
+      new THREE.Vector3(-3.0, -1.8, 0.42),
+      new THREE.Vector3(-2.0, -1.6, 0.41),
+      new THREE.Vector3(-1.0, -1.5, 0.40),
+      new THREE.Vector3(0.0, -1.4, 0.37),
+      new THREE.Vector3(1.0, -1.4, 0.30),
+      new THREE.Vector3(2.0, -1.5, 0.25),
+      new THREE.Vector3(3.0, -1.7, 0.20),
+    ];
+  
+    const curve = new THREE.CatmullRomCurve3(pathPoints, false);
+  
+    const handlePointerDown = useCallback((e: PointerEvent | TouchEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setIsRotating(true);
+  
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      lastX.current = clientX;
+    }, [setIsRotating]);
+  
+    const handlePointerUp = useCallback((e: PointerEvent | TouchEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setIsRotating(false);
+    }, [setIsRotating]);
+  
+    const handlePointerMove = useCallback((e: PointerEvent | TouchEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+    
+        if (isRotating) {
+          const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+          const delta = (clientX - lastX.current) / viewport.width;
+    
+          // Update path progress with bounds checking
+          const newProgress = pathProgress.current + delta * 0.01;
+          if (newProgress >= 0 && newProgress <= 1) {
+            pathProgress.current = newProgress;
+            movementSpeed.current = delta * 0.01;
+            movingForward.current = delta > 0;
+          }
+          lastX.current = clientX;
+        }
+      }, [isRotating, viewport.width]);
+  
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+      if(e.key === 'ArrowLeft') {
+        if(!isRotating) setIsRotating(true);
+        const newProgress = pathProgress.current - 0.010;
+        if (newProgress >= 0) {
+          pathProgress.current = newProgress;
+          movingForward.current = false;
+        }
+      } else if(e.key === 'ArrowRight') {
+        if(!isRotating) setIsRotating(true);
+        const newProgress = pathProgress.current + 0.010;
+        if (newProgress <= 1) {
+          pathProgress.current = newProgress;
+          movingForward.current = true;
+        }
+      }
+    }, [isRotating, setIsRotating]);
+  
+    const handleKeyUp = useCallback((e: KeyboardEvent) => {
+      if(e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        setIsRotating(false);
+      }
+    }, [setIsRotating]);
+  
+    useFrame((_, delta) => {
+      if(!isRotating) {
+        // Scale movement speed with delta time
+        movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
+    
+        if(Math.abs(movementSpeed.current) < 0.001) {
+          movementSpeed.current = 0;
+        }
+    
+        // Scale progress change with delta time
+        const newProgress = pathProgress.current + (movementSpeed.current * delta * 60);
+        if (newProgress >= 0 && newProgress <= 1) {
+          pathProgress.current = newProgress;
+        }
+      }
+    
+      // Get current position on the curve
+      const point = curve.getPoint(pathProgress.current);
+      
+      // Add these logging statements:
+      console.log('Current progress:', pathProgress.current);
+      console.log('Current position:', {
+        x: point.x.toFixed(3),
+        y: point.y.toFixed(3),
+        z: point.z.toFixed(3)
+      });
+    
+      group.current.position.copy(point);
+    
+      // Get the tangent (direction) at the current point
+      const tangent = curve.getTangent(pathProgress.current);
+      
+      // You can also log the tangent to understand the direction:
+      console.log('Current tangent:', {
+        x: tangent.x.toFixed(3),
+        y: tangent.y.toFixed(3),
+        z: tangent.z.toFixed(3)
+      });
+    
+      // If moving backwards (left), reverse the tangent direction
+      const facingDirection = movingForward.current ? tangent.multiplyScalar(-1) : tangent;
+    
+      // Calculate the point to look at based on our facing direction
+      const lookAtPoint = new THREE.Vector3().copy(point).add(facingDirection);
+      
+      // Log movement direction
+      console.log('Moving:', movingForward.current ? 'forward' : 'backward');
+    
+      group.current.lookAt(lookAtPoint);
+      group.current.rotateY(Math.PI);
+    });
 
     useEffect(() => {
-        
-        if (actions['Armature|mixamo.com|Layer0']) {
-          actions['Armature|mixamo.com|Layer0'].play();
-        }
-      }, [actions]);
+      // Reduce geometry detail on higher resolutions
+      if (window.innerHeight > 1080) {
+        group.current?.traverse((child) => {
+          if (child.isMesh) {
+            child.geometry.dispose(); // Clean up old geometry
+            // Reduce geometry detail
+            child.geometry = child.geometry.clone().toNonIndexed();
+          }
+        });
+      }
+    }, []);
+  
+    useEffect(() => {
+      const canvas = gl.domElement;
+      canvas.addEventListener('pointerdown', handlePointerDown);
+      canvas.addEventListener('pointerup', handlePointerUp);
+      canvas.addEventListener('pointermove', handlePointerMove);
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+  
+      return () => {
+        canvas.removeEventListener('pointerdown', handlePointerDown);
+        canvas.removeEventListener('pointerup', handlePointerUp);
+        canvas.removeEventListener('pointermove', handlePointerMove);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+    }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
 
-      const clock = useRef(0);
-      const baseY = -1.6; // Base Y position from adjustCiriForScreenSize
-      const surfaceOffset = 0.1; // Offset to keep Ciri above the surface
+    useEffect(() => {
+      if (actions['Armature|mixamo.com|Layer0'] && isRotating) {
+        const action = actions['Armature|mixamo.com|Layer0'];
+        action.setEffectiveTimeScale(1); // Ensure consistent timing
+        action.setEffectiveWeight(1);
+        action.play();
+        
+        // Optional: Reduce animation quality on higher resolutions
+        if (window.innerHeight > 1080) {
+          action.setDuration(action.getClip().duration * 1.5); // Smoother but slightly slower
+        }
+      }else{
+        actions['Armature|mixamo.com|Layer0']?.stop();
+      }
+    }, [actions, isRotating]);
 
   return (
     <group ref={group} {...props} >
-    <group name="Scene">
-      <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx" rotation={[-Math.PI, 0, 0]} scale={0.01}>
+    <group name="Scene" rotation={[-Math.PI/2, 0, 0]}>
+    <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
         <group name="RootNode1">
           <group name="Ciri_GEO">
             <group name="bag" />
@@ -93,14 +256,14 @@ const Ciri = (props) => {
           </group>
         </group>
       </group>
-      <group name="Armature" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
-        <skinnedMesh
+      <group name="Armature" rotation={isRotating ? [-Math.PI, 0, 0] : [Math.PI/2, 0, 0]} scale={0.01}>
+      <skinnedMesh
         castShadow
         receiveShadow
           name="bag_Ciri_mat_0"
           geometry={nodes.bag_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.bag_Ciri_mat_0.skeleton}
+          skeleton={(nodes.bag_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -108,7 +271,7 @@ const Ciri = (props) => {
           name="belt_Ciri_mat_0"
           geometry={nodes.belt_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.belt_Ciri_mat_0.skeleton}
+          skeleton={(nodes.belt_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -116,7 +279,7 @@ const Ciri = (props) => {
           name="bun_Ciri_mat_0"
           geometry={nodes.bun_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.bun_Ciri_mat_0.skeleton}
+          skeleton={(nodes.bun_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -124,7 +287,7 @@ const Ciri = (props) => {
           name="ears_Ciri_mat_0"
           geometry={nodes.ears_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.ears_Ciri_mat_0.skeleton}
+          skeleton={(nodes.ears_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -132,7 +295,7 @@ const Ciri = (props) => {
           name="guard_Ciri_mat_0"
           geometry={nodes.guard_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.guard_Ciri_mat_0.skeleton}
+          skeleton={(nodes.guard_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -140,7 +303,7 @@ const Ciri = (props) => {
           name="Hair_alpha01_Ciri_mat_0"
           geometry={nodes.Hair_alpha01_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha01_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -148,7 +311,7 @@ const Ciri = (props) => {
           name="Hair_alpha02_Ciri_mat_0"
           geometry={nodes.Hair_alpha02_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha02_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -156,7 +319,7 @@ const Ciri = (props) => {
           name="Hair_alpha03_Ciri_mat_0"
           geometry={nodes.Hair_alpha03_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha03_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -164,7 +327,7 @@ const Ciri = (props) => {
           name="Hair_alpha04_Ciri_mat_0"
           geometry={nodes.Hair_alpha04_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha04_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha04_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -172,7 +335,7 @@ const Ciri = (props) => {
           name="Hair_alpha05_Ciri_mat_0"
           geometry={nodes.Hair_alpha05_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha05_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -180,7 +343,7 @@ const Ciri = (props) => {
           name="Hair_alpha06_Ciri_mat_0"
           geometry={nodes.Hair_alpha06_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_alpha06_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_alpha06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -188,7 +351,7 @@ const Ciri = (props) => {
           name="Hair_lrg01_Ciri_mat_0"
           geometry={nodes.Hair_lrg01_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg01_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -196,7 +359,7 @@ const Ciri = (props) => {
           name="Hair_lrg02_Ciri_mat_0"
           geometry={nodes.Hair_lrg02_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg02_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -204,7 +367,7 @@ const Ciri = (props) => {
           name="Hair_lrg03_Ciri_mat_0"
           geometry={nodes.Hair_lrg03_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg03_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -212,7 +375,7 @@ const Ciri = (props) => {
           name="Hair_lrg05_Ciri_mat_0"
           geometry={nodes.Hair_lrg05_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg05_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -220,7 +383,7 @@ const Ciri = (props) => {
           name="Hair_lrg06_Ciri_mat_0"
           geometry={nodes.Hair_lrg06_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg06_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -228,7 +391,7 @@ const Ciri = (props) => {
           name="Hair_lrg07_Ciri_mat_0"
           geometry={nodes.Hair_lrg07_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg07_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg07_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -236,7 +399,7 @@ const Ciri = (props) => {
           name="Hair_lrg08_Ciri_mat_0"
           geometry={nodes.Hair_lrg08_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_lrg08_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_lrg08_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -244,7 +407,7 @@ const Ciri = (props) => {
           name="Hair_sml02_Ciri_mat_0"
           geometry={nodes.Hair_sml02_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_sml02_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_sml02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -252,7 +415,7 @@ const Ciri = (props) => {
           name="Hair_sml03_Ciri_mat_0"
           geometry={nodes.Hair_sml03_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Hair_sml03_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Hair_sml03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -260,7 +423,7 @@ const Ciri = (props) => {
           name="handle_Ciri_mat_0"
           geometry={nodes.handle_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.handle_Ciri_mat_0.skeleton}
+          skeleton={(nodes.handle_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -268,7 +431,7 @@ const Ciri = (props) => {
           name="handle_Ciri_mat_01"
           geometry={nodes.handle_Ciri_mat_01.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.handle_Ciri_mat_01.skeleton}
+          skeleton={(nodes.handle_Ciri_mat_01 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -276,7 +439,7 @@ const Ciri = (props) => {
           name="hands_Ciri_mat_0"
           geometry={nodes.hands_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.hands_Ciri_mat_0.skeleton}
+          skeleton={(nodes.hands_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -284,7 +447,7 @@ const Ciri = (props) => {
           name="Head_Ciri_mat_0"
           geometry={nodes.Head_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.Head_Ciri_mat_0.skeleton}
+          skeleton={(nodes.Head_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -292,7 +455,7 @@ const Ciri = (props) => {
           name="legs_Ciri_mat_0"
           geometry={nodes.legs_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.legs_Ciri_mat_0.skeleton}
+          skeleton={(nodes.legs_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -300,7 +463,7 @@ const Ciri = (props) => {
           name="pummel_Ciri_mat_0"
           geometry={nodes.pummel_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.pummel_Ciri_mat_0.skeleton}
+          skeleton={(nodes.pummel_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -308,7 +471,7 @@ const Ciri = (props) => {
           name="sheath_Ciri_mat_0"
           geometry={nodes.sheath_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.sheath_Ciri_mat_0.skeleton}
+          skeleton={(nodes.sheath_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -316,7 +479,7 @@ const Ciri = (props) => {
           name="shirtLink_Ciri_mat_0"
           geometry={nodes.shirtLink_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.shirtLink_Ciri_mat_0.skeleton}
+          skeleton={(nodes.shirtLink_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -324,7 +487,7 @@ const Ciri = (props) => {
           name="sword_Ciri_mat_0"
           geometry={nodes.sword_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.sword_Ciri_mat_0.skeleton}
+          skeleton={(nodes.sword_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <skinnedMesh
         castShadow
@@ -332,7 +495,7 @@ const Ciri = (props) => {
           name="torso_Ciri_mat_0"
           geometry={nodes.torso_Ciri_mat_0.geometry}
           material={materials.Ciri_mat}
-          skeleton={nodes.torso_Ciri_mat_0.skeleton}
+          skeleton={(nodes.torso_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
         />
         <primitive object={nodes.mixamorigHips} />
       </group>
