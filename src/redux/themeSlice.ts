@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ThemeState {
@@ -5,7 +6,7 @@ interface ThemeState {
 }
 
 const initialState: ThemeState = {
-  mode: 'light', 
+  mode: (localStorage.getItem('themeMode') as 'light' | 'dark') || 'light',
 };
 
 const themeSlice = createSlice({
@@ -14,9 +15,11 @@ const themeSlice = createSlice({
   reducers: {
     toggleTheme: (state) => {
       state.mode = state.mode === 'light' ? 'dark' : 'light';
+      localStorage.setItem('themeMode', state.mode);
     },
     setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
       state.mode = action.payload;
+      localStorage.setItem('themeMode', action.payload);
     },
   },
 });

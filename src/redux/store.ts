@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from './themeSlice';
 

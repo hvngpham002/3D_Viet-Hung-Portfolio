@@ -1,12 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import skyScene from '../assets/3d/sky.glb';
+import { GLTF } from 'three-stdlib';
+import { useFrame } from '@react-three/fiber';
 
-const Sky = ({ isDay }) => {
-  const sky = useGLTF(skyScene);
-  const skyRef = useRef();
+type GLTFResult = GLTF & {
+  scene: THREE.Group;
+};
+
+const Sky = ({ isDay, isRotating }) => {
+  const sky = useGLTF(skyScene) as GLTFResult;
+  const skyRef = useRef<any>();
 
   const skyColor = useMemo(() => {
     return isDay ? new THREE.Color(0x70a4d5) : new THREE.Color(0x4e5d6b);
@@ -33,6 +40,12 @@ const Sky = ({ isDay }) => {
       });
     }
   }, [isDay, skyColor, emissiveColor]);
+
+  useFrame((_, delta) => {
+    if(isRotating) {
+      skyRef.current.rotation.y += 0.15 * delta;
+    }
+  })
 
   return (
     <primitive 
