@@ -3,9 +3,10 @@
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
     "target": "ES2022",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "types": ["three", "node"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

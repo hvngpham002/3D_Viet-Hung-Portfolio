@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { Suspense, useState} from 'react';
+import React, { Suspense, useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { Canvas } from '@react-three/fiber';
@@ -8,11 +9,208 @@ import Sky from '../models/Sky';
 import Book from '../models/Book';
 import Dragon from '../models/Dragon';
 import Ciri from '../models/Ciri';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import Flag from '../models/Flag';
+import HomeInfo from '../components/HomeInfo';
+
+const SceneContent = ({ isRotating, setIsRotating, currentStage, setCurrentStage, themeMode, isSceneRotating, setIsSceneRotating}) => {
+  const groupRef = useRef<any>();
+  const { gl, camera } = useThree();
+  const lastX = useRef(0);
+  const lastY = useRef(0);
+  const rotationSpeed = useRef({ x: 0, y: 0 });
+  const dampingFactor = 0.95;
+  const zoomSpeed = 0.001;
+  const minZoom = 1;
+  const maxZoom = 10;
+
+  const adjustIslandForScreenSize = () => {
+    let screenScale = [0.1, 0.1, 0.1];
+    const screenPosition = [0.5, -0.65, -2.5];
+    const rotation = [0.25, 0, 0];
+
+    if (window.innerWidth < 768) {
+      screenScale = [0.09, 0.09, 0.09];
+    }
+
+    return [screenScale, screenPosition, rotation];
+  };
+
+  const adjustDragonForScreenSize = () => {
+    let screenScale = [0.8, 0.8, 0.8];
+    const screenPosition = [0, 0.4, -1];
+    const rotation = [0, 1.25, 0];
+
+    if (window.innerWidth < 768) {
+      screenScale = [0.6, 0.6, 0.6];
+    }
+
+    return [screenScale, screenPosition, rotation];
+  };
+
+  const adjustCiriForScreenSize = () => {
+    let screenScale = [0.5, 0.5, 0.5];
+    const screenPosition = [-2.0, -1.6, 0.49];
+    const rotation = [0, 1.25, 0];
+
+    if (window.innerWidth < 768) {
+      screenScale = [0.6, 0.6, 0.6];
+    }
+
+    return [screenScale, screenPosition, rotation];
+  };
+
+  const adjustFlagForScreenSize = () => {
+    let screenScale = [0.15, 0.15, 0.15];
+    const screenPosition = [[-3.0, -1.65, 0], [-1.75, -1.39, 0], [1.5, -1.30, 0], [3.0, -1.55, 0]];
+    const rotation = [0.25, 0, 0];
+
+    if (window.innerWidth < 768) {
+      screenScale = [0.6, 0.6, 0.6];
+    }
+
+    return [screenScale, screenPosition, rotation];
+  };
+
+  const [islandScale, islandPosition, islandRotation] = adjustIslandForScreenSize();
+  const [dragonScale, dragonPosition, dragonRotation] = adjustDragonForScreenSize();
+  const [ciriScale, ciriPosition, ciriRotation] = adjustCiriForScreenSize();
+  const [flagScale, flagPosition, flagRotation] = adjustFlagForScreenSize();
+
+  useFrame(() => {
+    if (!isSceneRotating) {
+      rotationSpeed.current.x *= dampingFactor;
+      rotationSpeed.current.y *= dampingFactor;
+
+      if (Math.abs(rotationSpeed.current.x) < 0.001) rotationSpeed.current.x = 0;
+      if (Math.abs(rotationSpeed.current.y) < 0.001) rotationSpeed.current.y = 0;
+
+      if (groupRef.current) {
+        groupRef.current.rotation.y += rotationSpeed.current.x;
+        groupRef.current.rotation.x += rotationSpeed.current.y;
+      }
+    }
+
+    // Clamp rotation on x-axis to prevent flipping
+    if (groupRef.current) {
+      groupRef.current.rotation.x = THREE.MathUtils.clamp(
+        groupRef.current.rotation.x,
+        -Math.PI / 3,
+        Math.PI / 3
+      );
+    }
+  });
+
+
+  const handleMouseDown = useCallback((event) => {
+    if (event.button === 1) {
+      setIsSceneRotating(true); 
+      gl.domElement.style.cursor = 'move';
+      lastX.current = event.clientX;
+      lastY.current = event.clientY;
+    }
+  }, [gl, setIsSceneRotating]);
+  
+  const handleMouseUp = useCallback(() => {
+    if (isSceneRotating) {
+      setIsSceneRotating(false);
+      gl.domElement.style.cursor = 'grab';
+    }
+  }, [isSceneRotating, setIsSceneRotating, gl.domElement.style]);
+  
+  const handleMouseMove = useCallback((event) => {
+    if (isSceneRotating && groupRef.current) {
+      const deltaX = (event.clientX - lastX.current) / 100;
+      const deltaY = (event.clientY - lastY.current) / 100;
+  
+      groupRef.current.rotation.y += deltaX;
+      groupRef.current.rotation.x = THREE.MathUtils.clamp(
+        groupRef.current.rotation.x + deltaY,
+        -Math.PI / 3,
+        Math.PI / 3
+      );
+  
+      lastX.current = event.clientX;
+      lastY.current = event.clientY;
+    }
+  }, [isSceneRotating]);
+  
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseleave', handleMouseUp);
+  
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      canvas.removeEventListener('mouseup', handleMouseUp);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('mouseleave', handleMouseUp);
+    };
+  }, [gl, handleMouseDown, handleMouseUp, handleMouseMove]);
+
+  const handleWheel = (event) => {
+    event.stopPropagation();
+    const newZoom = camera.position.z + event.deltaY * zoomSpeed;
+    camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+  };
+
+  return (
+    <group
+      ref={groupRef}
+      onWheel={handleWheel}
+    >
+      <Sky isDay={themeMode === 'light'} />
+      <Book
+        position={islandPosition}
+        scale={islandScale}
+        rotation={islandRotation}
+      />
+      <Flag 
+        position={flagPosition[0]}
+        scale={flagScale}
+        rotation={flagRotation}
+      />
+      <Flag 
+        position={flagPosition[1]}
+        scale={flagScale}
+        rotation={flagRotation}
+      />
+      <Flag 
+        position={flagPosition[2]}
+        scale={flagScale}
+        rotation={flagRotation}
+      />
+      <Flag 
+        position={flagPosition[3]}
+        scale={flagScale}
+        rotation={flagRotation}
+      />
+      <Dragon
+        position={dragonPosition}
+        scale={dragonScale}
+        rotation={dragonRotation}
+      />
+      <Ciri
+        position={ciriPosition}
+        scale={ciriScale}
+        rotation={ciriRotation}
+        isRotating={isRotating}
+        setIsRotating={setIsRotating}
+        setCurrentStage={setCurrentStage}
+        currentStage={currentStage}
+        isSceneRotating={isSceneRotating}
+      />
+    </group>
+  );
+};
 
 const Home = () => {
   const [isRotating, setIsRotating] = useState(false);
   const [currentStage, setCurrentStage] = useState(1);
-  const [bookRotation, setBookRotation] = useState(0);
+  const [isSceneRotating, setIsSceneRotating] = useState(false);
   
   const themeMode = useSelector((state: RootState) => state.theme.mode);
 
@@ -32,7 +230,8 @@ const Home = () => {
           groundColor: "#696152",
           intensity: 2.5,
         }
-      } : {
+      }
+    : {
         directionalLight: {
           position: [0, 10, 0] as [number, number, number],
           intensity: 1.5,
@@ -49,66 +248,25 @@ const Home = () => {
         }
       };
 
-  const adjustIslandForScreenSize = (): [number[], number[], number[]] => {
-    let screenScale: number[] = [0.1, 0.1, 0.1];
-    const screenPosition: number[] = [0.5, -0.65, -2.5];
-    const rotation = [0.25, 0, 0];
-
-    if (window.innerWidth < 768) {
-      screenScale = [0.09, 0.09, 0.09];
-    }
-
-    return [screenScale, screenPosition, rotation];
-  };
-
-  const adjustDragonForScreenSize = (): [number[], number[], number[]] => {
-    let screenScale: number[] = [0.8, 0.8, 0.8];
-    const screenPosition: number[] = [0, 0.4, -1];
-    const rotation = [0, 1.25, 0];
-
-    if (window.innerWidth < 768) {
-      screenScale = [0.6, 0.6, 0.6];
-    }
-
-    return [screenScale, screenPosition, rotation];
-  };
-
-  const adjustCiriForScreenSize = (): [number[], number[], number[]] => {
-    let screenScale: number[] = [0.5, 0.5, 0.5];
-    const screenPosition: number[] = [-2.0, -1.6, 0.49];
-    const rotation = [0, 1.25, 0];
-
-    if (window.innerWidth < 768) {
-      screenScale = [0.6, 0.6, 0.6];
-    }
-
-    return [screenScale, screenPosition, rotation];
-  };
-
-  const [islandScale, islandPosition, islandRotation] = adjustIslandForScreenSize();
-  const [dragonScale, dragonPosition, dragonRotation] = adjustDragonForScreenSize();
-  const [ciriScale, ciriPosition, ciriRotation] = adjustCiriForScreenSize();
-
   return (
     <div>
       <section className="w-full h-screen relative">
         <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
-          POPUP
+          {currentStage && <HomeInfo currentStage={currentStage} />}
         </div>
         <Canvas 
           shadows 
-          className={`w-full h-screen ${themeMode === 'light' ? 'bg-gray-100' : 'bg-gray-800'} ${isRotating ? 'cursor-grabbing' : 'cursor-grab'}`} 
-          camera={{ near: 0.1, far: 1000 }}
+          className={`w-full h-screen cursor-grab ${themeMode === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`} 
+          camera={{ position: [0, 0, 5], near: 0.1, far: 1000 }}
           gl={{
             antialias: window.innerHeight <= 1080,
             powerPreference: "high-performance",
             stencil: false,
             depth: true
           }}
-          // Add performance attributes
           dpr={[1, window.innerHeight > 1080 ? 1.5 : 2]} 
-          performance={{ min: 0.5 }} 
-          >
+          performance={{ min: 0.5 }}
+        >
           <Suspense fallback={<Loader />}>
             <directionalLight 
               shadow-mapSize-width={1024} 
@@ -124,34 +282,24 @@ const Home = () => {
               shadow-camera-bottom={-10}
               castShadow 
             />
-            <ambientLight color={lightingConfig.ambientLight.color} intensity={lightingConfig.ambientLight.intensity} />
-            <hemisphereLight color={lightingConfig.hemisphereLight.color} groundColor={lightingConfig.hemisphereLight.groundColor} intensity={lightingConfig.hemisphereLight.intensity} />
+            <ambientLight 
+              color={lightingConfig.ambientLight.color} 
+              intensity={lightingConfig.ambientLight.intensity} 
+            />
+            <hemisphereLight 
+              color={lightingConfig.hemisphereLight.color} 
+              groundColor={lightingConfig.hemisphereLight.groundColor} 
+              intensity={lightingConfig.hemisphereLight.intensity} 
+            />
             
-            <Sky isRotating={isRotating} isDay={themeMode === 'light'} />
-            <Dragon 
-              position={dragonPosition} 
-              scale={dragonScale} 
-              rotation={dragonRotation} 
-              isRotating={isRotating} 
+            <SceneContent
+              isRotating={isRotating}
               setIsRotating={setIsRotating}
-              bookRotation={bookRotation} 
-            />
-            <Ciri 
-              position={ciriPosition} 
-              scale={ciriScale} 
-              rotation={ciriRotation} 
-              isRotating={isRotating} 
-              setIsRotating={setIsRotating}
-              bookRotation={bookRotation}
-            />
-            <Book 
-              position={islandPosition} 
-              scale={islandScale} 
-              rotation={islandRotation} 
-              isRotating={isRotating} 
-              setIsRotating={setIsRotating} 
+              currentStage={currentStage}
               setCurrentStage={setCurrentStage}
-              setBookRotation={setBookRotation} 
+              themeMode={themeMode}
+              isSceneRotating={isSceneRotating}
+              setIsSceneRotating={setIsSceneRotating}
             />
           </Suspense>
         </Canvas>
