@@ -1,47 +1,32 @@
-// global.d.ts
-declare module "*.css" {
+/* eslint-disable @typescript-eslint/naming-convention */
+import * as THREE from 'three';
+import { GLTF } from 'three-stdlib';
+
+type GLTFResult = GLTF & {
+  nodes: Record<string, THREE.Mesh | THREE.SkinnedMesh>;
+  materials: Record<string, THREE.Material>;
+  animations: THREE.AnimationClip[];
+};
+
+declare module '*.glb' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.gltf' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.css' {
   const content: { [className: string]: string };
   export default content;
 }
 
-declare module "*.glb" {
-  const value: string;
-  export default value;
-}
-
-// Add declarations for other asset types that might be needed
-declare module "*.gltf" {
-  const value: string;
-  export default value;
-}
-
-declare module "*.fbx" {
-  const value: string;
-  export default value;
-}
-
-// Add specific property type declarations for your 3D models
-declare module "*/dragon.glb" {
-  const value: string;
-  export default value;
-}
-
-declare module "*/book.glb" {
-  const value: string;
-  export default value;
-}
-
-declare module "*/sky.glb" {
-  const value: string;
-  export default value;
-}
-
-declare module "*/ciri.glb" {
-  const value: string;
-  export default value;
-}
-
-declare module "*/ciri1.glb" {
-  const value: string;
-  export default value;
+declare global {
+  interface Window {
+    fs: {
+      readFile: (path: string, options?: { encoding?: string }) => Promise<Uint8Array | string>;
+    };
+  }
 }

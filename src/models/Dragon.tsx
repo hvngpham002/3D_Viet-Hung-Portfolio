@@ -45,14 +45,14 @@ const Dragon = (props) => {
     
         // Define motion parameters
         const radiusX = 4; // Horizontal radius (longer)
-        const radiusZ = 1.2; // Depth radius (shorter)
+        const radiusZ = 1.3; // Depth radius (shorter)
         const speed = 0.5; // Speed of the dragon
         const baseYOffset = 0.4; // Base height above the island/book
-        const zOffset = -0.75; // Distance away from camera
+        const zOffset = -0.90; // Distance away from camera
         
         // Wave parameters
-        const waveAmplitude = 0.2; // Height of the wave
-        const waveFrequency = 2; // How many waves complete in one oval
+        const waveAmplitude = 0.20; // Height of the wave
+        const waveFrequency = 2.0; // How many waves complete in one oval
         
         // Calculate position on the oval with sine wave
         const x = radiusX * Math.sin(clock.current * speed);

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 /*
@@ -10,24 +11,26 @@ Title: Ciri Chibi
 
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useAnimations, useGLTF } from '@react-three/drei'
-import { GLTF } from 'three-stdlib';
 
 import ciriScene from '../assets/3d/ciri.glb'
 import ciriMat from '../assets/3d/ciri1.glb'
+import ciriAnimations from '../assets/3d/animations/animations.glb'
 
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
+import { GLTFResult } from '../types/3d';
 
-type GLTFResult = GLTF & {
-    nodes: Record<string, THREE.Mesh | THREE.SkinnedMesh>;
-    materials: Record<string, THREE.Material>;
-};
-
-const Ciri = ({ isRotating, setIsRotating, ...props }) => {
+const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...props }) => {
     const group = useRef<any>();
-    const { nodes, animations } = useGLTF(ciriScene) as GLTFResult;
-    const { materials } = useGLTF(ciriMat);
-    const { actions } = useAnimations(animations, group);
+    
+    const { nodes, animations: baseAnimations } = useGLTF(ciriScene) as GLTFResult;
+    const { materials } = useGLTF(ciriMat) as GLTFResult;
+    const { animations: additionalAnimations } = useGLTF(ciriAnimations) as GLTFResult;
+
+    const combinedAnimations = [...baseAnimations, ...additionalAnimations];
+
+    const { actions } = useAnimations(combinedAnimations, group);
+
     const { gl, viewport } = useThree();
   
     const pathProgress = useRef(0);
@@ -35,34 +38,144 @@ const Ciri = ({ isRotating, setIsRotating, ...props }) => {
     const movementSpeed = useRef(0);
     const movingForward = useRef(true);
     const dampingFactor = 0.95;
-  
-    // Define the path points for Ciri to follow
-    const pathPoints = [
-      new THREE.Vector3(-3.0, -1.8, 0.42),
-      new THREE.Vector3(-2.0, -1.6, 0.41),
-      new THREE.Vector3(-1.0, -1.5, 0.40),
-      new THREE.Vector3(0.0, -1.4, 0.37),
-      new THREE.Vector3(1.0, -1.4, 0.30),
-      new THREE.Vector3(2.0, -1.5, 0.25),
-      new THREE.Vector3(3.0, -1.7, 0.20),
+
+    const lastStage = useRef(0);
+    const prevPosition = useRef(new THREE.Vector3());
+
+
+    const playOneShotAnimation = useCallback((animationName: string) => {
+      
+      if (!actions[animationName]) return;
+      
+      if (actions['Armature|mixamo.com|Layer0']?.isRunning()) {
+        actions['Armature|mixamo.com|Layer0'].stop();
+      }
+    
+      const armature = group.current.getObjectByName('Armature');
+      if (armature) {
+        const originalRotation = isRotating ? 
+          new THREE.Euler(-Math.PI, 0, 0) : 
+          new THREE.Euler(Math.PI/2, 0, 0);
+    
+        armature.rotation.set(Math.PI, 0, 0);
+    
+        const action = actions[animationName];
+        action.reset();
+        action.setLoop(THREE.LoopOnce, 1);
+        action.clampWhenFinished = true;
+    
+        const mixer = action.getMixer();
+        const onFinished = () => {
+          action.stop();
+          mixer.removeEventListener('finished', onFinished);
+          armature.rotation.copy(originalRotation);
+        };
+        mixer.addEventListener('finished', onFinished);
+    
+        action.play();
+      }
+    }, [actions, isRotating]);
+
+    useEffect(() => {
+      const handleKeys = (e: KeyboardEvent) => {
+    
+        if (e.repeat || isRotating || isSceneRotating) {
+          return;
+        }
+    
+        switch(e.key.toLowerCase()) {
+          case 'q':
+            playOneShotAnimation('pirouette');
+            break;
+          case 'w':
+            playOneShotAnimation('celebrate');
+            break;
+          case 'e':
+            playOneShotAnimation('tracking');
+            break;
+          case 'r':
+            playOneShotAnimation('whirl');
+            break;
+        }
+      };
+    
+      document.addEventListener('keydown', handleKeys);
+      return () => {
+        document.removeEventListener('keydown', handleKeys);
+      };
+    }, [isRotating, isSceneRotating, playOneShotAnimation]);
+    
+    const STAGE_POSITIONS = [
+      {
+        position: new THREE.Vector3(-3.0, -1.75, 0.40),
+        stage: 1
+      },
+      {
+        position: new THREE.Vector3(-1.75, -1.55, 0.40),
+        stage: 2
+      },
+      {
+        position: new THREE.Vector3(1.5, -1.38, 0.18),
+        stage: 3
+      },
+      {
+        position: new THREE.Vector3(3.0, -1.65, 0.21),
+        stage: 4
+      }
     ];
+    
+    const pathPoints = [
+      new THREE.Vector3(-3.0, -1.75, 0.40),
+      new THREE.Vector3(-2.0, -1.55, 0.40),
+      new THREE.Vector3(-1.0, -1.46, 0.39),
+      new THREE.Vector3(0.0, -1.45, 0.09),
+      new THREE.Vector3(1.0, -1.38, 0.18),
+      new THREE.Vector3(2.0, -1.43, 0.20),
+      new THREE.Vector3(3.0, -1.65, 0.21),
+    ];
+    
+    const handleStageTransition = useCallback((currentPosition: THREE.Vector3) => {
+      // Check if we've moved to a new position
+      if (!currentPosition.equals(prevPosition.current)) {
+        // Find the stage based on proximity to defined positions
+        STAGE_POSITIONS.forEach(({position, stage}) => {
+          const distance = currentPosition.distanceTo(position);
+          
+          // If we're within 0.1 units of a stage position and it's a different stage
+          if (distance < 0.1 && lastStage.current !== stage) {
+            lastStage.current = stage;
+            setCurrentStage(stage);
+            console.log("current stage: " + stage);
+          }
+        });
+        
+        // Update previous position
+        prevPosition.current.copy(currentPosition);
+      }
+    }, [setCurrentStage, STAGE_POSITIONS]);
   
     const curve = new THREE.CatmullRomCurve3(pathPoints, false);
   
     const handlePointerDown = useCallback((e: PointerEvent | TouchEvent) => {
+      // Only handle left click (button 0)
+      if ('button' in e && e.button !== 0) return;
+
+      gl.domElement.style.cursor = 'ew-resize';
+      
       e.stopPropagation();
-      e.preventDefault();
       setIsRotating(true);
   
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       lastX.current = clientX;
-    }, [setIsRotating]);
+    }, [setIsRotating, gl]);
   
     const handlePointerUp = useCallback((e: PointerEvent | TouchEvent) => {
+      // Only handle left click (button 0)
+      if ('button' in e && e.button !== 0) return;
+      gl.domElement.style.cursor = 'grab';
       e.stopPropagation();
-      e.preventDefault();
       setIsRotating(false);
-    }, [setIsRotating]);
+    }, [setIsRotating, gl]);
   
     const handlePointerMove = useCallback((e: PointerEvent | TouchEvent) => {
         e.stopPropagation();
@@ -72,7 +185,6 @@ const Ciri = ({ isRotating, setIsRotating, ...props }) => {
           const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
           const delta = (clientX - lastX.current) / viewport.width;
     
-          // Update path progress with bounds checking
           const newProgress = pathProgress.current + delta * 0.01;
           if (newProgress >= 0 && newProgress <= 1) {
             pathProgress.current = newProgress;
@@ -109,54 +221,55 @@ const Ciri = ({ isRotating, setIsRotating, ...props }) => {
   
     useFrame((_, delta) => {
       if(!isRotating) {
-        // Scale movement speed with delta time
         movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
-    
+      
         if(Math.abs(movementSpeed.current) < 0.001) {
           movementSpeed.current = 0;
         }
-    
-        // Scale progress change with delta time
+
         const newProgress = pathProgress.current + (movementSpeed.current * delta * 60);
         if (newProgress >= 0 && newProgress <= 1) {
           pathProgress.current = newProgress;
         }
       }
-    
+
       // Get current position on the curve
       const point = curve.getPoint(pathProgress.current);
-      
-      // Add these logging statements:
-      console.log('Current progress:', pathProgress.current);
-      console.log('Current position:', {
-        x: point.x.toFixed(3),
-        y: point.y.toFixed(3),
-        z: point.z.toFixed(3)
-      });
-    
       group.current.position.copy(point);
+      handleStageTransition(point);
     
-      // Get the tangent (direction) at the current point
-      const tangent = curve.getTangent(pathProgress.current);
+      // Get the next point on the curve for orientation
+      const nextT = Math.min(pathProgress.current + 0.01, 1);
+      const nextPoint = curve.getPoint(nextT);
       
-      // You can also log the tangent to understand the direction:
-      console.log('Current tangent:', {
-        x: tangent.x.toFixed(3),
-        y: tangent.y.toFixed(3),
-        z: tangent.z.toFixed(3)
-      });
+      // Calculate direction vector
+      const direction = new THREE.Vector3()
+        .subVectors(nextPoint, point)
+        .normalize();
     
-      // If moving backwards (left), reverse the tangent direction
-      const facingDirection = movingForward.current ? tangent.multiplyScalar(-1) : tangent;
+      if (direction.lengthSq() > 0.001) {
+        // Create a rotation matrix for the island's tilt
+        const islandTilt = new THREE.Matrix4().makeRotationX(0.25);
+        
+        // Apply island tilt to our up vector
+        const adjustedUp = new THREE.Vector3(0, 1, 0).applyMatrix4(islandTilt);
+        
+        // Create a matrix that will align our character to the tilted surface
+        const alignMatrix = new THREE.Matrix4();
+        const xAxis = new THREE.Vector3().crossVectors(adjustedUp, direction).normalize();
+        const zAxis = new THREE.Vector3().crossVectors(xAxis, adjustedUp).normalize();
+        
+        alignMatrix.makeBasis(xAxis, adjustedUp, zAxis);
     
-      // Calculate the point to look at based on our facing direction
-      const lookAtPoint = new THREE.Vector3().copy(point).add(facingDirection);
-      
-      // Log movement direction
-      console.log('Moving:', movingForward.current ? 'forward' : 'backward');
+        // Convert to quaternion for smoother interpolation
+        const targetQuaternion = new THREE.Quaternion().setFromRotationMatrix(alignMatrix);
     
-      group.current.lookAt(lookAtPoint);
-      group.current.rotateY(Math.PI);
+        // Apply the rotation
+        group.current.quaternion.copy(targetQuaternion);
+        
+        // Add the forward/backward facing adjustment
+        group.current.rotateOnWorldAxis(adjustedUp, movingForward.current ? 0 : Math.PI);
+      }
     });
 
     useEffect(() => {
@@ -184,10 +297,32 @@ const Ciri = ({ isRotating, setIsRotating, ...props }) => {
         canvas.removeEventListener('pointerdown', handlePointerDown);
         canvas.removeEventListener('pointerup', handlePointerUp);
         canvas.removeEventListener('pointermove', handlePointerMove);
-        document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
+        document.removeEventListener('keydown', handleKeyDown);
       };
     }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
+
+    useEffect(() => {
+      if (isSceneRotating) {
+        console.log('Scene rotation started during animation - cleaning up');
+        
+        // Reset armature rotation
+        const armature = group.current?.getObjectByName('Armature');
+        if (armature) {
+          const resetRotation = isRotating ? 
+            new THREE.Euler(-Math.PI, 0, 0) : 
+            new THREE.Euler(Math.PI/2, 0, 0);
+          armature.rotation.copy(resetRotation);
+        }
+        
+        // Stop any running animations
+        Object.values(actions).forEach(action => {
+          if (action?.isRunning()) {
+            action.stop();
+          }
+        });
+      }
+    }, [isSceneRotating, isRotating, actions]);
 
     useEffect(() => {
       if (actions['Armature|mixamo.com|Layer0'] && isRotating) {
@@ -195,18 +330,16 @@ const Ciri = ({ isRotating, setIsRotating, ...props }) => {
         action.setEffectiveTimeScale(1); // Ensure consistent timing
         action.setEffectiveWeight(1);
         action.play();
-        
         // Optional: Reduce animation quality on higher resolutions
         if (window.innerHeight > 1080) {
-          action.setDuration(action.getClip().duration * 1.5); // Smoother but slightly slower
+          action.setDuration(action.getClip().duration * 1.5); 
         }
       }else{
-        actions['Armature|mixamo.com|Layer0']?.stop();
-      }
-    }, [actions, isRotating]);
+          actions['Armature|mixamo.com|Layer0']?.stop();
+      }}, [actions, isRotating]);
 
   return (
-    <group ref={group} {...props} >
+    <group ref={group} {...props}>
     <group name="Scene" rotation={[-Math.PI/2, 0, 0]}>
     <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
         <group name="RootNode1">

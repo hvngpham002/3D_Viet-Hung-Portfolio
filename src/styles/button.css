@@ -1,0 +1,19 @@
+.fill-button {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    }
+    .fill-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: #2563eb; /* blue-600 */
+    transition: width 0.3s ease;
+    z-index: -1;
+    }
+    .fill-button:hover::before {
+    width: 100%;
+    }

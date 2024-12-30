@@ -14,13 +14,12 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import skyScene from '../assets/3d/sky.glb';
 import { GLTF } from 'three-stdlib';
-import { useFrame } from '@react-three/fiber';
 
 type GLTFResult = GLTF & {
   scene: THREE.Group;
 };
 
-const Sky = ({ isDay, isRotating }) => {
+const Sky = ({ isDay }) => {
   const sky = useGLTF(skyScene) as GLTFResult;
   const skyRef = useRef<any>();
 
@@ -49,12 +48,6 @@ const Sky = ({ isDay, isRotating }) => {
       });
     }
   }, [isDay, skyColor, emissiveColor]);
-
-  // useFrame((_, delta) => {
-  //   if(isRotating) {
-  //     skyRef.current.rotation.y += 0.15 * delta;
-  //   }
-  // })
 
   return (
     <primitive 
