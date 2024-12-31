@@ -108,21 +108,26 @@ const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...
     const STAGE_POSITIONS = [
       {
         position: new THREE.Vector3(-3.0, -1.75, 0.40),
-        stage: 1
+        stage: 1,
+        threshold: 0.5
       },
       {
         position: new THREE.Vector3(-1.75, -1.55, 0.40),
-        stage: 2
+        stage: 2,
+        threshold: 0.5
       },
       {
         position: new THREE.Vector3(1.5, -1.38, 0.18),
-        stage: 3
+        stage: 3,
+        threshold: 0.5
       },
       {
         position: new THREE.Vector3(3.0, -1.65, 0.21),
-        stage: 4
+        stage: 4,
+        threshold: 0.5
       }
     ];
+    
     
     const pathPoints = [
       new THREE.Vector3(-3.0, -1.75, 0.40),
@@ -134,45 +139,53 @@ const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...
       new THREE.Vector3(3.0, -1.65, 0.21),
     ];
     
+
     const handleStageTransition = useCallback((currentPosition: THREE.Vector3) => {
-      // Check if we've moved to a new position
-      if (!currentPosition.equals(prevPosition.current)) {
-        // Find the stage based on proximity to defined positions
-        STAGE_POSITIONS.forEach(({position, stage}) => {
-          const distance = currentPosition.distanceTo(position);
-          
-          // If we're within 0.1 units of a stage position and it's a different stage
-          if (distance < 0.1 && lastStage.current !== stage) {
-            lastStage.current = stage;
-            setCurrentStage(stage);
-            console.log("current stage: " + stage);
-          }
-        });
+      let newStage: number | null = null;
+      let minDistance = Infinity;
+      
+      // Use squared distance for performance (avoids square root calculation)
+      STAGE_POSITIONS.forEach(({position, stage, threshold}) => {
+        const dx = currentPosition.x - position.x;
+        const dy = currentPosition.y - position.y;
+        const dz = currentPosition.z - position.z;
+        const distanceSquared = dx * dx + dy * dy + dz * dz;
+        const thresholdSquared = threshold * threshold;
         
-        // Update previous position
-        prevPosition.current.copy(currentPosition);
+        if (distanceSquared < thresholdSquared && distanceSquared < minDistance) {
+          minDistance = distanceSquared;
+          newStage = stage;
+        }
+      });
+      
+      if (lastStage.current !== newStage) {
+        lastStage.current = newStage;
+        setCurrentStage(newStage);
       }
-    }, [setCurrentStage, STAGE_POSITIONS]);
+    }, [setCurrentStage]);
   
     const curve = new THREE.CatmullRomCurve3(pathPoints, false);
   
+    
     const handlePointerDown = useCallback((e: PointerEvent | TouchEvent) => {
-      // Only handle left click (button 0)
       if ('button' in e && e.button !== 0) return;
-
+      
+      document.body.classList.add('dragging');
       gl.domElement.style.cursor = 'ew-resize';
       
       e.stopPropagation();
       setIsRotating(true);
-  
+
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       lastX.current = clientX;
     }, [setIsRotating, gl]);
-  
+
     const handlePointerUp = useCallback((e: PointerEvent | TouchEvent) => {
-      // Only handle left click (button 0)
       if ('button' in e && e.button !== 0) return;
+      
+      document.body.classList.remove('dragging');
       gl.domElement.style.cursor = 'grab';
+      
       e.stopPropagation();
       setIsRotating(false);
     }, [setIsRotating, gl]);

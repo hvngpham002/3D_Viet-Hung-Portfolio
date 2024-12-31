@@ -199,3 +199,18 @@ body:has(.card[data-color="green"]:hover) {
     transform: rotate(360deg);
   }
 }
+
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body.dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: grabbing !important;
+}
