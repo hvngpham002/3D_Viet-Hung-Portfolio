@@ -4,7 +4,7 @@ import arrow from '../assets/icons/arrow.svg'
 
 const InfoBox = ({ text, link, linkText, isVisible }) => {
     return (
-        <div className={`sm:text-xl sm:leading-snug text-center py-4 px-8 dark:text-white mx-5 flex flex-col items-center gap-4 transition-opacity duration-200
+        <div className={`sm:text-xl sm:leading-snug text-center py-4 px-8 dark:text-white mx-5 flex flex-col items-center gap-4 transition-opacity duration-300
             ${isVisible ? 'opacity-100' : 'opacity-0'}`}
         >
             <h1 className='max-w-[700px] text-xl'>{text}</h1>
@@ -71,7 +71,7 @@ const HomeInfo = ({ currentStage }) => {
                 }
                 setIsVisible(true);
             }
-        }, 100); // Reduced from 300ms to 100ms
+        }, 150); // Reduced from 300ms to 100ms
 
         return () => clearTimeout(timer);
     }, [currentStage]);
