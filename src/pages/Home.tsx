@@ -160,7 +160,7 @@ const SceneContent = ({ isRotating, setIsRotating, currentStage, setCurrentStage
     const rotation = [0, 1.25, 0];
 
     if (window.innerWidth < 768) {
-      screenScale = [0.6, 0.6, 0.6];
+      screenScale = [0.4, 0.4, 0.4];
     }
 
     return [screenScale, screenPosition, rotation];
@@ -172,7 +172,7 @@ const SceneContent = ({ isRotating, setIsRotating, currentStage, setCurrentStage
     const rotation = [0.25, 0, 0];
 
     if (window.innerWidth < 768) {
-      screenScale = [0.6, 0.6, 0.6];
+      screenScale = [0.13, 0.13, 0.13];
     }
 
     return [screenScale, screenPosition, rotation];

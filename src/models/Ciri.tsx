@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useAnimations, useGLTF } from '@react-three/drei'
 
 import ciriScene from '../assets/3d/ciri.glb'
-import ciriMat from '../assets/3d/ciri1.glb'
+import ciriMat from '../assets/3d/ciriMat.glb'
 import ciriAnimations from '../assets/3d/animations/animations.glb'
 
 import * as THREE from 'three';
