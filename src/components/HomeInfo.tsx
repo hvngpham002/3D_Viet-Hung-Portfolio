@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import arrow from '../assets/icons/arrow.svg'
+import { useTranslation } from 'react-i18next';
 
 const InfoBox = ({ text, link, linkText, isVisible }) => {
     return (
@@ -25,6 +27,9 @@ const InfoBox = ({ text, link, linkText, isVisible }) => {
 };
 
 const HomeInfo = ({ currentStage }) => {
+
+    const { t } = useTranslation(); 
+
     const [isVisible, setIsVisible] = useState(false);
     const [content, setContent] = useState({
         text: "",
@@ -42,39 +47,39 @@ const HomeInfo = ({ currentStage }) => {
                 switch(currentStage) {
                     case 1:
                         setContent({
-                            text: "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.",
+                            text: t("In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm."),
                             link: "/about",
-                            linkText: "See Project"
+                            linkText: t('View Project')
                         });
                         break;
                     case 2:
                         setContent({
-                            text: "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.",
+                            text: t("In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts."),
                             link: "/about",
-                            linkText: "See Project"
+                            linkText: t('View Project')
                         });
                         break;
                     case 3:
                         setContent({
-                            text: "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.",
+                            text: t("In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development."),
                             link: "/about",
-                            linkText: "See Project"
+                            linkText: t('View Project')
                         });
                         break;
                     case 4:
                         setContent({
-                            text: "In 2024, I conquered my final quest before graduation at NVIDIA.",
+                            text: t("In 2024, I conquered my final quest before graduation at NVIDIA."),
                             link: "/about",
-                            linkText: "See Project"
+                            linkText: t('View Project')
                         });
                         break;
                 }
                 setIsVisible(true);
             }
-        }, 150); // Reduced from 300ms to 100ms
+        }, 150); 
 
         return () => clearTimeout(timer);
-    }, [currentStage]);
+    }, [currentStage, t]);
 
     return (
         <InfoBox 

@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <div className={themeMode === 'dark' ? 'dark' : ''}>
-      <main className="bg-slate-300/20 dark:bg-slate-800">
+      <main className="bg-slate-300/50 dark:bg-slate-800">
         <Router>
           <Navbar />
           <Routes>

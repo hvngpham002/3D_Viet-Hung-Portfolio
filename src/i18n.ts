@@ -5,11 +5,12 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
-      // Existing translations
+
+      // Navbar translations
       about: "About",
       projects: "Projects",
       contact: "Contact",
-      
+
       // Loader translations
       "Welcome to My Journey": "Welcome to My Journey",
       "Explore an interactive timeline of my professional development through an immersive 3D experience.": 
@@ -29,12 +30,26 @@ const resources = {
       "of": "of",
       "assets": "assets",
       "Click to start experience": "Click to start experience",
-      "Loading models": "Loading models"
+      "Loading models": "Loading models",
+
+      // HomeInfo translations
+      "View Project": "View Project",
+      "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.": 
+        "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.",
+      "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.": 
+        "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.",
+      "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
+        "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.",
+      "In 2024, I conquered my final quest before graduation at NVIDIA.": 
+        "In 2024, I conquered my final quest before graduation at NVIDIA.",
+
+        "Email:": "Email:",
     }
   },
   vi: {
     translation: {
-      // Existing translations
+
+      // Navbar translations
       about: "Giới thiệu",
       projects: "Dự án",
       contact: "Liên hệ",
@@ -58,12 +73,24 @@ const resources = {
       "of": "trong số",
       "assets": "tài nguyên",
       "Click to start experience": "Nhấn để bắt đầu trải nghiệm",
-      "Loading models": "Đang tải mô hình"
+      "Loading models": "Đang tải mô hình",
+
+      // HomeInfo translations
+      "View Project": "Xem Dự Án",
+      "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.": 
+        "Năm 2020, tôi bắt đầu con đường kỹ sư tự học, phát triển ứng dụng thương mại điện tử cho một công ty địa phương.",
+      "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.": 
+        "Năm 2021, tôi đến Mỹ để tiếp tục học ngành kỹ thuật phần mềm tại Massachusetts.",
+      "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
+        "Năm 2023, tôi đến trung tâm công nghệ Hàng Châu, Trung Quốc để nghiên cứu về tuyển dụng và phát triển công nghệ cao.",
+      "In 2024, I conquered my final quest before graduation at NVIDIA.": 
+        "Năm 2024, tôi hoàn thành thực tập cuối cùng tại NVIDIA trước khi tốt nghiệp."
     }
   },
   zh: {
     translation: {
-      // Existing translations
+
+      // Navbar translations
       about: "关于",
       projects: "项目",
       contact: "联系",
@@ -87,7 +114,18 @@ const resources = {
       "of": "共",
       "assets": "资源",
       "Click to start experience": "点击开始体验",
-      "Loading models": "加载模型中"
+      "Loading models": "加载模型中",
+
+      // HomeInfo translations
+      "View Project": "查看项目",
+      "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.": 
+        "2020年，我开始了自学工程师的道路，为一家本地公司开发电子商务应用。",
+      "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.": 
+        "2021年，我来到美国马萨诸塞州继续深造软件工程。",
+      "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
+        "2023年，我前往中国杭州科技中心研究高科技人才招聘与发展。",
+      "In 2024, I conquered my final quest before graduation at NVIDIA.": 
+        "2024年，我在英伟达完成了毕业前的最后一次实习。"
     }
   }
 };
