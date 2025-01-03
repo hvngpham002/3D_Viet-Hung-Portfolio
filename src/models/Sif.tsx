@@ -14,7 +14,6 @@ const Sif = ({ currentAnimation, ...props }) => {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF(sifScene)
 
-  console.log(animations)
   const { actions } = useAnimations(animations, group)
   
   useEffect(() => {

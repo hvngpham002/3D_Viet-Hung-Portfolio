@@ -40,17 +40,13 @@ const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...
     const dampingFactor = 0.95;
 
     const lastStage = useRef(0);
-    const prevPosition = useRef(new THREE.Vector3());
-
 
     const playOneShotAnimation = useCallback((animationName: string) => {
       
       if (!actions[animationName]) return;
       
-      if (actions['Armature|mixamo.com|Layer0']?.isRunning()) {
-        actions['Armature|mixamo.com|Layer0'].stop();
-      }
-    
+      Object.values(actions).forEach((action) => action?.stop());
+      
       const armature = group.current.getObjectByName('Armature');
       if (armature) {
         const originalRotation = isRotating ? 
