@@ -3,56 +3,13 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const resources = {
-  en: {
-    translation: {
-
-      // Navbar translations
-      about: "About",
-      projects: "Projects",
-      contact: "Contact",
-
-      // Loader translations
-      "Welcome to My Journey": "Welcome to My Journey",
-      "Explore an interactive timeline of my professional development through an immersive 3D experience.": 
-        "Explore an interactive timeline of my professional development through an immersive 3D experience.",
-      "Quick Guide": "Quick Guide",
-      "Character Movement": "Character Movement",
-      "Scene Rotation": "Scene Rotation",
-      "Animations": "Animations",
-      "Zoom": "Zoom",
-      "Left/Right Arrows or Left Mouse Drag": "Left/Right Arrows or Left Mouse Drag",
-      "Middle Mouse Button + Drag": "Middle Mouse Button + Drag",
-      "Press Q, W, E, or R": "Press Q, W, E, or R",
-      "Mouse Wheel": "Mouse Wheel",
-      "Click to Start": "Click to Start",
-      "Loading assets...": "Loading assets...",
-      "Loaded": "Loaded",
-      "of": "of",
-      "assets": "assets",
-      "Click to start experience": "Click to start experience",
-      "Loading models": "Loading models",
-
-      // HomeInfo translations
-      "View Project": "View Project",
-      "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.": 
-        "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.",
-      "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.": 
-        "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.",
-      "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
-        "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.",
-      "In 2024, I conquered my final quest before graduation at NVIDIA.": 
-        "In 2024, I conquered my final quest before graduation at NVIDIA.",
-
-        "Email:": "Email:",
-    }
-  },
   vi: {
     translation: {
 
       // Navbar translations
-      about: "Giới thiệu",
-      projects: "Dự án",
-      contact: "Liên hệ",
+      About: "Giới Thiệu",
+      Projects: "Dự Án",
+      Contact: "Liên Hệ",
 
       // Loader translations
       "Welcome to My Journey": "Chào Mừng Đến Với Hành Trình Của Tôi",
@@ -80,20 +37,27 @@ const resources = {
       "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm.": 
         "Năm 2020, tôi bắt đầu con đường kỹ sư tự học, phát triển ứng dụng thương mại điện tử cho một công ty địa phương.",
       "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts.": 
-        "Năm 2021, tôi đến Mỹ để tiếp tục học ngành kỹ thuật phần mềm tại Massachusetts.",
+        "Năm 2021, tôi đến Mỹ để tiếp tục học ngành phát triển phần mềm tại Massachusetts.",
       "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
         "Năm 2023, tôi đến trung tâm công nghệ Hàng Châu, Trung Quốc để nghiên cứu về tuyển dụng và phát triển công nghệ cao.",
       "In 2024, I conquered my final quest before graduation at NVIDIA.": 
-        "Năm 2024, tôi hoàn thành thực tập cuối cùng tại NVIDIA trước khi tốt nghiệp."
+        "Năm 2024, tôi hoàn thành thực tập cuối cùng tại NVIDIA trước khi tốt nghiệp.",
+
+        // Contact
+        "Want To Work With Me": "Muốn làm việc với tôi",
+        "Email": "Email",
+        "Name": "Họ và Tên",
+        "Message": "Tin Nhắn",
+        "Let me know how I can be of service!": "Hãy để lại tin nhắn của bạn!"
     }
   },
   zh: {
     translation: {
 
       // Navbar translations
-      about: "关于",
-      projects: "项目",
-      contact: "联系",
+      About: "关于",
+      Projects: "项目",
+      Contact: "联系",
 
       // Loader translations
       "Welcome to My Journey": "欢迎来到我的旅程",
@@ -125,7 +89,15 @@ const resources = {
       "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.": 
         "2023年，我前往中国杭州科技中心研究高科技人才招聘与发展。",
       "In 2024, I conquered my final quest before graduation at NVIDIA.": 
-        "2024年，我在英伟达完成了毕业前的最后一次实习。"
+        "2024年，我在英伟达完成了毕业前的最后一次实习。",
+
+
+      // Contact
+      "Want To Work With Me": "想和我一起工作",
+      "Email": "电子邮件",
+      "Name": "名字",
+      "Message": "留言",
+      "Let me know how I can be of service!": "请告诉我如何提供帮助!"
     }
   }
 };

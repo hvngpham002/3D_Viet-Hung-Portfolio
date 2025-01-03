@@ -18,9 +18,31 @@ const Sif = ({ currentAnimation, ...props }) => {
   const { actions } = useAnimations(animations, group)
   
   useEffect(() => {
-    if(actions["c5210|a00_0500"]){
-      actions["c5210|a00_0500"].play()
+    Object.values(actions).forEach((action) => action?.stop());
+
+    switch (currentAnimation) {
+      case "idle":
+        if(actions["[Action Stash].006"]){
+          actions["[Action Stash].006"].play()
+        }
+        break;
+      case "walking":
+        if(actions["[Action Stash].001"]){
+          actions["[Action Stash].001"].play()
+        }
+        break;
+      case "running":
+        if(actions["c5210|a00_0500"]){
+          actions["c5210|a00_0500"].play()
+        }
+        break;
+      case "attack":
+        if(actions["[Action Stash].003"]){
+          actions["[Action Stash].003"].play()
+        }
+        break;
     }
+
   }, [actions, currentAnimation])
 
   return (
