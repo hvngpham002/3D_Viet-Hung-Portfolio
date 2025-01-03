@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
-
-// Initialize EmailJS with your public key
-emailjs.init(import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY);
 import { useTranslation } from 'react-i18next';
 import { Canvas } from '@react-three/fiber';
 import Sif from '../models/Sif';
 import Bonfire from '../models/Bonfire';
+import { ContactShadows, Environment, AccumulativeShadows, RandomizedLight, SpotLight } from '@react-three/drei';
+import * as THREE from 'three';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import useAlert from '../hooks/useAlert';
+import Alert from '../components/Alert';
+
+// Initialize EmailJS with your public key
+emailjs.init(import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY);
 
 interface FormData {
   name: string;
@@ -22,12 +29,153 @@ declare global {
   }
 }
 
+
+const Scene = ({ currentAnimation }) => {
+
+  const themeMode = useSelector((state: RootState) => state.theme.mode);
+  
+  const lightSettings = {
+    light: {
+      ambientLight: {
+        intensity: 0.3,
+        color: "#fff5e6"
+      },
+      directionalLight: {
+        intensity: 0.8,
+        color: "#ffe4b3",
+        position: [5, 5, 5] as [number, number, number]
+      },
+      spotLight: {
+        intensity: 1.0,
+        color: "#ffa726",
+        position: [3.0, 2.0, -10.0] as [number, number, number]
+      },
+      shadows: {
+        contactOpacity: 0.25,
+        accumulativeOpacity: 0.35,
+        color: "#3a3a3a"
+      },
+      environment: "dawn"
+    },
+    dark: {
+      ambientLight: {
+        intensity: 0.25,
+        color: "#f4efde"
+      },
+      directionalLight: {
+        intensity: 1.5,
+        color: "#e2c96e",
+        position: [5, 5, 5] as [number, number, number]
+      },
+      spotLight: {
+        intensity: 2.2,
+        color: "#ffa041",
+        position: [3.0, 2.0, -10.0] as [number, number, number]
+      },
+      shadows: {
+        contactOpacity: 0.4,
+        accumulativeOpacity: 0.7,
+        color: "#000000"
+      },
+      environment: "night"
+    }
+  };
+
+  const currentLightConfig = themeMode === 'light' ? lightSettings.light : lightSettings.dark;
+
+  return (
+    <React.Fragment>
+      {/* Environment and ambient lighting */}
+      <Environment preset={currentLightConfig.environment as any} />
+      
+      <ambientLight 
+        intensity={currentLightConfig.ambientLight.intensity} 
+        color={currentLightConfig.ambientLight.color}
+      />
+
+      {/* Main directional light */}
+      <directionalLight 
+        intensity={currentLightConfig.directionalLight.intensity}
+        position={currentLightConfig.directionalLight.position} 
+        color={currentLightConfig.directionalLight.color}
+        castShadow 
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+
+      {/* Bonfire spot light */}
+      <SpotLight
+        position={currentLightConfig.spotLight.position}
+        intensity={currentLightConfig.spotLight.intensity}
+        angle={0.6}
+        penumbra={0.5}
+        attenuation={5}
+        color={currentLightConfig.spotLight.color}
+        castShadow
+      />
+
+      {/* Contact shadows for better grounding */}
+      <ContactShadows
+        opacity={currentLightConfig.shadows.contactOpacity}
+        scale={10}
+        blur={1}
+        far={10}
+        resolution={256}
+        color={currentLightConfig.shadows.color}
+      />
+
+      {/* Accumulative shadows for more realistic lighting */}
+      <AccumulativeShadows
+        temporal
+        frames={100}
+        color={currentLightConfig.shadows.color}
+        colorBlend={0.5}
+        toneMapped={true}
+        alphaTest={0.8}
+        opacity={currentLightConfig.shadows.accumulativeOpacity}
+        scale={12}
+      >
+        <RandomizedLight
+          amount={8}
+          radius={4}
+          ambient={0.5}
+          intensity={1}
+          position={[3.0, 2.0, -10.0]}
+          bias={0.001}
+        />
+      </AccumulativeShadows>
+
+      {/* Models */}
+      <Bonfire 
+        position={[3.0, -3.0, -10.0]} 
+        rotation={[0, -0.5, 0]} 
+        scale={[1, 1, 1]}
+        castShadow
+        receiveShadow
+      />
+      <Sif 
+        position={[-0.6, -2.0, 0]} 
+        rotation={[0, -0.4, 0]} 
+        scale={[1.85, 1.85, 1.85]} 
+        currentAnimation={currentAnimation}
+        castShadow
+        receiveShadow
+      />
+    </React.Fragment>
+  );
+};
+
 const Contact = () => {
   const { t } = useTranslation();
   const [form, setForm] = useState<FormData>({ name: '', email: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [currentAnimation, setCurrentAnimation] = useState('idle');
+
+  const { alert, showAlert, hideAlert } = useAlert();
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -36,17 +184,17 @@ const Contact = () => {
   };
 
   const handleFocus = () => {
-    setCurrentAnimation('idle');
+    setCurrentAnimation('walking');
   }
 
   const handleBlur = () => {
-    setCurrentAnimation('running');
+    setCurrentAnimation('idle');
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setStatus('idle');
+    setCurrentAnimation("running");
 
     try {
       await emailjs.send(
@@ -61,13 +209,25 @@ const Contact = () => {
         }
       );
 
-      setStatus('success');
       setForm({ name: '', email: '', message: '' });
     } catch (error) {
-      setStatus('error');
-      console.error('Error sending email:', error);
+      setCurrentAnimation("idle");
+      showAlert({ text: error, type: 'danger'})
+
+      setTimeout(() => {
+        hideAlert();
+      }, 2500)
+
     } finally {
+      showAlert({text: "Message sent successfully!", type: 'success'})
+      setCurrentAnimation("attack");
       setIsLoading(false);
+
+      setTimeout(() => {
+        hideAlert();
+        setCurrentAnimation('idle')
+        setForm({ name: '', email: '', message: ''});
+      }, 2500)
     }
   };
 
@@ -94,9 +254,12 @@ const Contact = () => {
 
   return (
     <section className="relative flex lg:flex-row flex-col max-container h-screen">
+
+      {alert.show && <Alert {...alert} />}
+
       <div className="flex-1 min-w-[50%] flex flex-col h-full overflow-y-auto">
         <h1 className="text-2xl font-semibold dark:text-white">
-          {t('Want To Work With Me?')}
+          {t('Want To Work With Me')}?
         </h1>
         <form 
           ref={formRef}
@@ -153,30 +316,26 @@ const Contact = () => {
           >
             {isLoading ? t('Sending...') : t('Send Message')}
           </button>
-
-          {status === 'success' && (
-            <p className="text-green-500 mt-4">{t('Message sent successfully!')}</p>
-          )}
-          {status === 'error' && (
-            <p className="text-red-500 mt-4">{t('Failed to send message. Please try again.')}</p>
-          )}
         </form>
       </div>
       <div ref={canvasContainerRef} className="lg:w-1/2 w-full lg:h-full border border-white" >
-          <Canvas shadows camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}>
-            <directionalLight intensity={2.5} position={[0, 0, 1]} />
-            <ambientLight intensity={1} />
+      <Canvas 
+          shadows
+          dpr={[1, 2]}
+          camera={{ 
+            position: [0, 0, 5], 
+            fov: 75, 
+            near: 0.1, 
+            far: 1000 
+          }}
+          gl={{
+            antialias: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            outputColorSpace: THREE.SRGBColorSpace
+          }}
+        >
             <Suspense fallback={null}>
-              <Bonfire 
-                position={[3.0, -3.0, -10.0]} 
-                rotation={[0, -0.5, 0]} 
-                scale={[1, 1, 1]}/>
-              <Sif 
-                position={[-0.6, -2.0, 0]} 
-                rotation={[0, -0.4, 0]} 
-                scale={[1.85, 1.85, 1.85]} 
-                currentAnimation={currentAnimation}
-                />
+              <Scene currentAnimation={currentAnimation} />
             </Suspense>
           </Canvas>
       </div>

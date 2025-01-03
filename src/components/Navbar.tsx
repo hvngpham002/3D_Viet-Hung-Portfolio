@@ -24,7 +24,7 @@ const Navbar = () => {
             isActive ? 'text-blue-500' : 'text-black dark:text-white'
           }
         >
-          {t('about')}
+          {t('About')}
         </NavLink>
         <NavLink
           to="/projects"
@@ -32,7 +32,7 @@ const Navbar = () => {
             isActive ? 'text-blue-500' : 'text-black dark:text-white'
           }
         >
-          {t('projects')}
+          {t('Projects')}
         </NavLink>
         <NavLink
           to="/contact"
@@ -40,7 +40,7 @@ const Navbar = () => {
             isActive ? 'text-blue-500' : 'text-black dark:text-white'
           }
         >
-          {t('contact')}
+          {t('Contact')}
         </NavLink>
       </nav>
       <nav className="flex items-center gap-3">

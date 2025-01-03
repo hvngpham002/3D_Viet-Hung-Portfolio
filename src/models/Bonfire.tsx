@@ -7,12 +7,22 @@ Source: https://sketchfab.com/3d-models/bonfire-dark-souls-a090bdd8ca6841d1855f3
 Title: Bonfire / Dark Souls
 */
 
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import bonfireScene from "../assets/3d/bonfire.glb"
 
+import * as THREE from 'three'
+
 const Bonfire = (props) => {
   const { nodes, materials } = useGLTF(bonfireScene)
+
+  const fireMaterial = useMemo(() => {
+    const mat = materials['Mat_Sword-Fire'].clone()
+    mat.emissive = new THREE.Color('#ff8e26')
+    mat.emissiveIntensity = 2
+    return mat
+  }, [materials])
+  
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
@@ -63,7 +73,7 @@ const Bonfire = (props) => {
           castShadow
           receiveShadow
           geometry={nodes.Object_10.geometry}
-          material={materials['Mat_Sword-Fire']}
+          material={fireMaterial}
         />
       </group>
     </group>
