@@ -153,13 +153,11 @@ const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...
           newStage = stage;
         }
       });
-      
-      if (lastStage.current !== newStage) {
+      if (lastStage.current !== newStage && newStage !== null) {
         lastStage.current = newStage;
         setCurrentStage(newStage);
       }
     }, [setCurrentStage]);
-  
     const curve = new THREE.CatmullRomCurve3(pathPoints, false);
   
     
