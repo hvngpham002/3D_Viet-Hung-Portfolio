@@ -9,146 +9,184 @@ Source: https://sketchfab.com/3d-models/ciri-chibi-d1ab30ad4e4e42a9a96a5758e6eac
 Title: Ciri Chibi
 */
 
-import React, { useCallback, useEffect, useRef } from 'react'
-import { useAnimations, useGLTF } from '@react-three/drei'
+import { useCallback, useEffect, useRef } from "react";
+import { useAnimations, useGLTF } from "@react-three/drei";
 
-import ciriScene from '../assets/3d/ciri.glb'
-import ciriMat from '../assets/3d/ciriMat.glb'
-import ciriAnimations from '../assets/3d/animations/animations.glb'
+import ciriScene from "../assets/3d/ciri.glb";
+import ciriMat from "../assets/3d/ciriMat.glb";
+import ciriAnimations from "../assets/3d/animations/animations.glb";
 
-import * as THREE from 'three';
-import { useFrame, useThree } from '@react-three/fiber';
-import { GLTFResult } from '../types/3d';
+import * as THREE from "three";
+import { useFrame, useThree } from "@react-three/fiber";
+import { GLTFResult } from "../types/3d";
 
-const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...props }) => {
-    const group = useRef<any>();
-    
-    const { nodes, animations: baseAnimations } = useGLTF(ciriScene) as GLTFResult;
-    const { materials } = useGLTF(ciriMat) as GLTFResult;
-    const { animations: additionalAnimations } = useGLTF(ciriAnimations) as GLTFResult;
+type CiriProps = {
+  isRotating: boolean;
+  setIsRotating: (isRotating: boolean) => void;
+  setCurrentStage: (stage: number | null) => void;
+  isSceneRotating: boolean;
+} & JSX.IntrinsicElements["group"];
 
-    const combinedAnimations = [...baseAnimations, ...additionalAnimations];
+const Ciri = ({
+  isRotating,
+  setIsRotating,
+  setCurrentStage,
+  isSceneRotating,
+  ...props
+}: CiriProps) => {
+  const group = useRef<any>();
 
-    const { actions } = useAnimations(combinedAnimations, group);
+  const { nodes, animations: baseAnimations } = useGLTF(
+    ciriScene
+  ) as GLTFResult;
+  const { materials } = useGLTF(ciriMat) as GLTFResult;
+  const { animations: additionalAnimations } = useGLTF(
+    ciriAnimations
+  ) as GLTFResult;
 
-    const { gl, viewport } = useThree();
-  
-    const pathProgress = useRef(0);
-    const lastX = useRef(0);
-    const movementSpeed = useRef(0);
-    const movingForward = useRef(true);
-    const dampingFactor = 0.95;
-
-    const lastStage = useRef(0);
-
-    const playOneShotAnimation = useCallback((animationName: string) => {
+  const filterAnimations = (animations: THREE.AnimationClip[]) => {
+    return animations.map(clip => {
+      const filteredTracks = clip.tracks.filter(track => {
+        return !track.name.includes('morphTargetInfluences');
+      });
       
+      const newClip = new THREE.AnimationClip(
+        clip.name,
+        clip.duration,
+        filteredTracks
+      );
+      return newClip;
+    });
+  };
+
+  const filteredBaseAnimations = filterAnimations(baseAnimations);
+  const filteredAdditionalAnimations = filterAnimations(additionalAnimations);
+
+  const combinedAnimations = [...filteredBaseAnimations, ...filteredAdditionalAnimations];
+
+  const { actions } = useAnimations(combinedAnimations, group);
+
+  const { gl, viewport } = useThree();
+
+  const pathProgress = useRef(0);
+  const lastX = useRef(0);
+  const movementSpeed = useRef(0);
+  const movingForward = useRef(true);
+  const dampingFactor = 0.95;
+
+  const lastStage = useRef(0);
+
+  const playOneShotAnimation = useCallback(
+    (animationName: string) => {
       if (!actions[animationName]) return;
-      
+
       Object.values(actions).forEach((action) => action?.stop());
-      
-      const armature = group.current.getObjectByName('Armature');
+
+      const armature = group.current.getObjectByName("Armature");
       if (armature) {
-        const originalRotation = isRotating ? 
-          new THREE.Euler(-Math.PI, 0, 0) : 
-          new THREE.Euler(Math.PI/2, 0, 0);
-    
+        const originalRotation = isRotating
+          ? new THREE.Euler(-Math.PI, 0, 0)
+          : new THREE.Euler(Math.PI / 2, 0, 0);
+
         armature.rotation.set(Math.PI, 0, 0);
-    
+
         const action = actions[animationName];
         action.reset();
         action.setLoop(THREE.LoopOnce, 1);
         action.clampWhenFinished = true;
-    
+
         const mixer = action.getMixer();
         const onFinished = () => {
           action.stop();
-          mixer.removeEventListener('finished', onFinished);
+          mixer.removeEventListener("finished", onFinished);
           armature.rotation.copy(originalRotation);
         };
-        mixer.addEventListener('finished', onFinished);
-    
+        mixer.addEventListener("finished", onFinished);
+
         action.play();
       }
-    }, [actions, isRotating]);
+    },
+    [actions, isRotating]
+  );
 
-    useEffect(() => {
-      const handleKeys = (e: KeyboardEvent) => {
-    
-        if (e.repeat || isRotating || isSceneRotating) {
-          return;
-        }
-    
-        switch(e.key.toLowerCase()) {
-          case 'q':
-            playOneShotAnimation('pirouette');
-            break;
-          case 'w':
-            playOneShotAnimation('celebrate');
-            break;
-          case 'e':
-            playOneShotAnimation('tracking');
-            break;
-          case 'r':
-            playOneShotAnimation('whirl');
-            break;
-        }
-      };
-    
-      document.addEventListener('keydown', handleKeys);
-      return () => {
-        document.removeEventListener('keydown', handleKeys);
-      };
-    }, [isRotating, isSceneRotating, playOneShotAnimation]);
-    
-    const STAGE_POSITIONS = [
-      {
-        position: new THREE.Vector3(-3.0, -1.75, 0.40),
-        stage: 1,
-        threshold: 0.5
-      },
-      {
-        position: new THREE.Vector3(-1.75, -1.55, 0.40),
-        stage: 2,
-        threshold: 0.5
-      },
-      {
-        position: new THREE.Vector3(1.5, -1.38, 0.18),
-        stage: 3,
-        threshold: 0.5
-      },
-      {
-        position: new THREE.Vector3(3.0, -1.65, 0.21),
-        stage: 4,
-        threshold: 0.5
+  useEffect(() => {
+    const handleKeys = (e: KeyboardEvent) => {
+      if (e.repeat || isRotating || isSceneRotating) {
+        return;
       }
-    ];
-    
-    
-    const pathPoints = [
-      new THREE.Vector3(-3.0, -1.75, 0.40),
-      new THREE.Vector3(-2.0, -1.55, 0.40),
-      new THREE.Vector3(-1.0, -1.46, 0.39),
-      new THREE.Vector3(0.0, -1.45, 0.09),
-      new THREE.Vector3(1.0, -1.38, 0.18),
-      new THREE.Vector3(2.0, -1.43, 0.20),
-      new THREE.Vector3(3.0, -1.65, 0.21),
-    ];
-    
 
-    const handleStageTransition = useCallback((currentPosition: THREE.Vector3) => {
+      switch (e.key.toLowerCase()) {
+        case "q":
+          playOneShotAnimation("pirouette");
+          break;
+        case "w":
+          playOneShotAnimation("celebrate");
+          break;
+        case "e":
+          playOneShotAnimation("tracking");
+          break;
+        case "r":
+          playOneShotAnimation("whirl");
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeys);
+    return () => {
+      document.removeEventListener("keydown", handleKeys);
+    };
+  }, [isRotating, isSceneRotating, playOneShotAnimation]);
+
+  const STAGE_POSITIONS = [
+    {
+      position: new THREE.Vector3(-3.0, -1.75, 0.4),
+      stage: 1,
+      threshold: 0.5,
+    },
+    {
+      position: new THREE.Vector3(-1.75, -1.55, 0.4),
+      stage: 2,
+      threshold: 0.5,
+    },
+    {
+      position: new THREE.Vector3(1.5, -1.38, 0.18),
+      stage: 3,
+      threshold: 0.5,
+    },
+    {
+      position: new THREE.Vector3(3.0, -1.65, 0.21),
+      stage: 4,
+      threshold: 0.5,
+    },
+  ];
+
+  const pathPoints = [
+    new THREE.Vector3(-3.0, -1.75, 0.4),
+    new THREE.Vector3(-2.0, -1.55, 0.4),
+    new THREE.Vector3(-1.0, -1.46, 0.39),
+    new THREE.Vector3(0.0, -1.45, 0.09),
+    new THREE.Vector3(1.0, -1.38, 0.18),
+    new THREE.Vector3(2.0, -1.43, 0.2),
+    new THREE.Vector3(3.0, -1.65, 0.21),
+  ];
+
+  const handleStageTransition = useCallback(
+    (currentPosition: THREE.Vector3) => {
       let newStage: number | null = null;
       let minDistance = Infinity;
-      
+
       // Use squared distance for performance (avoids square root calculation)
-      STAGE_POSITIONS.forEach(({position, stage, threshold}) => {
+      STAGE_POSITIONS.forEach(({ position, stage, threshold }) => {
         const dx = currentPosition.x - position.x;
         const dy = currentPosition.y - position.y;
         const dz = currentPosition.z - position.z;
         const distanceSquared = dx * dx + dy * dy + dz * dz;
         const thresholdSquared = threshold * threshold;
-        
-        if (distanceSquared < thresholdSquared && distanceSquared < minDistance) {
+
+        if (
+          distanceSquared < thresholdSquared &&
+          distanceSquared < minDistance
+        ) {
           minDistance = distanceSquared;
           newStage = stage;
         }
@@ -157,493 +195,578 @@ const Ciri = ({ isRotating, setIsRotating, setCurrentStage, isSceneRotating, ...
         lastStage.current = newStage;
         setCurrentStage(newStage);
       }
-    }, [setCurrentStage]);
-    const curve = new THREE.CatmullRomCurve3(pathPoints, false);
-  
-    
-    const handlePointerDown = useCallback((e: PointerEvent | TouchEvent) => {
-      if ('button' in e && e.button !== 0) return;
-      
-      document.body.classList.add('dragging');
-      gl.domElement.style.cursor = 'ew-resize';
-      
+    },
+    [setCurrentStage]
+  );
+  const curve = new THREE.CatmullRomCurve3(pathPoints, false);
+
+  const handlePointerDown = useCallback(
+    (e: PointerEvent | TouchEvent) => {
+      if ("button" in e && e.button !== 0) return;
+
+      document.body.classList.add("dragging");
+      gl.domElement.style.cursor = "ew-resize";
+
       e.stopPropagation();
       setIsRotating(true);
 
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       lastX.current = clientX;
-    }, [setIsRotating, gl]);
+    },
+    [setIsRotating, gl]
+  );
 
-    const handlePointerUp = useCallback((e: PointerEvent | TouchEvent) => {
-      if ('button' in e && e.button !== 0) return;
-      
-      document.body.classList.remove('dragging');
-      gl.domElement.style.cursor = 'grab';
-      
+  const handlePointerUp = useCallback(
+    (e: PointerEvent | TouchEvent) => {
+      if ("button" in e && e.button !== 0) return;
+
+      document.body.classList.remove("dragging");
+      gl.domElement.style.cursor = "grab";
+
       e.stopPropagation();
       setIsRotating(false);
-    }, [setIsRotating, gl]);
-  
-    const handlePointerMove = useCallback((e: PointerEvent | TouchEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-    
-        if (isRotating) {
-          const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-          const delta = (clientX - lastX.current) / viewport.width;
-    
-          const newProgress = pathProgress.current + delta * 0.01;
-          if (newProgress >= 0 && newProgress <= 1) {
-            pathProgress.current = newProgress;
-            movementSpeed.current = delta * 0.01;
-            movingForward.current = delta > 0;
-          }
-          lastX.current = clientX;
+    },
+    [setIsRotating, gl]
+  );
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent | TouchEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (isRotating) {
+        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        const delta = (clientX - lastX.current) / viewport.width;
+
+        const newProgress = pathProgress.current + delta * 0.01;
+        if (newProgress >= 0 && newProgress <= 1) {
+          pathProgress.current = newProgress;
+          movementSpeed.current = delta * 0.01;
+          movingForward.current = delta > 0;
         }
-      }, [isRotating, viewport.width]);
-  
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-      if(e.key === 'ArrowLeft') {
-        if(!isRotating) setIsRotating(true);
-        const newProgress = pathProgress.current - 0.010;
+        lastX.current = clientX;
+      }
+    },
+    [isRotating, viewport.width]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        if (!isRotating) setIsRotating(true);
+        const newProgress = pathProgress.current - 0.01;
         if (newProgress >= 0) {
           pathProgress.current = newProgress;
           movingForward.current = false;
         }
-      } else if(e.key === 'ArrowRight') {
-        if(!isRotating) setIsRotating(true);
-        const newProgress = pathProgress.current + 0.010;
+      } else if (e.key === "ArrowRight") {
+        if (!isRotating) setIsRotating(true);
+        const newProgress = pathProgress.current + 0.01;
         if (newProgress <= 1) {
           pathProgress.current = newProgress;
           movingForward.current = true;
         }
       }
-    }, [isRotating, setIsRotating]);
-  
-    const handleKeyUp = useCallback((e: KeyboardEvent) => {
-      if(e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    },
+    [isRotating, setIsRotating]
+  );
+
+  const handleKeyUp = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         setIsRotating(false);
       }
-    }, [setIsRotating]);
-  
-    useFrame((_, delta) => {
-      if(!isRotating) {
-        movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
-      
-        if(Math.abs(movementSpeed.current) < 0.001) {
-          movementSpeed.current = 0;
-        }
+    },
+    [setIsRotating]
+  );
 
-        const newProgress = pathProgress.current + (movementSpeed.current * delta * 60);
-        if (newProgress >= 0 && newProgress <= 1) {
-          pathProgress.current = newProgress;
-        }
+  useFrame((_, delta) => {
+    if (!isRotating) {
+      movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
+
+      if (Math.abs(movementSpeed.current) < 0.001) {
+        movementSpeed.current = 0;
       }
 
-      // Get current position on the curve
-      const point = curve.getPoint(pathProgress.current);
-      group.current.position.copy(point);
-      handleStageTransition(point);
-    
-      // Get the next point on the curve for orientation
-      const nextT = Math.min(pathProgress.current + 0.01, 1);
-      const nextPoint = curve.getPoint(nextT);
-      
-      // Calculate direction vector
-      const direction = new THREE.Vector3()
-        .subVectors(nextPoint, point)
+      const newProgress =
+        pathProgress.current + movementSpeed.current * delta * 60;
+      if (newProgress >= 0 && newProgress <= 1) {
+        pathProgress.current = newProgress;
+      }
+    }
+
+    // Get current position on the curve
+    const point = curve.getPoint(pathProgress.current);
+    group.current.position.copy(point);
+    handleStageTransition(point);
+
+    // Get the next point on the curve for orientation
+    const nextT = Math.min(pathProgress.current + 0.01, 1);
+    const nextPoint = curve.getPoint(nextT);
+
+    // Calculate direction vector
+    const direction = new THREE.Vector3()
+      .subVectors(nextPoint, point)
+      .normalize();
+
+    if (direction.lengthSq() > 0.001) {
+      // Create a rotation matrix for the island's tilt
+      const islandTilt = new THREE.Matrix4().makeRotationX(0.25);
+
+      // Apply island tilt to our up vector
+      const adjustedUp = new THREE.Vector3(0, 1, 0).applyMatrix4(islandTilt);
+
+      // Create a matrix that will align our character to the tilted surface
+      const alignMatrix = new THREE.Matrix4();
+      const xAxis = new THREE.Vector3()
+        .crossVectors(adjustedUp, direction)
         .normalize();
-    
-      if (direction.lengthSq() > 0.001) {
-        // Create a rotation matrix for the island's tilt
-        const islandTilt = new THREE.Matrix4().makeRotationX(0.25);
-        
-        // Apply island tilt to our up vector
-        const adjustedUp = new THREE.Vector3(0, 1, 0).applyMatrix4(islandTilt);
-        
-        // Create a matrix that will align our character to the tilted surface
-        const alignMatrix = new THREE.Matrix4();
-        const xAxis = new THREE.Vector3().crossVectors(adjustedUp, direction).normalize();
-        const zAxis = new THREE.Vector3().crossVectors(xAxis, adjustedUp).normalize();
-        
-        alignMatrix.makeBasis(xAxis, adjustedUp, zAxis);
-    
-        // Convert to quaternion for smoother interpolation
-        const targetQuaternion = new THREE.Quaternion().setFromRotationMatrix(alignMatrix);
-    
-        // Apply the rotation
-        group.current.quaternion.copy(targetQuaternion);
-        
-        // Add the forward/backward facing adjustment
-        group.current.rotateOnWorldAxis(adjustedUp, movingForward.current ? 0 : Math.PI);
-      }
-    });
+      const zAxis = new THREE.Vector3()
+        .crossVectors(xAxis, adjustedUp)
+        .normalize();
 
-    useEffect(() => {
-      // Reduce geometry detail on higher resolutions
+      alignMatrix.makeBasis(xAxis, adjustedUp, zAxis);
+
+      // Convert to quaternion for smoother interpolation
+      const targetQuaternion = new THREE.Quaternion().setFromRotationMatrix(
+        alignMatrix
+      );
+
+      // Apply the rotation
+      group.current.quaternion.copy(targetQuaternion);
+
+      // Add the forward/backward facing adjustment
+      group.current.rotateOnWorldAxis(
+        adjustedUp,
+        movingForward.current ? 0 : Math.PI
+      );
+    }
+  });
+
+  useEffect(() => {
+    // Reduce geometry detail on higher resolutions
+    if (window.innerHeight > 1080) {
+      group.current?.traverse((child: THREE.Object3D) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.geometry.dispose(); // Clean up old geometry
+          // Reduce geometry detail
+          mesh.geometry = mesh.geometry.clone().toNonIndexed();
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("keyup", handleKeyUp);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    gl,
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerMove,
+    handleKeyDown,
+    handleKeyUp,
+  ]);
+
+  useEffect(() => {
+    if (isSceneRotating) {
+      // Reset armature rotation
+      const armature = group.current?.getObjectByName("Armature");
+      if (armature) {
+        const resetRotation = isRotating
+          ? new THREE.Euler(-Math.PI, 0, 0)
+          : new THREE.Euler(Math.PI / 2, 0, 0);
+        armature.rotation.copy(resetRotation);
+      }
+
+      // Stop any running animations
+      Object.values(actions).forEach((action) => {
+        if (action?.isRunning()) {
+          action.stop();
+        }
+      });
+    }
+  }, [isSceneRotating, isRotating, actions]);
+
+  useEffect(() => {
+    if (actions["Armature|mixamo.com|Layer0"] && isRotating) {
+      const action = actions["Armature|mixamo.com|Layer0"];
+      action.setEffectiveTimeScale(1); // Ensure consistent timing
+      action.setEffectiveWeight(1);
+      action.play();
+      // Optional: Reduce animation quality on higher resolutions
       if (window.innerHeight > 1080) {
-        group.current?.traverse((child) => {
-          if (child.isMesh) {
-            child.geometry.dispose(); // Clean up old geometry
-            // Reduce geometry detail
-            child.geometry = child.geometry.clone().toNonIndexed();
-          }
-        });
+        action.setDuration(action.getClip().duration * 1.5);
       }
-    }, []);
-  
-    useEffect(() => {
-      const canvas = gl.domElement;
-      canvas.addEventListener('pointerdown', handlePointerDown);
-      canvas.addEventListener('pointerup', handlePointerUp);
-      canvas.addEventListener('pointermove', handlePointerMove);
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keyup', handleKeyUp);
-  
-      return () => {
-        canvas.removeEventListener('pointerdown', handlePointerDown);
-        canvas.removeEventListener('pointerup', handlePointerUp);
-        canvas.removeEventListener('pointermove', handlePointerMove);
-        document.removeEventListener('keyup', handleKeyUp);
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
+    } else {
+      actions["Armature|mixamo.com|Layer0"]?.stop();
+    }
+  }, [actions, isRotating]);
 
-    useEffect(() => {
-      if (isSceneRotating) {
-        console.log('Scene rotation started during animation - cleaning up');
-        
-        // Reset armature rotation
-        const armature = group.current?.getObjectByName('Armature');
-        if (armature) {
-          const resetRotation = isRotating ? 
-            new THREE.Euler(-Math.PI, 0, 0) : 
-            new THREE.Euler(Math.PI/2, 0, 0);
-          armature.rotation.copy(resetRotation);
+  useEffect(() => {
+    if (materials) {
+      Object.values(materials).forEach(material => {
+        const mat = material as any;
+        if (mat.specular) {
+          mat.metalness = 0.5;
+          mat.roughness = 0.5;
+          delete mat.specular;
+          delete mat.glossiness;
         }
-        
-        // Stop any running animations
-        Object.values(actions).forEach(action => {
-          if (action?.isRunning()) {
-            action.stop();
-          }
-        });
-      }
-    }, [isSceneRotating, isRotating, actions]);
-
-    useEffect(() => {
-      if (actions['Armature|mixamo.com|Layer0'] && isRotating) {
-        const action = actions['Armature|mixamo.com|Layer0'];
-        action.setEffectiveTimeScale(1); // Ensure consistent timing
-        action.setEffectiveWeight(1);
-        action.play();
-        // Optional: Reduce animation quality on higher resolutions
-        if (window.innerHeight > 1080) {
-          action.setDuration(action.getClip().duration * 1.5); 
-        }
-      }else{
-          actions['Armature|mixamo.com|Layer0']?.stop();
-      }}, [actions, isRotating]);
+      });
+    }
+  }, [materials]);
 
   return (
     <group ref={group} {...props}>
-    <group name="Scene" rotation={[-Math.PI/2, 0, 0]}>
-    <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
-        <group name="RootNode1">
-          <group name="Ciri_GEO">
-            <group name="bag" />
-            <group name="belt" />
-            <group
-              name="dagger"
-              position={[-12.097, 4.58, -48.253]}
-              rotation={[-0.074, 1.139, -2.518]}>
-              <group name="handle1" />
-              <group name="sheath" />
+      <group name="Scene" rotation={[-Math.PI / 2, 0, 0]}>
+        <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
+          <group name="RootNode1">
+            <group name="Ciri_GEO">
+              <group name="bag" />
+              <group name="belt" />
+              <group
+                name="dagger"
+                position={[-12.097, 4.58, -48.253]}
+                rotation={[-0.074, 1.139, -2.518]}
+              >
+                <group name="handle1" />
+                <group name="sheath" />
+              </group>
+              <group name="ears" />
+              <group name="hair">
+                <group name="bun" />
+                <group name="Hair_alpha01" />
+                <group name="Hair_alpha02" />
+                <group name="Hair_alpha03" />
+                <group name="Hair_alpha04" />
+                <group name="Hair_alpha05" />
+                <group name="Hair_alpha06" />
+                <group name="Hair_lrg01" />
+                <group name="Hair_lrg02" />
+                <group name="Hair_lrg03" />
+                <group name="Hair_lrg05" />
+                <group name="Hair_lrg06" />
+                <group name="Hair_lrg07" />
+                <group name="Hair_lrg08" />
+                <group name="Hair_sml02" />
+                <group name="Hair_sml03" />
+              </group>
+              <group name="hands" />
+              <group name="Head" />
+              <group name="legs" />
+              <group name="shirtLink" />
+              <group
+                name="sword"
+                position={[-13.516, -10.508, -82.603]}
+                rotation={[Math.PI / 2, 0, 0.869]}
+              >
+                <group name="guard" />
+                <group name="handle" />
+                <group name="pummel" />
+                <group name="sword1" />
+              </group>
+              <group name="torso" />
             </group>
-            <group name="ears" />
-            <group name="hair">
-              <group name="bun" />
-              <group name="Hair_alpha01" />
-              <group name="Hair_alpha02" />
-              <group name="Hair_alpha03" />
-              <group name="Hair_alpha04" />
-              <group name="Hair_alpha05" />
-              <group name="Hair_alpha06" />
-              <group name="Hair_lrg01" />
-              <group name="Hair_lrg02" />
-              <group name="Hair_lrg03" />
-              <group name="Hair_lrg05" />
-              <group name="Hair_lrg06" />
-              <group name="Hair_lrg07" />
-              <group name="Hair_lrg08" />
-              <group name="Hair_sml02" />
-              <group name="Hair_sml03" />
-            </group>
-            <group name="hands" />
-            <group name="Head" />
-            <group name="legs" />
-            <group name="shirtLink" />
-            <group
-              name="sword"
-              position={[-13.516, -10.508, -82.603]}
-              rotation={[Math.PI / 2, 0, 0.869]}>
-              <group name="guard" />
-              <group name="handle" />
-              <group name="pummel" />
-              <group name="sword1" />
-            </group>
-            <group name="torso" />
           </group>
         </group>
-      </group>
-      <group name="Armature" rotation={isRotating ? [-Math.PI, 0, 0] : [Math.PI/2, 0, 0]} scale={0.01}>
-      <skinnedMesh
-        castShadow
-        receiveShadow
-          name="bag_Ciri_mat_0"
-          geometry={nodes.bag_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.bag_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="belt_Ciri_mat_0"
-          geometry={nodes.belt_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.belt_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="bun_Ciri_mat_0"
-          geometry={nodes.bun_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.bun_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="ears_Ciri_mat_0"
-          geometry={nodes.ears_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.ears_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="guard_Ciri_mat_0"
-          geometry={nodes.guard_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.guard_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha01_Ciri_mat_0"
-          geometry={nodes.Hair_alpha01_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha02_Ciri_mat_0"
-          geometry={nodes.Hair_alpha02_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha03_Ciri_mat_0"
-          geometry={nodes.Hair_alpha03_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha04_Ciri_mat_0"
-          geometry={nodes.Hair_alpha04_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha04_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha05_Ciri_mat_0"
-          geometry={nodes.Hair_alpha05_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_alpha06_Ciri_mat_0"
-          geometry={nodes.Hair_alpha06_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_alpha06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_lrg01_Ciri_mat_0"
-          geometry={nodes.Hair_lrg01_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_lrg02_Ciri_mat_0"
-          geometry={nodes.Hair_lrg02_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_lrg03_Ciri_mat_0"
-          geometry={nodes.Hair_lrg03_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_lrg05_Ciri_mat_0"
-          geometry={nodes.Hair_lrg05_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-        receiveShadow
-          name="Hair_lrg06_Ciri_mat_0"
-          geometry={nodes.Hair_lrg06_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="Hair_lrg07_Ciri_mat_0"
-          geometry={nodes.Hair_lrg07_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg07_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="Hair_lrg08_Ciri_mat_0"
-          geometry={nodes.Hair_lrg08_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_lrg08_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="Hair_sml02_Ciri_mat_0"
-          geometry={nodes.Hair_sml02_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_sml02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="Hair_sml03_Ciri_mat_0"
-          geometry={nodes.Hair_sml03_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Hair_sml03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="handle_Ciri_mat_0"
-          geometry={nodes.handle_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.handle_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="handle_Ciri_mat_01"
-          geometry={nodes.handle_Ciri_mat_01.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.handle_Ciri_mat_01 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="hands_Ciri_mat_0"
-          geometry={nodes.hands_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.hands_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="Head_Ciri_mat_0"
-          geometry={nodes.Head_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.Head_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="legs_Ciri_mat_0"
-          geometry={nodes.legs_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.legs_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="pummel_Ciri_mat_0"
-          geometry={nodes.pummel_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.pummel_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="sheath_Ciri_mat_0"
-          geometry={nodes.sheath_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.sheath_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="shirtLink_Ciri_mat_0"
-          geometry={nodes.shirtLink_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.shirtLink_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="sword_Ciri_mat_0"
-          geometry={nodes.sword_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.sword_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <skinnedMesh
-        castShadow
-          receiveShadow
-          name="torso_Ciri_mat_0"
-          geometry={nodes.torso_Ciri_mat_0.geometry}
-          material={materials.Ciri_mat}
-          skeleton={(nodes.torso_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
-        />
-        <primitive object={nodes.mixamorigHips} />
+        <group
+          name="Armature"
+          rotation={isRotating ? [-Math.PI, 0, 0] : [Math.PI / 2, 0, 0]}
+          scale={0.01}
+        >
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="bag_Ciri_mat_0"
+            geometry={nodes.bag_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.bag_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="belt_Ciri_mat_0"
+            geometry={nodes.belt_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.belt_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="bun_Ciri_mat_0"
+            geometry={nodes.bun_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.bun_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="ears_Ciri_mat_0"
+            geometry={nodes.ears_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.ears_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="guard_Ciri_mat_0"
+            geometry={nodes.guard_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.guard_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha01_Ciri_mat_0"
+            geometry={nodes.Hair_alpha01_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha02_Ciri_mat_0"
+            geometry={nodes.Hair_alpha02_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha03_Ciri_mat_0"
+            geometry={nodes.Hair_alpha03_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha04_Ciri_mat_0"
+            geometry={nodes.Hair_alpha04_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha04_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha05_Ciri_mat_0"
+            geometry={nodes.Hair_alpha05_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_alpha06_Ciri_mat_0"
+            geometry={nodes.Hair_alpha06_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_alpha06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg01_Ciri_mat_0"
+            geometry={nodes.Hair_lrg01_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg01_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg02_Ciri_mat_0"
+            geometry={nodes.Hair_lrg02_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg03_Ciri_mat_0"
+            geometry={nodes.Hair_lrg03_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg05_Ciri_mat_0"
+            geometry={nodes.Hair_lrg05_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg05_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg06_Ciri_mat_0"
+            geometry={nodes.Hair_lrg06_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg06_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg07_Ciri_mat_0"
+            geometry={nodes.Hair_lrg07_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg07_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_lrg08_Ciri_mat_0"
+            geometry={nodes.Hair_lrg08_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_lrg08_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_sml02_Ciri_mat_0"
+            geometry={nodes.Hair_sml02_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_sml02_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Hair_sml03_Ciri_mat_0"
+            geometry={nodes.Hair_sml03_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.Hair_sml03_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="handle_Ciri_mat_0"
+            geometry={nodes.handle_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.handle_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="handle_Ciri_mat_01"
+            geometry={nodes.handle_Ciri_mat_01.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.handle_Ciri_mat_01 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="hands_Ciri_mat_0"
+            geometry={nodes.hands_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.hands_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="Head_Ciri_mat_0"
+            geometry={nodes.Head_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.Head_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="legs_Ciri_mat_0"
+            geometry={nodes.legs_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.legs_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="pummel_Ciri_mat_0"
+            geometry={nodes.pummel_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.pummel_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="sheath_Ciri_mat_0"
+            geometry={nodes.sheath_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.sheath_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="shirtLink_Ciri_mat_0"
+            geometry={nodes.shirtLink_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={
+              (nodes.shirtLink_Ciri_mat_0 as THREE.SkinnedMesh).skeleton
+            }
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="sword_Ciri_mat_0"
+            geometry={nodes.sword_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.sword_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <skinnedMesh
+            castShadow
+            receiveShadow
+            name="torso_Ciri_mat_0"
+            geometry={nodes.torso_Ciri_mat_0.geometry}
+            material={materials.Ciri_mat}
+            skeleton={(nodes.torso_Ciri_mat_0 as THREE.SkinnedMesh).skeleton}
+          />
+          <primitive object={nodes.mixamorigHips} />
+        </group>
       </group>
     </group>
-  </group>
-  )
-}
+  );
+};
 
 export default Ciri;
 
-useGLTF.preload(ciriScene)
+useGLTF.preload(ciriScene);
