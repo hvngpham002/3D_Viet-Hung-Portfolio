@@ -9,6 +9,9 @@ const About = () => {
       <h1 className='text-2xl dark:text-white'>
         {t("Hello, I'm")} <span className='blue-gradient_text font-semibold drop-shadow'>{t("Hung")}</span>
         </h1>
+        <p className="text-lg dark:text-white">
+          {t("A Software Engineer from Vietnam")}
+        </p>
     </section>
   )
 }
