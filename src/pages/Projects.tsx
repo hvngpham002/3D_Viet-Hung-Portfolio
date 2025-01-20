@@ -1,4 +1,4 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/naming-convention */
 
 const Projects = () => {
   return (

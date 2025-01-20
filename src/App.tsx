@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 
