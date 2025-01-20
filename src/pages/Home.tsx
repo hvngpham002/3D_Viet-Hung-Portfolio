@@ -68,18 +68,19 @@ const Home = () => {
         };
 
   return (
-    <div>
-      <section className="w-full h-screen relative">
-        <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
-          {currentStage && <HomeInfo currentStage={currentStage} />}
+    <>
+      {/* Loader at the top level with highest z-index */}
+      {isLoading && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 z-[999] bg-gray-100 dark:bg-gray-800">
+          <Loader onStarted={() => setIsLoading(false)} />
         </div>
+      )}
 
-        {isLoading && <Loader onStarted={() => setIsLoading(false)} />}
-
+      <div className="fixed top-0 left-0 right-0 bottom-0">
         <Canvas
           shadows
-          className={`w-full h-screen cursor-grab ${
-            themeMode === "light" ? "bg-gray-100" : "bg-gray-800"
+          className={`w-full h-screen bg-transparent ${
+            isRotating ? "cursor-grabbing" : "cursor-grab"
           }`}
           camera={{ position: [0, 0, 5], near: 0.1, far: 1000 }}
           gl={{
@@ -127,8 +128,16 @@ const Home = () => {
             />
           </Suspense>
         </Canvas>
-      </section>
-    </div>
+      </div>
+
+      <div className="fixed top-0 left-0 right-0 bottom-0 pointer-events-none">
+        <div className="absolute top-28 left-0 right-0 flex items-center justify-center">
+          <div className="pointer-events-auto">
+            {currentStage && <HomeInfo currentStage={currentStage} />}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
