@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 
 /*
@@ -9,82 +8,97 @@ Source: https://sketchfab.com/3d-models/dragon-flying-cycle-ae0831702eac462a9969
 Title: Dragon Flying Cycle
 */
 
-import React, { useEffect, useRef } from 'react';
-import { useGLTF, useAnimations  } from '@react-three/drei';
-import { GLTF } from 'three-stdlib';
+import { useEffect, useRef } from "react";
+import { useGLTF, useAnimations } from "@react-three/drei";
+import { GLTF } from "three-stdlib";
 
-import * as THREE from 'three';
-import dragonScene from '../assets/3d/dragon.glb'
-import { a } from '@react-spring/three';
-import { useFrame } from '@react-three/fiber';
+import * as THREE from "three";
+import dragonScene from "../assets/3d/dragon.glb";
+import { a } from "@react-spring/three";
+import { useFrame } from "@react-three/fiber";
 
 type GLTFResult = GLTF & {
-    nodes: Record<string, THREE.Mesh | THREE.SkinnedMesh>;
-    materials: Record<string, THREE.Material>;
-  };
+  nodes: Record<string, THREE.Mesh | THREE.SkinnedMesh>;
+  materials: Record<string, THREE.Material>;
+};
 
-const Dragon = (props) => {
+type DragonProps = JSX.IntrinsicElements["group"];
 
-    const group = useRef<any>()
-    const { nodes, materials, animations } = useGLTF(dragonScene) as GLTFResult;
-    const { actions } = useAnimations(animations, group);
+const Dragon = (props: DragonProps) => {
+  const group = useRef<THREE.Group>(null);
+  const { nodes, materials, animations } = useGLTF(dragonScene) as GLTFResult;
+  const { actions } = useAnimations(animations, group);
 
-    const clock = useRef(0); // A clock to keep track of the time
+  const clock = useRef(0); // A clock to keep track of the time
 
-    useEffect(() => {
-        
-        if (actions['Take 001']) {
-          actions['Take 001'].play();
-        }
-      }, [actions]);
+  useEffect(() => {
+    if (actions["Take 001"]) {
+      actions["Take 001"].play();
+    }
+  }, [actions]);
 
+  useFrame((_, delta) => {
+    // Increment the clock based on delta time
+    clock.current += delta;
 
-      useFrame((_, delta) => {
-        // Increment the clock based on delta time
-        clock.current += delta;
-    
-        // Define motion parameters
-        const radiusX = 4; // Horizontal radius (longer)
-        const radiusZ = 1.3; // Depth radius (shorter)
-        const speed = 0.5; // Speed of the dragon
-        const baseYOffset = 0.4; // Base height above the island/book
-        const zOffset = -0.90; // Distance away from camera
-        
-        // Wave parameters
-        const waveAmplitude = 0.20; // Height of the wave
-        const waveFrequency = 2.0; // How many waves complete in one oval
-        
-        // Calculate position on the oval with sine wave
-        const x = radiusX * Math.sin(clock.current * speed);
-        const z = radiusZ * Math.cos(clock.current * speed) + zOffset;
-        // Add sine wave to y position
-        const y = baseYOffset + waveAmplitude * Math.sin(clock.current * speed * waveFrequency);
-    
-        // Set the dragon's position
-        group.current.position.set(x, y, z);
-    
-        // Calculate the tangent direction for the dragon including vertical movement
-        const nextX = radiusX * Math.sin((clock.current + delta * speed) * speed);
-        const nextZ = radiusZ * Math.cos((clock.current + delta * speed) * speed) + zOffset;
-        const nextY = baseYOffset + waveAmplitude * Math.sin((clock.current + delta * speed) * speed * waveFrequency);
-    
-        // Calculate direction to the next position (including vertical movement)
-        const direction = new THREE.Vector3(nextX - x, nextY - y, nextZ - z).normalize();
-    
-        // Calculate rotation angles
-        const horizontalAngle = Math.atan2(direction.x, direction.z);
-        const verticalAngle = Math.atan2(direction.y, Math.sqrt(direction.x * direction.x + direction.z * direction.z));
-    
-        // Apply rotations
-        group.current.rotation.y = horizontalAngle;
-        group.current.rotation.x = verticalAngle;
-    });
-      
-    
-    return (
+    // Define motion parameters
+    const radiusX = 4; // Horizontal radius (longer)
+    const radiusZ = 1.3; // Depth radius (shorter)
+    const speed = 0.5; // Speed of the dragon
+    const baseYOffset = 0.4; // Base height above the island/book
+    const zOffset = -0.9; // Distance away from camera
+
+    // Wave parameters
+    const waveAmplitude = 0.2; // Height of the wave
+    const waveFrequency = 2.0; // How many waves complete in one oval
+
+    // Calculate position on the oval with sine wave
+    const x = radiusX * Math.sin(clock.current * speed);
+    const z = radiusZ * Math.cos(clock.current * speed) + zOffset;
+    // Add sine wave to y position
+    const y =
+      baseYOffset +
+      waveAmplitude * Math.sin(clock.current * speed * waveFrequency);
+
+    // Set the dragon's position
+    group.current!.position.set(x, y, z);
+
+    // Calculate the tangent direction for the dragon including vertical movement
+    const nextX = radiusX * Math.sin((clock.current + delta * speed) * speed);
+    const nextZ =
+      radiusZ * Math.cos((clock.current + delta * speed) * speed) + zOffset;
+    const nextY =
+      baseYOffset +
+      waveAmplitude *
+        Math.sin((clock.current + delta * speed) * speed * waveFrequency);
+
+    // Calculate direction to the next position (including vertical movement)
+    const direction = new THREE.Vector3(
+      nextX - x,
+      nextY - y,
+      nextZ - z
+    ).normalize();
+
+    // Calculate rotation angles
+    const horizontalAngle = Math.atan2(direction.x, direction.z);
+    const verticalAngle = Math.atan2(
+      direction.y,
+      Math.sqrt(direction.x * direction.x + direction.z * direction.z)
+    );
+
+    // Apply rotations
+    group.current!.rotation.y = horizontalAngle;
+    group.current!.rotation.x = verticalAngle;
+  });
+
+  return (
     <a.group ref={group} {...props} dispose={null}>
       <a.group name="Sketchfab_Scene">
-        <a.group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]} scale={0.033}>
+        <a.group
+          name="Sketchfab_model"
+          rotation={[-Math.PI / 2, 0, 0]}
+          scale={0.033}
+        >
           <a.group name="Dragonfbx" rotation={[Math.PI / 2, 0, 0]}>
             <a.group name="Object_2">
               <a.group name="RootNode">
@@ -106,8 +120,8 @@ const Dragon = (props) => {
         </a.group>
       </a.group>
     </a.group>
-    )
-}
+  );
+};
 
 export default Dragon;
 

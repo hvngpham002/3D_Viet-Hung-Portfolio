@@ -7,22 +7,41 @@ Source: https://sketchfab.com/3d-models/bonfire-dark-souls-a090bdd8ca6841d1855f3
 Title: Bonfire / Dark Souls
 */
 
-import React, { useMemo, useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
-import bonfireScene from "../assets/3d/bonfire.glb"
+import { useMemo } from "react";
+import { useGLTF } from "@react-three/drei";
+import bonfireScene from "../assets/3d/bonfire.glb";
 
-import * as THREE from 'three'
+import * as THREE from "three";
+import { GLTF } from "three-stdlib";
+import { Material, BufferGeometry, MeshStandardMaterial } from "three";
 
-const Bonfire = (props) => {
-  const { nodes, materials } = useGLTF(bonfireScene)
+type GLTFResult = GLTF & {
+  nodes: {
+    [key: string]: THREE.Mesh & {
+      geometry: BufferGeometry;
+      material: Material;
+    };
+  };
+  materials: {
+    Mat_Ash: Material;
+    Mat_Base: Material;
+    Mat_Bones: Material;
+    "Mat_Sword-Fire": MeshStandardMaterial;
+  };
+};
+
+type BonfireProps = JSX.IntrinsicElements["group"];
+
+const Bonfire = (props: BonfireProps) => {
+  const { nodes, materials } = useGLTF(bonfireScene) as GLTFResult;
 
   const fireMaterial = useMemo(() => {
-    const mat = materials['Mat_Sword-Fire'].clone()
-    mat.emissive = new THREE.Color('#ff8e26')
-    mat.emissiveIntensity = 2
-    return mat
-  }, [materials])
-  
+    const mat = materials["Mat_Sword-Fire"].clone();
+    mat.emissive = new THREE.Color("#ff8e26");
+    mat.emissiveIntensity = 2;
+    return mat;
+  }, [materials]);
+
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
@@ -62,7 +81,10 @@ const Bonfire = (props) => {
           geometry={nodes.Object_7.geometry}
           material={materials.Mat_Base}
         />
-        <lineSegments geometry={nodes.Object_8.geometry} material={materials.Mat_Bones} />
+        <lineSegments
+          geometry={nodes.Object_8.geometry}
+          material={materials.Mat_Bones}
+        />
         <mesh
           castShadow
           receiveShadow
@@ -77,9 +99,9 @@ const Bonfire = (props) => {
         />
       </group>
     </group>
-  )
-}
+  );
+};
 
-export default Bonfire
+export default Bonfire;
 
-useGLTF.preload(bonfireScene)
+useGLTF.preload(bonfireScene);

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react'
-
-const Alert = ({ type, text }) => {
+const Alert = ({ type, text }: { type: string; text: string }) => {
   return (
     <div className='absolute top-20 left-0 right-0 flex justify-center items-center'>
         <div className={`${type === 'danger' ? 'bg-red-800' : 'bg-blue-800'} p-2 text-indigo-100 leading-none flex lg:inline-flex items-center`} role='alert'>

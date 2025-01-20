@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { useState, useEffect } from 'react';
 import { useProgress } from '@react-three/drei';
 import LanguageToggle from './LanguageToggle';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +13,7 @@ const Loader = ({ onStarted }: LoaderProps) => {
   const [canStart, setCanStart] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(0);
   const { t } = useTranslation();
-  
+
   // Update displayProgress, but never let it go backwards
   useEffect(() => {
     if (progress > displayProgress) {
