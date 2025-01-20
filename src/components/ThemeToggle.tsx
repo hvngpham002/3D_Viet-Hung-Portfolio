@@ -10,7 +10,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={() => dispatch(toggleTheme())}
-      className="w-10 h-10 rounded-full text-lg border shadow-md"
+      className="w-10 h-10 rounded-full text-lg shadow-lg"
     >
       {themeMode === 'light' ? '☀️' : '🌙'}
     </button>
