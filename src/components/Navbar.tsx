@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';

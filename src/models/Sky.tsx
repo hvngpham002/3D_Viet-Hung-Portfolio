@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 
 /*
@@ -9,19 +8,50 @@ Source: https://sketchfab.com/3d-models/free-skybox-anime-sky-56a60c1d1e8b44eabf
 Title: FREE - SkyBox Anime Sky
 */
 
-import React, { useEffect, useRef, useMemo } from 'react';
-import { useGLTF } from '@react-three/drei';
-import * as THREE from 'three';
-import skyScene from '../assets/3d/sky.glb';
-import { GLTF } from 'three-stdlib';
+import { useEffect, useRef, useMemo } from "react";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+import skyScene from "../assets/3d/sky.glb";
+import { GLTF } from "three-stdlib";
+
+interface PBRSpecularGlossiness {
+  glossinessFactor?: number;
+}
 
 type GLTFResult = GLTF & {
   scene: THREE.Group;
 };
 
-const Sky = ({ isDay }) => {
-  const sky = useGLTF(skyScene) as GLTFResult;
-  const skyRef = useRef<any>();
+type SkyProps = {
+  isDay: boolean;
+};
+
+const Sky = ({ isDay }: SkyProps) => {
+  const sky = useGLTF(skyScene, undefined, undefined, (loader) => {
+    loader.register(() => ({
+      name: "KHR_materials_pbrSpecularGlossiness",
+      getMaterialType: () => THREE.MeshStandardMaterial,
+      extendMaterialParams: (
+        _materialIndex: number,
+        materialParams: THREE.MeshStandardMaterialParameters & {
+          extensions?: {
+            KHR_materials_pbrSpecularGlossiness?: PBRSpecularGlossiness;
+          };
+        }
+      ) => {
+        const specularGlossiness =
+          materialParams.extensions?.KHR_materials_pbrSpecularGlossiness;
+        if (specularGlossiness) {
+          materialParams.color = new THREE.Color(1, 1, 1);
+          materialParams.roughness =
+            1 - (specularGlossiness.glossinessFactor ?? 1);
+          materialParams.metalness = 0;
+        }
+        return Promise.resolve();
+      },
+    }));
+  }) as GLTFResult;
+  const skyRef = useRef<THREE.Group>(null);
 
   const skyColor = useMemo(() => {
     return isDay ? new THREE.Color(0x70a4d5) : new THREE.Color(0x4e5d6b);
@@ -33,13 +63,13 @@ const Sky = ({ isDay }) => {
 
   useEffect(() => {
     if (skyRef.current) {
-      skyRef.current.traverse((child) => {
+      skyRef.current.traverse((child: THREE.Object3D) => {
         if (child instanceof THREE.Mesh && child.material) {
           // Create a new material if it doesn't exist
           if (!child.material.color) {
             child.material = new THREE.MeshStandardMaterial();
           }
-          
+
           // Safely update material properties
           child.material.color = skyColor;
           child.material.emissive = emissiveColor;
@@ -50,12 +80,12 @@ const Sky = ({ isDay }) => {
   }, [isDay, skyColor, emissiveColor]);
 
   return (
-    <primitive 
+    <primitive
       ref={skyRef}
-      object={sky.scene} 
-      scale={0.1} 
-      position={[0, 0, 0]} 
-      rotation={[0, 1.5, 0]} 
+      object={sky.scene}
+      scale={0.1}
+      position={[0, 0, 0]}
+      rotation={[0, 1.5, 0]}
     />
   );
 };
