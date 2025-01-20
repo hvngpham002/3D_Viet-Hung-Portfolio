@@ -229,7 +229,7 @@ const Contact = () => {
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
       setCurrentAnimation("idle");
-      showAlert({ text: error, type: "danger" });
+      showAlert({ text: error instanceof Error ? error.message : "An error occurred", type: "danger" });
 
       setTimeout(() => {
         hideAlert();
