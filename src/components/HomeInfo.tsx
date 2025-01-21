@@ -20,13 +20,13 @@ const InfoBox = ({ text, link, linkText, isVisible }: InfoBoxProps) => {
 
   return (
     <div
-      className={`sm:text-xl sm:leading-snug text-center py-4 px-8 dark:text-white mx-5 flex flex-col items-center gap-4 transition-opacity duration-300 relative z-10
+      className={`text-lg sm:text-lg md:text-xl sm:leading-snug text-center py-3 sm:py-4 px-4 sm:px-8 dark:text-white mx-5 flex flex-col items-center gap-5 transition-opacity duration-300 relative z-10
             ${isVisible ? "opacity-100" : "opacity-0"}`}
     >
-      <h1 className="max-w-[700px] text-xl">{text}</h1>
+      <h1 className="max-w-[700px] text-base sm:text-base md:text-xl">{text}</h1>
       <Link
         to={link}
-        className={`fill-button ${themeMode === 'dark' ? 'fill-button-dark' : ''} group flex items-center justify-center gap-2 px-6 py-2.5 font-semibold text-base rounded-full dark:border-white`}
+        className={`fill-button ${themeMode === 'dark' ? 'fill-button-dark' : ''} group flex items-center justify-center gap-1.5 px-6 py-2.5 font-semibold text-xs sm:text-base rounded-full dark:border-white`}
       >
         {linkText}
         <img

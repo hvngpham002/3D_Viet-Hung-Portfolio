@@ -39,36 +39,36 @@ const Loader = ({ onStarted }: LoaderProps) => {
       </div>
 
       {/* Introductory Text */}
-      <div className="max-w-3xl text-center mb-8 md:mb-16 px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-8 text-blue-400">
+      <div className="max-w-3xl text-center mb-16 px-4">
+        <h1 className="text-4xl md:text-6xl font-bold mb-8 text-blue-400">
           {t('Welcome to My Journey')}
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl text-gray-300 leading-relaxed">
+        <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
           {t('Explore an interactive timeline of my professional development through an immersive 3D experience.')}
         </p>
       </div>
 
       {/* Controls Guide */}
-      <div className="max-w-md w-[90%] text-xs sm:text-sm md:text-base bg-gray-900 p-4 md:p-6 rounded-lg mb-8 md:mb-12">
-        <h2 className="text-base sm:text-lg md:text-xl font-semibold mb-3 md:mb-4 text-blue-400">
+      <div className="max-w-md text-sm md:text-base bg-gray-900 p-6 rounded-lg mb-12">
+        <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-400">
           {t('Quick Guide')}
         </h2>
-        <ul className="space-y-2 md:space-y-3 text-gray-300">
-          <li className="flex flex-col sm:flex-row sm:items-center">
-            <span className="font-medium sm:w-32 mb-1 sm:mb-0">{t('Character Movement')}:</span>
-            <span className="ml-2">{t('Left/Right Arrows or Left Mouse Drag')}</span>
+        <ul className="space-y-3 text-gray-300">
+          <li className="flex items-center">
+            <span className="inline-block w-32 font-medium">{t('Character Movement')}:</span>
+            <span>{t('Left/Right Arrows or Left Mouse Drag')}</span>
           </li>
-          <li className="flex flex-col sm:flex-row sm:items-center">
-            <span className="font-medium sm:w-32 mb-1 sm:mb-0">{t('Scene Rotation')}:</span>
-            <span className="ml-2">{t('Middle Mouse Button + Drag')}</span>
+          <li className="flex items-center">
+            <span className="inline-block w-32 font-medium">{t('Scene Rotation')}:</span>
+            <span>{t('Middle Mouse Button + Drag')}</span>
           </li>
-          <li className="flex flex-col sm:flex-row sm:items-center">
-            <span className="font-medium sm:w-32 mb-1 sm:mb-0">{t('Animations')}:</span>
-            <span className="ml-2">{t('Press Q, W, E, or R')}</span>
+          <li className="flex items-center">
+            <span className="inline-block w-32 font-medium">{t('Animations')}:</span>
+            <span>{t('Press Q, W, E, or R')}</span>
           </li>
-          <li className="flex flex-col sm:flex-row sm:items-center">
-            <span className="font-medium sm:w-32 mb-1 sm:mb-0">{t('Zoom')}:</span>
-            <span className="ml-2">{t('Mouse Wheel')}</span>
+          <li className="flex items-center">
+            <span className="inline-block w-32 font-medium">{t('Zoom')}:</span>
+            <span>{t('Mouse Wheel')}</span>
           </li>
         </ul>
       </div>
@@ -76,7 +76,7 @@ const Loader = ({ onStarted }: LoaderProps) => {
       {/* Interactive Loader/Button */}
       <button 
         onClick={() => canStart && onStarted?.()}
-        className={`relative group scale-75 sm:scale-90 md:scale-100 ${canStart ? 'cursor-pointer hover:scale-[0.8] sm:hover:scale-95 md:hover:scale-105 transition-transform' : 'cursor-default'}`}
+        className={`relative group ${canStart ? 'cursor-pointer hover:scale-105 transition-transform' : 'cursor-default'}`}
         disabled={!canStart}
         aria-label={canStart ? t('Click to start experience') : t('Loading models')}
       >

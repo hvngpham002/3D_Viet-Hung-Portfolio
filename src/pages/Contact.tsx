@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useRef, useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { useTranslation } from "react-i18next";
 import { Canvas } from "@react-three/fiber";
@@ -41,6 +41,24 @@ type SceneProps = {
 
 const Scene = ({ currentAnimation }: SceneProps) => {
   const themeMode = useSelector((state: RootState) => state.theme.mode);
+
+  // Get window width for responsive scaling
+  const [yPosition, setYPosition] = useState({ sif: -2.0, bonfire: -3.5 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 545) { // iPhone SE and similar
+        setYPosition({ sif: 0.0, bonfire: 0.0});
+      } else {
+        setYPosition({ sif: -2.0, bonfire: -3.5 });
+      }
+    };
+
+    handleResize(); // Initial call
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const lightSettings = {
     light: {
@@ -160,16 +178,16 @@ const Scene = ({ currentAnimation }: SceneProps) => {
 
       {/* Models */}
       <Bonfire
-        position={[3.0, -3.0, -10.0]}
+        position={[2.5, yPosition.bonfire, -10.0]}
         rotation={[0, -0.5, 0]}
-        scale={[1, 1, 1]}
+        scale={[1.88 * 0.64, 1.88 * 0.64, 1.88 * 0.64]}
         castShadow
         receiveShadow
       />
       <Sif
-        position={[-0.6, -2.0, 0]}
+        position={[-0.8, yPosition.sif, 0]}
         rotation={[0, -0.4, 0]}
-        scale={[1.85, 1.85, 1.85]}
+        scale={[1.88, 1.88, 1.88]}
         currentAnimation={currentAnimation}
         castShadow
         receiveShadow
@@ -193,6 +211,7 @@ const Contact = () => {
   const { alert, showAlert, hideAlert } = useAlert();
 
   const formRef = useRef<HTMLFormElement>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -247,11 +266,10 @@ const Contact = () => {
     }
   };
 
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const updateCanvasHeight = () => {
-      if (formRef.current && canvasContainerRef.current) {
+      const width = window.innerWidth;
+      if (width >= 1024 && formRef.current && canvasContainerRef.current) { // Desktop
         const h1 = formRef.current.previousElementSibling as HTMLElement;
         const form = formRef.current;
         const button = formRef.current.querySelector("button") as HTMLElement;
@@ -259,27 +277,45 @@ const Contact = () => {
         if (h1 && form && button) {
           const totalHeight =
             h1.offsetHeight + form.offsetHeight + button.offsetHeight;
-          canvasContainerRef.current.style.height = `${totalHeight}px`;
+          canvasContainerRef.current.style.height = `${totalHeight + 30}px`;
+        }
+      } else if (canvasContainerRef.current && formRef.current) { // Mobile
+        const formContainer = formRef.current.parentElement as HTMLElement;
+        if (formContainer) {
+          const formHeight = formContainer.offsetHeight;
+          const viewportHeight = window.innerHeight;
+          const canvasHeight = viewportHeight - formHeight;
+          canvasContainerRef.current.style.height = `${canvasHeight}px`;
         }
       }
     };
 
+    // Call on mount and add listeners for changes
     updateCanvasHeight();
     window.addEventListener("resize", updateCanvasHeight);
-    return () => window.removeEventListener("resize", updateCanvasHeight);
+    // Also update on content changes that might affect height
+    const resizeObserver = new ResizeObserver(updateCanvasHeight);
+    if (formRef.current) {
+      resizeObserver.observe(formRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateCanvasHeight);
+      resizeObserver.disconnect();
+    };
   }, []);
 
   return (
-    <section className="relative flex lg:flex-row flex-col max-container h-screen">
+    <section className="relative flex lg:flex-row flex-col max-container h-[100svh] overflow-hidden">
       {alert.show && <Alert {...alert} />}
 
-      <div className="flex-1 min-w-[50%] flex flex-col h-full overflow-y-auto">
-        <h1 className="text-2xl font-semibold dark:text-white">
+      <div className="flex-1 min-w-[50%] flex flex-col px-3 lg:px-4 py-1 lg:py-4 lg:h-auto">
+        <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
           {t("Want To Work With Me")}?
         </h1>
         <form
           ref={formRef}
-          className="w-full flex flex-col gap-7 mt-14"
+          className="w-full flex flex-col gap-1.5 lg:gap-7 mt-1 lg:mt-14"
           onSubmit={handleSubmit}
         >
           <label className="text-black-500 font-semibold dark:text-white">
@@ -287,7 +323,7 @@ const Contact = () => {
             <input
               type="text"
               name="name"
-              className="input dark:bg-gray-800 dark:text-white"
+              className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
               placeholder={t("Sir Astorias, The Abysswalker")}
               required
               value={form.name}
@@ -301,7 +337,7 @@ const Contact = () => {
             <input
               type="email"
               name="email"
-              className="input dark:bg-gray-800 dark:text-white"
+              className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
               placeholder={t("sif@gmail.com")}
               required
               value={form.email}
@@ -314,8 +350,8 @@ const Contact = () => {
             {t("Message")}:
             <textarea
               name="message"
-              rows={4}
-              className="textarea dark:bg-gray-800 dark:text-white"
+              rows={2}
+              className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
               placeholder={t("Let me know how I can be of service!")}
               required
               value={form.message}
@@ -328,7 +364,7 @@ const Contact = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`btn ${
+            className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -338,7 +374,7 @@ const Contact = () => {
       </div>
       <div
         ref={canvasContainerRef}
-        className="lg:w-1/2 w-full lg:h-full border border-white"
+        className="lg:w-1/2 w-full lg:h-auto lg:border-l border-t lg:border-t-0 border-white"
       >
         <Canvas
           shadows
@@ -354,6 +390,7 @@ const Contact = () => {
             toneMapping: THREE.ACESFilmicToneMapping,
             outputColorSpace: THREE.SRGBColorSpace,
           }}
+          className="h-full"
         >
           <Suspense fallback={null}>
             <Scene currentAnimation={currentAnimation} />
