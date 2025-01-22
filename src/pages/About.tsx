@@ -16,10 +16,11 @@ const skills = [
 
 const experiences = [
   {
-    year: "2024-Present",
+    year: "2024-2025",
     company: "NVIDIA",
-    role: "Systems Software Engineering Intern",
+    role: "Systems Software Engineer",
     country: "usa-flag.png",
+    logo: "nvidia.webp",
     points: [
       "Contributed to NVIDIA Drive OS, NVIDIA’s autonomous vehicles operating system solution, display architecture by integrating host-side tool support for unreleased Tegra system-on-chip (SoC).",
       "Collaborated on updating build profile variants to optimize display performance and expand error reporting.",
@@ -27,29 +28,43 @@ const experiences = [
   },
   {
     year: "2023-2024",
-    company: "Worcester Polytechnic Institute",
-    role: "Student Assistant",
-    country: "usa-flag.png",
+    company: "Mingju Consulting & Management",
+    role: "Market Analyst",
+    country: "china-flag.png",
+    logo: "mingju.png",
     points: [
-      "Holding regular office hours and grading for programming assignments and exams in courses on algorithms, systems & object-oriented, software engineering courses in Java, C/C++, and the Python Flask framework.",
-      "Provide mentorship for teams of four software engineers to build feature-complete applications.",
+      "Collaborate with a mixed-team of American and Chinese co-workers to interview industry leaders.",
+      "Conduct a market analysis on high-profile recruiting in high-technology industries.",
     ],
   },
   {
     year: "2022-2023",
     company: "New England Clean Energy",
-    role: "Technical & Marketing Intern",
+    role: "Technical Staff",
     country: "usa-flag.png",
+    logo: "new-england-clean-energy.png",
     points: [
       "Maintain social media accounts and website to maximize traffic by complying with best SEO practices.",
       "Aid the technical team with leading-edge AI mapping technology such as Aurora Solar and Google Project Sunroof.",
     ],
   },
   {
-    year: "2020-2022",
+    year: "2021-2022",
+    company: "Worcester Polytechnic Institute",
+    role: "Teaching Assistant",
+    country: "usa-flag.png",
+    logo: "wpi.png",
+    points: [
+      "Holding regular office hours and grading for programming assignments and exams in courses on algorithms, systems & object-oriented, software engineering courses in Java, C/C++, and the Python Flask framework.",
+      "Provide mentorship for teams of four software engineers to build feature-complete applications.",
+    ],
+  },
+  {
+    year: "2020-2021",
     company: "Minh Hung Investment & Development JSC",
-    role: "Freelance Web Developer",
+    role: "Web Developer",
     country: "vietnam-flag.png",
+    logo: "minh-hung.png",
     points: [
       "Developed an enterprise-grade web-app using CMS-based Laravel framework, and front-end development using Bootstrap.",
       "Collaborate with the marketing team to implement intuitive design & centralized content management.",
@@ -76,7 +91,7 @@ const About = () => {
 
       {/* Bio Section */}
       <motion.div variants={fadeIn("up", "spring", 0.5, 1)} className="mb-24">
-        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+        <p className="text-lg leading-relaxed text-gray-800 dark:text-gray-300">
           {t("about_bio")}
         </p>
       </motion.div>
@@ -97,7 +112,7 @@ const About = () => {
                 alt={skill.name}
                 className="w-8 h-8 mr-3"
               />
-              <span className="text-gray-700 dark:text-gray-300">
+              <span className="text-gray-800 dark:text-gray-300">
                 {skill.name}
               </span>
             </div>
@@ -112,31 +127,41 @@ const About = () => {
         </h2>
         <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-700">
           {experiences.map((exp, index) => (
-            <div key={index} className="relative pl-16 group">
-              <div className="absolute left-0 top-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                {exp.year.split("-")[0]}
+            <div key={index} className="relative pl-20 group">
+              <div className="absolute -left-5 top-0 flex flex-col items-center gap-2">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                  <img
+                    src={`/src/assets/images/${exp.logo}`}
+                    alt="Company logo"
+                    className="w-10 h-10 object-contain rounded-full"
+                  />
+                </div>
+                <span className="text-sm font-medium dark:text-white">
+                  {exp.year.split("-")[0]} - {exp.year.split("-")[1]}
+                </span>
               </div>
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex items-center gap-2 mb-2 justify-between">
+                <div className="flex items-center mb-2 justify-between">
                   <h3 className="text-md sm:text-xl font-semibold dark:text-white">
-                    {t(exp.role)} @ {t(exp.company)}
+                    {t(exp.role)}
+                    <div className="flex items-center">
+                      <h4 className="text-sm text-gray-500 dark:text-gray-400 mr-2">
+                        @ {t(exp.company)}
+                      </h4>
+                      <img
+                        src={`/src/assets/icons/${exp.country}`}
+                        alt="Country flag"
+                        className="w-5 h-5"
+                      />
+                    </div>
                   </h3>
-                  <div className="flex items-center gap-1">
-                    <img
-                      src="/src/assets/icons/gps.png"
-                      alt="Location"
-                      className="w-5 h-5"
-                    />
-                    <img
-                      src={`/src/assets/icons/${exp.country}`}
-                      alt="Country flag"
-                      className="w-7 h-7"
-                    />
-                  </div>
                 </div>
                 <ul className="list-disc pl-5 space-y-2">
                   {exp.points.map((point, i) => (
-                    <li key={i} className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                    <li
+                      key={i}
+                      className="text-sm sm:text-base text-gray-600 dark:text-gray-400"
+                    >
                       {t(point)}
                     </li>
                   ))}
