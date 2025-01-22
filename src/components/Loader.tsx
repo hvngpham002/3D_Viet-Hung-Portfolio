@@ -34,40 +34,40 @@ const Loader = ({ onStarted }: LoaderProps) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-800">
       {/* Language Toggle - Positioned in top-right corner */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
         <LanguageToggle />
       </div>
 
       {/* Introductory Text */}
-      <div className="max-w-3xl text-center mb-16 px-4">
-        <h1 className="text-4xl md:text-6xl font-bold mb-8 text-blue-400">
+      <div className="max-w-3xl text-center mb-8 sm:mb-12 px-3 sm:px-4">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-8 text-blue-400">
           {t('Welcome to My Journey')}
         </h1>
-        <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+        <p className="text-base sm:text-xl md:text-2xl text-gray-300 leading-relaxed">
           {t('Explore an interactive timeline of my professional development through an immersive 3D experience.')}
         </p>
       </div>
 
       {/* Controls Guide */}
-      <div className="max-w-md text-sm md:text-base bg-gray-900 p-6 rounded-lg mb-12">
-        <h2 className="text-lg md:text-xl font-semibold mb-4 text-blue-400">
+      <div className="max-w-md text-sm sm:text-base md:text-lg bg-gray-900 p-4 sm:p-6 rounded-lg mb-8 sm:mb-12">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4 text-blue-400">
           {t('Quick Guide')}
         </h2>
-        <ul className="space-y-3 text-gray-300">
+        <ul className="space-y-2 sm:space-y-3 text-gray-300">
           <li className="flex items-center">
-            <span className="inline-block w-32 font-medium">{t('Character Movement')}:</span>
+            <span className="inline-block w-24 sm:w-32 font-medium">{t('Character Movement')}:</span>
             <span>{t('Left/Right Arrows or Left Mouse Drag')}</span>
           </li>
           <li className="flex items-center">
-            <span className="inline-block w-32 font-medium">{t('Scene Rotation')}:</span>
+            <span className="inline-block w-24 sm:w-32 font-medium">{t('Scene Rotation')}:</span>
             <span>{t('Middle Mouse Button + Drag')}</span>
           </li>
           <li className="flex items-center">
-            <span className="inline-block w-32 font-medium">{t('Animations')}:</span>
+            <span className="inline-block w-24 sm:w-32 font-medium">{t('Animations')}:</span>
             <span>{t('Press Q, W, E, or R')}</span>
           </li>
           <li className="flex items-center">
-            <span className="inline-block w-32 font-medium">{t('Zoom')}:</span>
+            <span className="inline-block w-24 sm:w-32 font-medium">{t('Zoom')}:</span>
             <span>{t('Mouse Wheel')}</span>
           </li>
         </ul>
@@ -87,11 +87,11 @@ const Loader = ({ onStarted }: LoaderProps) => {
           </span>
         </div>
         {canStart ? (
-          <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center w-32">
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center w-40">
             <span className="text-blue-400 animate-bounce">{t('Click to Start')}</span>
           </div>
         ) : (
-          <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center w-32">
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center w-40">
             <span className="text-gray-400">{t('Loading assets...')}</span>
           </div>
         )}

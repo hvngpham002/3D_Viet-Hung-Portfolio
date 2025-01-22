@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="header fixed top-0 left-0 right-0 flex items-center justify-between p-4 z-50">
+    <header className="fixed top-0 left-0 right-0 w-full h-16 flex items-center justify-between sm:justify-evenly p-4 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80">
       <NavLink
         to="/"
         className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 items-center justify-center flex font-bold shadow-md"
@@ -55,7 +55,7 @@ const Navbar = () => {
       <div
         className={`${
           isOpen ? 'flex' : 'hidden'
-        } lg:hidden fixed top-20 right-4 w-48 bg-gray-100/95 dark:bg-gray-800/95 rounded-lg p-4 flex-col gap-4 shadow-xl z-50 border border-gray-200 dark:border-gray-700`}
+        } lg:hidden fixed top-20 right-4 w-48 bg-white dark:bg-gray-900 rounded-lg p-4 flex-col gap-4 shadow-xl z-50 border border-gray-200 dark:border-gray-700`}
       >
         <NavLink
           to="/about"
