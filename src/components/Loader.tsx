@@ -74,13 +74,13 @@ const Loader = ({ onStarted }: LoaderProps) => {
       </div>
 
       {/* Interactive Loader/Button */}
-      <button 
+      <button
         onClick={() => canStart && onStarted?.()}
         className={`relative group ${canStart ? 'cursor-pointer hover:scale-105 transition-transform' : 'cursor-default'}`}
         disabled={!canStart}
         aria-label={canStart ? t('Click to start experience') : t('Loading models')}
       >
-        <div className={`custom-spinner ${canStart ? 'border-blue-500' : 'border-gray-500'}`} />
+        <div className={`custom-spinner ${canStart ? 'completed' : ''}`} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <span className="text-xl font-bold text-white">
             {Math.round(displayProgress)}%
