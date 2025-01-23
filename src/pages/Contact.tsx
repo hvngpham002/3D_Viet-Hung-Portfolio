@@ -12,6 +12,7 @@ import {
   AccumulativeShadows,
   RandomizedLight,
   SpotLight,
+  Html,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { useSelector } from "react-redux";
@@ -48,16 +49,17 @@ const Scene = ({ currentAnimation }: SceneProps) => {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width < 545) { // iPhone SE and similar
-        setYPosition({ sif: 0.0, bonfire: 0.0});
+      if (width < 545) {
+        // iPhone SE and similar
+        setYPosition({ sif: 0.0, bonfire: 0.0 });
       } else {
         setYPosition({ sif: -2.0, bonfire: -3.5 });
       }
     };
 
     handleResize(); // Initial call
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const lightSettings = {
@@ -248,7 +250,10 @@ const Contact = () => {
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
       setCurrentAnimation("idle");
-      showAlert({ text: error instanceof Error ? error.message : "An error occurred", type: "danger" });
+      showAlert({
+        text: error instanceof Error ? error.message : "An error occurred",
+        type: "danger",
+      });
 
       setTimeout(() => {
         hideAlert();
@@ -269,7 +274,8 @@ const Contact = () => {
   useEffect(() => {
     const updateCanvasHeight = () => {
       const width = window.innerWidth;
-      if (width >= 1024 && formRef.current && canvasContainerRef.current) { // Desktop
+      if (width >= 1024 && formRef.current && canvasContainerRef.current) {
+        // Desktop
         const h1 = formRef.current.previousElementSibling as HTMLElement;
         const form = formRef.current;
         const button = formRef.current.querySelector("button") as HTMLElement;
@@ -279,7 +285,8 @@ const Contact = () => {
             h1.offsetHeight + form.offsetHeight + button.offsetHeight;
           canvasContainerRef.current.style.height = `${totalHeight + 30}px`;
         }
-      } else if (canvasContainerRef.current && formRef.current) { // Mobile
+      } else if (canvasContainerRef.current && formRef.current) {
+        // Mobile
         const formContainer = formRef.current.parentElement as HTMLElement;
         if (formContainer) {
           const formHeight = formContainer.offsetHeight;
@@ -392,7 +399,13 @@ const Contact = () => {
           }}
           className="h-full"
         >
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={
+              <Html center>
+                <div className="custom-spinner mt-20" />
+              </Html>
+            }
+          >
             <Scene currentAnimation={currentAnimation} />
           </Suspense>
         </Canvas>
