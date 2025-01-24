@@ -1,57 +1,67 @@
-[
-  {
-    "year": "2024-2025",
+[{
+    "year": "2024 - 2025",
     "company": "NVIDIA",
-    "role": "Systems Software Engineer", 
+    "role": "Software Engineer",
     "country": "usa-flag.png",
     "logo": "nvidia.webp",
     "points": [
-      "Contributed to NVIDIA Drive OS, NVIDIA’s autonomous vehicles operating system solution, display architecture by integrating host-side tool support for unreleased Tegra system-on-chip (SoC).",
-      "Collaborated on updating build profile variants to optimize display performance and expand error reporting."
+      "Contributed to Drive OS, an autonomous vehicles operating system solution, by integrating host-side tool support for the next-generation DRIVE Thor SoC.",
+      "Developed proof-of-concept React modules for a GUI to improve user-experience.",
+      "Collaborated on updating build profile variants to optimize display performance and expand error reporting.",
+      "Contributed to existing tool and driver’s documentation to expedite integration of future processors."
     ]
   },
   {
-    "year": "2023-2024",
+    "year": "2023 - 2024",
     "company": "Mingju Consulting & Management",
-    "role": "Market Analyst",
+    "role": "Technical Lead & Market Analyst",
     "country": "china-flag.png",
     "logo": "mingju.png",
     "points": [
-      "Collaborate with a mixed-team of American and Chinese co-workers to interview industry leaders.",
-      "Conduct a market analysis on high-profile recruiting in high-technology industries."
+      "Engineered interactive data visualization dashboard to visualize industry hiring trends.",
+      "Built automated data processing pipelines, handling large datasets of industry employment statistics.",
+      "Created reusable chart components and data filtering systems.",
+      "Implemented responsive visualization tools supporting cross-platform accessibility and export functionality."
     ]
   },
   {
-    "year": "2022-2023", 
+    "year": "2022 - 2023",
     "company": "New England Clean Energy",
-    "role": "Technical Staff",
+    "role": "Software Developer & Technical Staff",
     "country": "usa-flag.png",
     "logo": "new-england-clean-energy.png",
     "points": [
-      "Maintain social media accounts and website to maximize traffic by complying with best SEO practices.",
-      "Aid the technical team with leading-edge AI mapping technology such as Aurora Solar and Google Project Sunroof."
+      "Initiated migration from WordPress to React-based architecture, establishing component libraries and development workflows.",
+      "Integrated Aurora Solar and Google Project Sunroof APIs with React, creating a unified solar panel mapping interface.",
+      "Maintained existing WordPress platform while progressively implementing components for new features.",
+      "Developed proof-of-concept React modules for solar cost estimation.",
+      "Led technical documentation efforts for the stack migration, creating guidelines for component migration and API integration."
     ]
   },
   {
-    "year": "2021-2022",
+    "year": "2021 - 2022",
     "company": "Worcester Polytechnic Institute",
-    "role": "Teaching Assistant", 
+    "role": "Teaching Assistant",
     "country": "usa-flag.png",
     "logo": "wpi.png",
     "points": [
-      "Holding regular office hours and grading for programming assignments and exams in courses on algorithms, systems & object-oriented, software engineering courses in Java, C/C++, and the Python Flask framework.",
-      "Provide mentorship for teams of four software engineers to build feature-complete applications."
+      "Mentored students in software engineering best practices, including Git version control, code review processes, and testing methodologies.",
+      "Led technical workshops on React component architecture, state management, and frontend development patterns.",
+      "Guided a team of ten student engineers in developing a full-stack application, implementing Agile practices including sprint planning and code reviews.",
+      "Evaluated and provided detailed feedback on coding assignments focusing on clean code principles, algorithm optimization, and software design patterns."
     ]
   },
   {
-    "year": "2020-2021",
+    "year": "2020 - 2021",
     "company": "Minh Hung Investment & Development JSC",
     "role": "Web Developer",
     "country": "vietnam-flag.png",
-    "logo": "minh-hung.png", 
+    "logo": "minh-hung.png",
     "points": [
-      "Developed an enterprise-grade web-app using CMS-based Laravel framework, and front-end development using Bootstrap.",
-      "Collaborate with the marketing team to implement intuitive design & centralized content management."
+      "Architected a full-stack e-commerce platform using Laravel API backend and React frontend.",
+      "Built a scalable platform using Laravel model-view-controller architecture.",
+      "Developed a customizable content-management-system interface for inventory management.",
+      "Created responsive UI components using React, ensuring cross-browser and mobile compatibility."
     ]
   }
 ]
