@@ -85,7 +85,7 @@ const About = () => {
               className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
               <img
-                src={`/src/assets/icons/${skill.icon}`}
+                src={`/icons/${skill.icon}`}
                 alt={skill.name}
                 className="w-7 h-7 mr-3"
               />
@@ -108,12 +108,12 @@ const About = () => {
               <div className="absolute -left-5 top-0 flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center relative">
                   <img
-                    src={`/src/assets/images/${exp.logo}`}
+                    src={`/images/${exp.logo}`}
                     alt={exp.company}
                     className="w-10 h-10 object-contain"
                   />
                   <img
-                    src={`/src/assets/icons/${exp.country}`}
+                    src={`/icons/${exp.country}`}
                     alt="Country flag"
                     className="w-5 h-5 absolute -top-1 -right-1"
                   />
