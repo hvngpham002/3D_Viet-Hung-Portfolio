@@ -50,7 +50,6 @@ export const getSkills = async () => {
   const { data, error } = await supabase
     .from("skills")
     .select("*")
-    .order("name");
 
   if (error) throw error;
   return data;
