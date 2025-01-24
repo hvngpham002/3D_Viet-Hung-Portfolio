@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import arrow from "../assets/icons/arrow.svg";
+import arrow from "/icons/arrow.svg";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -67,7 +67,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
               text: t(
                 "I first embarked on the path as a self-taught developer, developing an e-commerce application for a local firm in Vietnam."
               ),
-              link: "/about",
+              link: "/projects",
               linkText: t("View Project"),
             });
             break;
@@ -76,7 +76,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
               text: t(
                 "I moved to the United States to pursue software engineering at Worcester Polytechnic Institute."
               ),
-              link: "/about",
+              link: "/projects",
               linkText: t("View Project"),
             });
             break;
@@ -85,7 +85,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
               text: t(
                 "I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development."
               ),
-              link: "/about",
+              link: "/projects",
               linkText: t("View Project"),
             });
             break;
@@ -94,7 +94,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
               text: t(
                 "I completed a software engineering contract at NVIDIA."
               ),
-              link: "/about",
+              link: "/projects",
               linkText: t("View Project"),
             });
             break;

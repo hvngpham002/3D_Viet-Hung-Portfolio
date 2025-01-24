@@ -49,7 +49,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
                   className="absolute inset-0"
                 >
                   <motion.img
-                    src={image}
+                    src={`/projects/${image}`}
                     alt={project.title}
                     className="w-full h-full object-cover"
                     initial={{ scale: 1.1 }}
