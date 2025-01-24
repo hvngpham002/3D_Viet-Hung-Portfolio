@@ -14,9 +14,9 @@ const LanguageToggle = () => {
   // Language options
   const languages = [
     { code: '', flag: '🌐' },
-    { code: 'en', flag: '🇺🇸' },
-    { code: 'vi', flag: '🇻🇳' },
-    { code: 'zh', flag: '🇨🇳' },
+    { code: 'en', flag: '/icons/usa-flag.png' },
+    { code: 'vi', flag: '/icons/vietnam-flag.png' },
+    { code: 'zh', flag: '/icons/china-flag.png' },
   ];
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language);
@@ -31,7 +31,7 @@ const LanguageToggle = () => {
         className="w-10 h-10 flex items-center justify-center rounded-full shadow-lg cursor-pointer text-lg dark:text-white"
         aria-label="Toggle Language Menu"
       >
-        {currentLanguage?.flag}
+        <img src={currentLanguage?.flag} alt={currentLanguage?.code} className="w-6 h-6" />
       </button>
 
       {/* Dropdown Menu */}
@@ -46,7 +46,7 @@ const LanguageToggle = () => {
                 className="w-full flex items-center justify-center px-2 py-2 hover:bg-gray-300 text-lg dark:text-white"
                 aria-label={`Select ${lang.code}`}
               >
-                {lang.flag}
+                {lang.flag === '🌐' ? lang.flag : <img src={lang.flag} alt={lang.code} className="w-6 h-6" />}
               </button>
             </li>
           ))}
