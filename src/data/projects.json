@@ -1,0 +1,24 @@
+[
+  {
+    "images": [
+      "/src/assets/images/project1.jpg",
+      "/src/assets/images/project2.jpg"
+    ],
+    "title": "3D Portfolio Website",
+    "description": "Interactive 3D portfolio with WebGL animations", 
+    "tags": ["React", "Three.js", "Tailwind", "Framer Motion"],
+    "source_code": "#",
+    "demo": "#"
+  },
+  {
+    "images": [
+      "/src/assets/images/project3.jpg",
+      "/src/assets/images/project4.jpg"
+    ],
+    "title": "AI Analytics Platform",
+    "description": "Machine learning platform with real-time dashboard",
+    "tags": ["Python", "TensorFlow", "FastAPI", "React"],
+    "source_code": "#",
+    "demo": "#"
+  }
+]
