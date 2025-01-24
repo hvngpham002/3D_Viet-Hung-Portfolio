@@ -12,6 +12,10 @@ const skills = [
   { name: "Tailwind", icon: "tailwindcss.svg" },
   { name: "Node.js", icon: "nodejs.svg" },
   { name: "Git", icon: "git.svg" },
+  { name: "Python", icon: "python.png" },
+  { name: "Java", icon: "java.png" },
+  { name: "C", icon: "c.png" },
+  { name: "C++", icon: "c++.png" },
 ];
 
 const experiences = [
@@ -110,7 +114,7 @@ const About = () => {
               <img
                 src={`/src/assets/icons/${skill.icon}`}
                 alt={skill.name}
-                className="w-8 h-8 mr-3"
+                className="w-7 h-7 mr-3"
               />
               <span className="text-gray-800 dark:text-gray-300">
                 {skill.name}

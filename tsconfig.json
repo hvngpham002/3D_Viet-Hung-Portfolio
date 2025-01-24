@@ -6,16 +6,12 @@
     "lib": ["ESNext", "DOM"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["three", "node"],
-
-    /* Bundler mode */
+    "types": ["three", "node", "@types/react", "i18next"],
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -24,6 +20,11 @@
   "include": [
     "vite.config.ts",
     "src",
-    "src/types/custom.d.ts"
+    "src/types/custom.d.ts",
+    "src/locales/*.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }
