@@ -65,7 +65,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
           case 1:
             setContent({
               text: t(
-                "In 2020, I first embarked on the path as a self-taught engineer, developing an e-commerce application for a local firm."
+                "I first embarked on the path as a self-taught developer, developing an e-commerce application for a local firm in Vietnam."
               ),
               link: "/about",
               linkText: t("View Project"),
@@ -74,7 +74,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
           case 2:
             setContent({
               text: t(
-                "In 2021, I ventured to the U.S to further pursue software engineering in Massachusetts."
+                "I moved to the United States to pursue software engineering at Worcester Polytechnic Institute."
               ),
               link: "/about",
               linkText: t("View Project"),
@@ -83,7 +83,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
           case 3:
             setContent({
               text: t(
-                "In 2023, I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development."
+                "I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development."
               ),
               link: "/about",
               linkText: t("View Project"),
@@ -92,7 +92,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
           case 4:
             setContent({
               text: t(
-                "In 2024, I conquered my final quest before graduation at NVIDIA."
+                "I completed a software engineering contract at NVIDIA."
               ),
               link: "/about",
               linkText: t("View Project"),

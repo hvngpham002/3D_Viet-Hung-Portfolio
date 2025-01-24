@@ -7,7 +7,7 @@ Source: https://sketchfab.com/3d-models/great-grey-wolf-sif-dark-souls-remastere
 Title: Great Grey Wolf Sif - Dark Souls Remastered
 */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { Group, Object3D, Material, SkinnedMesh } from "three";
 import { GLTF } from "three-stdlib";
@@ -43,32 +43,27 @@ const Sif = ({ currentAnimation, ...props }: SifProps) => {
 
   const { actions } = useAnimations(animations, group);
 
-  useEffect(() => {
-    Object.values(actions).forEach((action) => action?.stop());
+  const currentAnimationMap = useMemo(() => ({
+    idle: "[Action Stash].006",
+    walking: "[Action Stash].001",
+    running: "c5210|a00_0500",
+    attack: "[Action Stash].003"
+  }), []);
 
-    switch (currentAnimation) {
-      case "idle":
-        if (actions["[Action Stash].006"]) {
-          actions["[Action Stash].006"].play();
-        }
-        break;
-      case "walking":
-        if (actions["[Action Stash].001"]) {
-          actions["[Action Stash].001"].play();
-        }
-        break;
-      case "running":
-        if (actions["c5210|a00_0500"]) {
-          actions["c5210|a00_0500"].play();
-        }
-        break;
-      case "attack":
-        if (actions["[Action Stash].003"]) {
-          actions["[Action Stash].003"].play();
-        }
-        break;
+  useEffect(() => {
+    const actionName = currentAnimationMap[currentAnimation];
+    const currentAction = actions[actionName];
+    
+    if (currentAction) {
+      currentAction.reset().fadeIn(0.5).play();
     }
-  }, [actions, currentAnimation]);
+
+    return () => {
+      if (currentAction) {
+        currentAction.fadeOut(0.5);
+      }
+    };
+  }, [actions, currentAnimation, currentAnimationMap]);
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -88,48 +83,48 @@ const Sif = ({ currentAnimation, ...props }: SifProps) => {
                     geometry={nodes.Object_7.geometry}
                     material={materials.c5210_Material_0}
                     skeleton={nodes.Object_7.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <skinnedMesh
                     name="Object_8"
                     geometry={nodes.Object_8.geometry}
                     material={materials.c5210_Material_1}
                     skeleton={nodes.Object_8.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <skinnedMesh
                     name="Object_9"
                     geometry={nodes.Object_9.geometry}
                     material={materials.c5210_Material_1_Variant_1}
                     skeleton={nodes.Object_9.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <skinnedMesh
                     name="Object_10"
                     geometry={nodes.Object_10.geometry}
                     material={materials.c5210_Material_2}
                     skeleton={nodes.Object_10.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <skinnedMesh
                     name="Object_11"
                     geometry={nodes.Object_11.geometry}
                     material={materials.c5210_Material_2_Variant_1}
                     skeleton={nodes.Object_11.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <skinnedMesh
                     name="Object_12"
                     geometry={nodes.Object_12.geometry}
                     material={materials.c5210_Material_3}
                     skeleton={nodes.Object_12.skeleton}
-                    castShadow
-                    receiveShadow
+                    castShadow={false}
+                    receiveShadow={false}
                   />
                   <group name="c5210_Mesh_413" />
                 </group>
