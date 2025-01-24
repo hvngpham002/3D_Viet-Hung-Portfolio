@@ -39,6 +39,16 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Reset sequence for a table
+const resetSequence = async (tableName) => {
+    const { error } = await supabase.rpc('alter_sequence', { sequence_name: `${tableName}_id_seq` });
+    if (error) {
+        console.error(`Error resetting sequence for ${tableName}:`, error);
+        return false;
+    }
+    return true;
+};
+
 // Flatten nested translations
 const flattenObject = (obj, prefix = '') => {
     return Object.keys(obj).reduce((acc, k) => {
@@ -55,6 +65,25 @@ const flattenObject = (obj, prefix = '') => {
 const migrateTranslations = async () => {
     console.log('Migrating translations...');
 
+    // Clear existing translations
+    const {
+        error: deleteError
+    } = await supabase
+        .from('translations')
+        .delete()
+        .neq('id', 0); // This deletes all rows
+
+    if (deleteError) {
+        console.error('Error clearing translations:', deleteError);
+        return;
+    }
+    console.log('✓ Cleared existing translations');
+
+    // Reset sequence
+    const sequenceReset = await resetSequence('translations');
+    if (!sequenceReset) return;
+    console.log('✓ Reset translations sequence');
+
     // Flatten translations
     const flatEn = flattenObject(en);
     const flatZh = flattenObject(zh);
@@ -68,15 +97,15 @@ const migrateTranslations = async () => {
         vi: flatVi[key] || flatEn[key] // Fallback to English if Vietnamese translation is missing
     }));
 
-    // Insert into Supabase
+    // Insert new translations
     const {
-        error
+        error: insertError
     } = await supabase
         .from('translations')
         .insert(translations);
 
-    if (error) {
-        console.error('Error migrating translations:', error);
+    if (insertError) {
+        console.error('Error migrating translations:', insertError);
         return;
     }
 
