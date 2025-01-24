@@ -1,32 +1,40 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './locales/en.json';
-import vi from './locales/vi.json';
-import zh from './locales/zh.json';
+import { initializeTranslations } from './services/supabaseService';
 
-const resources = {
-  en: { translation: en },
-  vi: { translation: vi },
-  zh: { translation: zh }
+// Initialize with empty resources
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: {} },
+    zh: { translation: {} },
+    vi: { translation: {} }
+  },
+  lng: localStorage.getItem('i18n_lng') || 'en',
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false
+  }
+});
+
+// Load translations from Supabase
+const loadTranslations = async () => {
+  const translations = await initializeTranslations();
+  if (translations) {
+    Object.entries(translations).forEach(([lang, resources]) => {
+      i18n.addResourceBundle(lang, 'translation', resources, true, true);
+    });
+  }
 };
 
-// Get saved language from localStorage or default to 'en'
-const savedLang = localStorage.getItem('i18n_lng') || 'en';
-
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: savedLang,
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false
-    }
-  });
+// Load translations immediately
+loadTranslations().catch(console.error);
 
 // Save language whenever it changes
 i18n.on('languageChanged', (lng) => {
   localStorage.setItem('i18n_lng', lng);
 });
+
+// Optional: Add a function to reload translations
+export const reloadTranslations = () => loadTranslations();
 
 export default i18n;

@@ -1,0 +1,14 @@
+[
+  { "name": "TypeScript", "icon": "typescript.svg" },
+  { "name": "JavaScript", "icon": "javascript.svg" },
+  { "name": "React", "icon": "react.svg" },
+  { "name": "Redux", "icon": "redux.svg" },
+  { "name": "SASS", "icon": "sass.svg" },
+  { "name": "Tailwind", "icon": "tailwindcss.svg" },
+  { "name": "Node.js", "icon": "nodejs.svg" },
+  { "name": "Git", "icon": "git.svg" },
+  { "name": "Python", "icon": "python.png" },
+  { "name": "Java", "icon": "java.png" },
+  { "name": "C", "icon": "c.png" },
+  { "name": "C++", "icon": "c++.png" }
+]
