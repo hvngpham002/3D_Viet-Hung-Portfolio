@@ -1,0 +1,57 @@
+[
+  {
+    "year": "2024-2025",
+    "company": "NVIDIA",
+    "role": "Systems Software Engineer", 
+    "country": "usa-flag.png",
+    "logo": "nvidia.webp",
+    "points": [
+      "Contributed to NVIDIA Drive OS, NVIDIA’s autonomous vehicles operating system solution, display architecture by integrating host-side tool support for unreleased Tegra system-on-chip (SoC).",
+      "Collaborated on updating build profile variants to optimize display performance and expand error reporting."
+    ]
+  },
+  {
+    "year": "2023-2024",
+    "company": "Mingju Consulting & Management",
+    "role": "Market Analyst",
+    "country": "china-flag.png",
+    "logo": "mingju.png",
+    "points": [
+      "Collaborate with a mixed-team of American and Chinese co-workers to interview industry leaders.",
+      "Conduct a market analysis on high-profile recruiting in high-technology industries."
+    ]
+  },
+  {
+    "year": "2022-2023", 
+    "company": "New England Clean Energy",
+    "role": "Technical Staff",
+    "country": "usa-flag.png",
+    "logo": "new-england-clean-energy.png",
+    "points": [
+      "Maintain social media accounts and website to maximize traffic by complying with best SEO practices.",
+      "Aid the technical team with leading-edge AI mapping technology such as Aurora Solar and Google Project Sunroof."
+    ]
+  },
+  {
+    "year": "2021-2022",
+    "company": "Worcester Polytechnic Institute",
+    "role": "Teaching Assistant", 
+    "country": "usa-flag.png",
+    "logo": "wpi.png",
+    "points": [
+      "Holding regular office hours and grading for programming assignments and exams in courses on algorithms, systems & object-oriented, software engineering courses in Java, C/C++, and the Python Flask framework.",
+      "Provide mentorship for teams of four software engineers to build feature-complete applications."
+    ]
+  },
+  {
+    "year": "2020-2021",
+    "company": "Minh Hung Investment & Development JSC",
+    "role": "Web Developer",
+    "country": "vietnam-flag.png",
+    "logo": "minh-hung.png", 
+    "points": [
+      "Developed an enterprise-grade web-app using CMS-based Laravel framework, and front-end development using Bootstrap.",
+      "Collaborate with the marketing team to implement intuitive design & centralized content management."
+    ]
+  }
+]
