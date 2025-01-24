@@ -1,24 +1,46 @@
 [
   {
     "images": [
-      "/src/assets/images/project1.jpg",
-      "/src/assets/images/project2.jpg"
+      "/images/project1.jpg",
+      "/images/project2.jpg"
     ],
-    "title": "3D Portfolio Website",
-    "description": "Interactive 3D portfolio with WebGL animations", 
-    "tags": ["React", "Three.js", "Tailwind", "Framer Motion"],
-    "source_code": "#",
-    "demo": "#"
+    "title": "3D Interactive Portfolio",
+    "description": "An immersive 3D portfolio website featuring interactive animations, dynamic lighting, and multilingual support.", 
+    "tags": ["React", "Redux", "Three.js", "React-Three-Fiber", "Tailwind", "Framer Motion"],
+    "source_code": "https://github.com/HungVPham/3D_Viet-Hung-Portfolio",
+    "demo": null
   },
   {
     "images": [
-      "/src/assets/images/project3.jpg",
-      "/src/assets/images/project4.jpg"
+      "/images/project3.jpg",
+      "/images/project4.jpg"
     ],
-    "title": "AI Analytics Platform",
-    "description": "Machine learning platform with real-time dashboard",
-    "tags": ["Python", "TensorFlow", "FastAPI", "React"],
-    "source_code": "#",
-    "demo": "#"
+    "title": "Hackathon@WPI (GoatHacks)",
+    "description": "Annual hackathon event hosted by WPI sponsored by industry leads like MathWorks and ACM.",
+    "tags": ["Python", "Flask", "DevPost", "HTML/CSS", "JavaScript"],
+    "source_code": null,
+    "demo": "https://hack.wpi.edu/index.html"
+  },
+  {
+    "images": [
+      "/images/gwent_setup.png",
+      "/images/gwent_playing.png"
+    ],
+    "title": "Gwent Card Game Clone",
+    "description": "A personal interpretation of CD PROJEKT RED's Gwent card game from The Witcher 3, featuring strategic AI gameplay, advanced state management, and authentic game mechanics.",
+    "tags": ["React", "Typescript", "Redux Toolkit"],
+    "source_code": "https://github.com/HungVPham/gwent-learning-project",
+    "demo": "https://gwent-learning-project.vercel.app"
+  },
+  {
+    "images": [
+      "/images/project3.jpg",
+      "/images/project4.jpg"
+    ],
+    "title": "Minh Hung Investment & Development JSC",
+    "description": "E-commerce platform with a customizable content management system for inventory management.",
+    "tags": ["Laravel", "React", "MySQL", "PHP"],
+    "source_code": null,
+    "demo": null
   }
 ]
