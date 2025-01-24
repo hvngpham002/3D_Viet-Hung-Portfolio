@@ -39,16 +39,50 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const migrateExperiences = async () => {
-    console.log('Migrating experiences...');
+const resetSequence = async (tableName) => {
     const {
         error
+    } = await supabase.rpc('alter_sequence', {
+        sequence_name: `${tableName}_id_seq`
+    });
+    if (error) {
+        console.error(`Error resetting sequence for ${tableName}:`, error);
+        return false;
+    }
+    return true;
+};
+
+const migrateExperiences = async () => {
+    console.log('Migrating experiences...');
+
+    // Clear existing data
+    const {
+        error: deleteError
+    } = await supabase
+        .from('experiences')
+        .delete()
+        .neq('id', 0); // This deletes all rows
+
+    if (deleteError) {
+        console.error('Error clearing experiences:', deleteError);
+        return;
+    }
+    console.log('✓ Cleared existing experiences');
+
+    // Reset sequence
+    const sequenceReset = await resetSequence('experiences');
+    if (!sequenceReset) return;
+    console.log('✓ Reset experiences sequence');
+
+    // Insert new data
+    const {
+        error: insertError
     } = await supabase
         .from('experiences')
         .insert(experiences);
 
-    if (error) {
-        console.error('Error migrating experiences:', error);
+    if (insertError) {
+        console.error('Error migrating experiences:', insertError);
         return;
     }
     console.log('✅ Experiences migrated successfully');
@@ -56,14 +90,35 @@ const migrateExperiences = async () => {
 
 const migrateSkills = async () => {
     console.log('Migrating skills...');
+
+    // Clear existing data
     const {
-        error
+        error: deleteError
+    } = await supabase
+        .from('skills')
+        .delete()
+        .neq('id', 0); // This deletes all rows
+
+    if (deleteError) {
+        console.error('Error clearing skills:', deleteError);
+        return;
+    }
+    console.log('✓ Cleared existing skills');
+
+    // Reset sequence
+    const sequenceReset = await resetSequence('skills');
+    if (!sequenceReset) return;
+    console.log('✓ Reset skills sequence');
+
+    // Insert new data
+    const {
+        error: insertError
     } = await supabase
         .from('skills')
         .insert(skills);
 
-    if (error) {
-        console.error('Error migrating skills:', error);
+    if (insertError) {
+        console.error('Error migrating skills:', insertError);
         return;
     }
     console.log('✅ Skills migrated successfully');
@@ -71,6 +126,26 @@ const migrateSkills = async () => {
 
 const migrateProjects = async () => {
     console.log('Migrating projects...');
+
+    // Clear existing data
+    const {
+        error: deleteError
+    } = await supabase
+        .from('projects')
+        .delete()
+        .neq('id', 0); // This deletes all rows
+
+    if (deleteError) {
+        console.error('Error clearing projects:', deleteError);
+        return;
+    }
+    console.log('✓ Cleared existing projects');
+
+    // Reset sequence
+    const sequenceReset = await resetSequence('projects');
+    if (!sequenceReset) return;
+    console.log('✓ Reset projects sequence');
+
     // Convert source_code to sourceCode in projects data
     const formattedProjects = projects.map(({
         source_code: sourceCodeOld,
@@ -80,14 +155,15 @@ const migrateProjects = async () => {
         sourceCode: sourceCodeOld
     }));
 
+    // Insert new data
     const {
-        error
+        error: insertError
     } = await supabase
         .from('projects')
         .insert(formattedProjects);
 
-    if (error) {
-        console.error('Error migrating projects:', error);
+    if (insertError) {
+        console.error('Error migrating projects:', insertError);
         return;
     }
     console.log('✅ Projects migrated successfully');

@@ -22,7 +22,7 @@
     "src",
     "src/types/custom.d.ts",
     "src/locales/*.json"
-  ],
+, "public/icons", "public/images"  ],
   "exclude": [
     "node_modules",
     "dist"

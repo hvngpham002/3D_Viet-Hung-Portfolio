@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn } from "../utils/motion";
@@ -11,70 +11,142 @@ interface ProjectCardProps {
   index: number;
 }
 
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 1000 : -1000,
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 1000 : -1000,
+    opacity: 0,
+  }),
+};
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
+
 const ProjectCard = ({ project, index }: ProjectCardProps) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [[currentImageIndex, direction], setPage] = useState([0, 0]);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const paginate = useCallback(
+    (newDirection: number) => {
+      if (!isTransitioning && project.images.length > 1) {
+        setIsTransitioning(true);
+        const nextIndex =
+          (currentImageIndex + newDirection + project.images.length) %
+          project.images.length;
+        setPage([nextIndex, newDirection]);
+        setTimeout(() => setIsTransitioning(false), 300);
+      }
+    },
+    [currentImageIndex, isTransitioning, project.images.length]
+  );
+
+  // Manual image change
+  const changeImage = useCallback(
+    (index: number) => {
+      if (!isTransitioning && index !== currentImageIndex) {
+        setIsTransitioning(true);
+        const newDirection = index > currentImageIndex ? 1 : -1;
+        setPage([index, newDirection]);
+        setTimeout(() => setIsTransitioning(false), 300);
+      }
+    },
+    [currentImageIndex, isTransitioning]
+  );
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isHovered) {
-      interval = setInterval(() => {
-        setCurrentImageIndex((prev) =>
-          prev === project.images.length - 1 ? 0 : prev + 1
-        );
-      }, 3000);
+
+    // Start automatic slideshow if not hovered
+    if (!isHovered && project.images.length > 1) {
+      interval = setInterval(() => paginate(1), 4500);
     }
-    return () => clearInterval(interval);
-  }, [project.images.length, isHovered]);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isHovered, paginate, project.images.length]);
 
   return (
     <motion.div
       variants={fadeIn("up", "spring", index * 0.2, 1)}
       className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsTransitioning(false);
+      }}
     >
       {/* Image Slideshow */}
-      <div className="relative h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
-        <AnimatePresence initial={false}>
-          {project.images.map(
-            (image, idx) =>
-              currentImageIndex === idx && (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute inset-0"
-                >
-                  <motion.img
-                    src={`/projects/${image}`}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                    initial={{ scale: 1.1 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.4 }}
-                  />
-                </motion.div>
-              )
-          )}
+      <div className="relative h-72 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={currentImageIndex}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 200, damping: 30 },
+              opacity: { duration: 0.3 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(event, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
+
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(-1);
+              }
+            }}
+            className="absolute inset-0"
+          >
+            <motion.img
+              src={project.images[currentImageIndex]}
+              alt={`${project.title} - Image ${currentImageIndex + 1}`}
+              className="w-full h-full object-cover"
+              draggable="false"
+            />
+          </motion.div>
         </AnimatePresence>
 
         {/* Dots Navigation */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-          {project.images.map((_, idx) => (
-            <button
-              key={idx}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                currentImageIndex === idx
-                  ? "bg-blue-500 dark:bg-blue-400"
-                  : "bg-gray-300/80 dark:bg-gray-300/40"
-              }`}
-              onClick={() => setCurrentImageIndex(idx)}
-            />
-          ))}
-        </div>
+        {project.images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-40 bg-white/80 backdrop-blur-lg rounded-full p-1">
+            {project.images.map((_, idx) => (
+              <button
+                key={idx}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  currentImageIndex === idx
+                    ? "bg-blue-500"
+                    : "bg-gray-300/40"
+                } ${
+                  isTransitioning ? "pointer-events-none" : "hover:bg-blue-400"
+                }`}
+                onClick={() => changeImage(idx)}
+                disabled={isTransitioning}
+                aria-label={`View image ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -98,22 +170,26 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         </div>
 
         <div className="flex gap-4 mt-4">
-          <a
-            href={project.demo}
-            className="text-sm blue-gradient_text font-medium hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Live Demo
-          </a>
-          <a
-            href={project.sourceCode}
-            className="text-sm text-gray-500 dark:text-gray-400 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Source Code
-          </a>
+          {project.demo && (
+            <a
+              href={project.demo}
+              className="text-sm blue-gradient_text font-medium hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Live Demo
+            </a>
+          )}
+          {project.sourceCode && (
+            <a
+              href={project.sourceCode}
+              className="text-sm text-gray-500 dark:text-gray-400 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Source Code
+            </a>
+          )}
         </div>
       </div>
     </motion.div>
@@ -132,8 +208,10 @@ const Projects = () => {
         const data = await getProjects();
         setProjects(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch projects');
-        console.error('Error fetching projects:', err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch projects"
+        );
+        console.error("Error fetching projects:", err);
       } finally {
         setLoading(false);
       }
@@ -174,7 +252,11 @@ const Projects = () => {
         <div className="border-b-2 border-gray-200 dark:border-gray-700 w-20 my-8" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((project, index) => (
-            <ProjectCard key={project.id || index} project={project} index={index} />
+            <ProjectCard
+              key={project.id || index}
+              project={project}
+              index={index}
+            />
           ))}
         </div>
       </motion.div>
