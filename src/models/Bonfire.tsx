@@ -36,11 +36,13 @@ const Bonfire = (props: BonfireProps) => {
   const { nodes, materials } = useGLTF(bonfireScene) as GLTFResult;
 
   const fireMaterial = useMemo(() => {
+    if (!materials["Mat_Sword-Fire"]) return null;
     const mat = materials["Mat_Sword-Fire"].clone();
     mat.emissive = new THREE.Color("#ff8e26");
     mat.emissiveIntensity = 2;
+    mat.needsUpdate = true; // Explicitly mark material for update
     return mat;
-  }, [materials]);
+  }, [materials]); // Narrow dependency
 
   return (
     <group {...props} dispose={null}>
@@ -48,54 +50,54 @@ const Bonfire = (props: BonfireProps) => {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_2.geometry}
+          geometry={nodes.Object_2?.geometry}
           material={materials.Mat_Ash}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_3.geometry}
+          geometry={nodes.Object_3?.geometry}
           material={materials.Mat_Ash}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_4.geometry}
+          geometry={nodes.Object_4?.geometry}
           material={materials.Mat_Ash}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_5.geometry}
+          geometry={nodes.Object_5?.geometry}
           material={materials.Mat_Ash}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_6.geometry}
+          geometry={nodes.Object_6?.geometry}
           material={materials.Mat_Ash}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_7.geometry}
+          geometry={nodes.Object_7?.geometry}
           material={materials.Mat_Base}
         />
         <lineSegments
-          geometry={nodes.Object_8.geometry}
+          geometry={nodes.Object_8?.geometry}
           material={materials.Mat_Bones}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_9.geometry}
+          geometry={nodes.Object_9?.geometry}
           material={materials.Mat_Bones}
         />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Object_10.geometry}
-          material={fireMaterial}
+          geometry={nodes.Object_10?.geometry}
+          material={fireMaterial || materials["Mat_Sword-Fire"]}
         />
       </group>
     </group>
