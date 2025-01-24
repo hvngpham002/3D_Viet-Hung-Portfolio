@@ -71,11 +71,11 @@ body:has(.card[data-color="green"]:hover) {
   }
 
   .cta {
-    @apply w-full flex items-center md:flex-row flex-col sm:mt-16 mt-8 gap-7;
+    @apply w-full flex items-center md: flex-row flex-col sm:mt-16 mt-8 gap-7;
   }
 
   .cta-text {
-    @apply text-black-500 font-extrabold flex-1 text-3xl max-md:text-center;
+    @apply text-black-500 font-extrabold flex-1 text-3xl max-md: text-center;
   }
 }
 
@@ -157,11 +157,11 @@ body:has(.card[data-color="green"]:hover) {
   overflow: hidden;
 }
 
-.block-container:hover > .btn-back {
+.block-container:hover>.btn-back {
   transform: translateZ(20px) rotateZ(15deg) rotateX(-20deg) rotateY(-20deg);
 }
 
-.block-container:hover > .btn-front {
+.block-container:hover>.btn-front {
   transform: translateZ(80px) translateY(-5px) rotateX(15deg) rotateY(15deg);
 }
 
@@ -186,19 +186,22 @@ body:has(.card[data-color="green"]:hover) {
   width: 80px;
   height: 80px;
   border: 4px solid rgba(59, 130, 246, 0.2);
+  border-top: 4px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  transition: all 0.3s ease;
+  transition: unset;
 }
 
 .custom-spinner.completed {
-  border-top-color: #3b82f6;
+  animation: none;
+  border: 4px solid #3b82f6;
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

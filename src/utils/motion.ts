@@ -1,16 +1,15 @@
 import { Variants } from 'framer-motion';
 
+// Memoized spring configuration for reuse
+const springConfig = { type: 'spring' as const, duration: 1.25 };
+
 export const textVariant = (delay = 0): Variants => ({
-  hidden: {
-    y: 50,
-    opacity: 0,
-  },
+  hidden: { y: 50, opacity: 0 },
   show: {
     y: 0,
     opacity: 1,
     transition: {
-      type: 'spring',
-      duration: 1.25,
+      ...springConfig,
       delay,
     },
   },
