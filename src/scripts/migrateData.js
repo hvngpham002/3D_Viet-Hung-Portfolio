@@ -27,6 +27,7 @@ const __dirname = dirname(__filename);
 const experiences = JSON.parse(readFileSync(join(__dirname, '../data/experiences.json'), 'utf8'));
 const skills = JSON.parse(readFileSync(join(__dirname, '../data/skills.json'), 'utf8'));
 const projects = JSON.parse(readFileSync(join(__dirname, '../data/projects.json'), 'utf8'));
+const homeInfo = JSON.parse(readFileSync(join(__dirname, '../data/homeInfo.json'), 'utf8'));
 
 // Initialize Supabase client
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -169,11 +170,44 @@ const migrateProjects = async () => {
     console.log('✅ Projects migrated successfully');
 };
 
+const migrateHomeInfo = async () => {
+    console.log('Migrating home info...');
+
+    // Clear existing data
+    const { error: deleteError } = await supabase
+        .from('home_info')
+        .delete()
+        .neq('id', 0);
+
+    if (deleteError) {
+        console.error('Error clearing home info:', deleteError);
+        return;
+    }
+    console.log('✓ Cleared existing home info');
+
+    // Reset sequence
+    const sequenceReset = await resetSequence('home_info');
+    if (!sequenceReset) return;
+    console.log('✓ Reset home info sequence');
+
+    // Insert new data
+    const { error: insertError } = await supabase
+        .from('home_info')
+        .insert(homeInfo);
+
+    if (insertError) {
+        console.error('Error migrating home info:', insertError);
+        return;
+    }
+    console.log('✅ Home info migrated successfully');
+};
+
 const migrateAllData = async () => {
     try {
         await migrateExperiences();
         await migrateSkills();
         await migrateProjects();
+        await migrateHomeInfo();
         console.log('🎉 All data migrated successfully!');
     } catch (error) {
         console.error('Migration failed:', error);

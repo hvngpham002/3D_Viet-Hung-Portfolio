@@ -45,11 +45,11 @@ const Ciri = ({
   ) as GLTFResult;
 
   const filterAnimations = (animations: THREE.AnimationClip[]) => {
-    return animations.map(clip => {
-      const filteredTracks = clip.tracks.filter(track => {
-        return !track.name.includes('morphTargetInfluences');
+    return animations.map((clip) => {
+      const filteredTracks = clip.tracks.filter((track) => {
+        return !track.name.includes("morphTargetInfluences");
       });
-      
+
       const newClip = new THREE.AnimationClip(
         clip.name,
         clip.duration,
@@ -62,7 +62,10 @@ const Ciri = ({
   const filteredBaseAnimations = filterAnimations(baseAnimations);
   const filteredAdditionalAnimations = filterAnimations(additionalAnimations);
 
-  const combinedAnimations = [...filteredBaseAnimations, ...filteredAdditionalAnimations];
+  const combinedAnimations = [
+    ...filteredBaseAnimations,
+    ...filteredAdditionalAnimations,
+  ];
 
   const { actions } = useAnimations(combinedAnimations, group);
 
@@ -137,38 +140,73 @@ const Ciri = ({
     };
   }, [isRotating, isSceneRotating, playOneShotAnimation]);
 
-  const STAGE_POSITIONS = [
-    {
-      position: new THREE.Vector3(-3.0, -1.75, 0.4),
-      stage: 1,
-      threshold: 0.5,
-    },
-    {
-      position: new THREE.Vector3(-1.75, -1.55, 0.4),
-      stage: 2,
-      threshold: 0.5,
-    },
-    {
-      position: new THREE.Vector3(1.5, -1.38, 0.18),
-      stage: 3,
-      threshold: 0.5,
-    },
-    {
-      position: new THREE.Vector3(3.0, -1.65, 0.21),
-      stage: 4,
-      threshold: 0.5,
-    },
-  ];
+  const STAGE_POSITIONS =
+    window.innerWidth < 768
+      ? [
+          {
+            position: new THREE.Vector3(-1.5, -1.25, -1.0),
+            stage: 1,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(-0.5, -1.2, -1.0),
+            stage: 2,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(1.0, -1.12, -1.0),
+            stage: 3,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(2.0, -1.2, -1.0),
+            stage: 4,
+            threshold: 0.5,
+          },
+        ]
+      : [
+          {
+            position: new THREE.Vector3(-3.0, -1.75, 0.4),
+            stage: 1,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(-1.75, -1.55, 0.4),
+            stage: 2,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(1.5, -1.38, 0.18),
+            stage: 3,
+            threshold: 0.5,
+          },
+          {
+            position: new THREE.Vector3(3.0, -1.65, 0.21),
+            stage: 4,
+            threshold: 0.5,
+          },
+        ];
 
-  const pathPoints = [
-    new THREE.Vector3(-3.0, -1.75, 0.4),
-    new THREE.Vector3(-2.0, -1.55, 0.4),
-    new THREE.Vector3(-1.0, -1.46, 0.39),
-    new THREE.Vector3(0.0, -1.45, 0.09),
-    new THREE.Vector3(1.0, -1.38, 0.18),
-    new THREE.Vector3(2.0, -1.43, 0.2),
-    new THREE.Vector3(3.0, -1.65, 0.21),
-  ];
+  const pathPoints =
+    window.innerWidth < 768
+      ? [
+          new THREE.Vector3(-1.5, -1.25, -1.0),
+          new THREE.Vector3(-1.0, -1.2, -1.0),
+          new THREE.Vector3(-0.5, -1.10, -1.0),
+          new THREE.Vector3(0.0, -1.05, -1.0),
+          new THREE.Vector3(0.5, -1.08, -1.0),
+          new THREE.Vector3(1.5, -1.15, -1.0),
+          new THREE.Vector3(2.0, -1.25, -1.0),
+        ]
+      : [
+          new THREE.Vector3(-3.0, -1.75, 0.4),
+          new THREE.Vector3(-2.0, -1.55, 0.4),
+          new THREE.Vector3(-1.0, -1.46, 0.39),
+          new THREE.Vector3(0.0, -1.45, 0.09),
+          new THREE.Vector3(1.0, -1.38, 0.18),
+          new THREE.Vector3(2.0, -1.43, 0.2),
+          new THREE.Vector3(3.0, -1.65, 0.21),
+        ];
 
   const handleStageTransition = useCallback(
     (currentPosition: THREE.Vector3) => {
@@ -418,7 +456,7 @@ const Ciri = ({
 
   useEffect(() => {
     if (materials) {
-      Object.values(materials).forEach(material => {
+      Object.values(materials).forEach((material) => {
         const mat = material as any;
         if (mat.specular) {
           mat.metalness = 0.5;

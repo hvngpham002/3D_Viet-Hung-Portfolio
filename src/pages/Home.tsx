@@ -165,7 +165,7 @@ const SceneContent = ({
     const rotation = new THREE.Euler(0.25, 0, 0);
 
     if (window.innerWidth < 768) {
-      screenScale = [0.09, 0.09, 0.09];
+      screenScale = [0.055, 0.055, 0.055];
     }
 
     return [screenScale, screenPosition, rotation];
@@ -185,11 +185,12 @@ const SceneContent = ({
 
   const adjustCiriForScreenSize = (): ScreenAdjustment => {
     let screenScale: [number, number, number] = [0.5, 0.5, 0.5];
-    const screenPosition = new THREE.Vector3(-2.0, -1.6, 0.49);
+    let screenPosition = new THREE.Vector3(-2.0, -1.6, 0.49);
     const rotation = new THREE.Euler(0, 1.25, 0);
 
     if (window.innerWidth < 768) {
       screenScale = [0.4, 0.4, 0.4];
+      screenPosition = new THREE.Vector3(0, 0, 0);
     }
 
     return [screenScale, screenPosition, rotation];
@@ -203,7 +204,7 @@ const SceneContent = ({
 
   const adjustFlagForScreenSize = (): FlagScreenAdjustment => {
     let screenScale: [number, number, number] = [0.15, 0.15, 0.15];
-    const screenPosition = [
+    let screenPosition = [
       new THREE.Vector3(-3.0, -1.65, 0),
       new THREE.Vector3(-1.75, -1.39, 0),
       new THREE.Vector3(1.5, -1.3, 0),
@@ -212,7 +213,13 @@ const SceneContent = ({
     const rotation = new THREE.Euler(0.25, 0, 0);
 
     if (window.innerWidth < 768) {
-      screenScale = [0.13, 0.13, 0.13];
+      screenScale = [0.15, 0.15, 0.15];
+      screenPosition = [
+        new THREE.Vector3(-1.5, -1.3, -1.3),
+        new THREE.Vector3(-0.5, -1.12, -1.3),
+        new THREE.Vector3(1.0, -1.12, -1.3),
+        new THREE.Vector3(2.0, -1.25, -1.3),
+      ];
     }
 
     return [screenScale, screenPosition, rotation];
@@ -304,6 +311,38 @@ const SceneContent = ({
     };
   }, [gl, handleMouseDown, handleMouseUp, handleMouseMove]);
 
+  const handleTouchMove = useCallback((event: ThreeEvent<TouchEvent>) => {
+    event.stopPropagation();
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      // Calculate distance using client coordinates
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      const newZoom = camera.position.z + (touchDistance.current - currentDistance) * zoomSpeed * 0.5;
+      camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+      touchDistance.current = currentDistance;
+    }
+  }, [camera, maxZoom, minZoom, zoomSpeed]);
+
+  const touchDistance = useRef(0);
+
+  // Add this handler above handleWheel
+  const handleTouchStart = useCallback((event: ThreeEvent<TouchEvent>) => {
+    event.stopPropagation();
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+
+      touchDistance.current = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+    }
+  }, []);
+
   const handleWheel = (event: ThreeEvent<WheelEvent>) => {
     event.stopPropagation();
     const newZoom = camera.position.z + event.deltaY * zoomSpeed;
@@ -311,7 +350,20 @@ const SceneContent = ({
   };
 
   return (
-    <group ref={groupRef} onWheel={handleWheel}>
+    <group
+      ref={groupRef}
+      onWheel={handleWheel}
+      onPointerDown={(e) => {
+        if (e.pointerType === 'touch' && e.isPrimary) {
+          handleTouchStart(e as unknown as ThreeEvent<TouchEvent>);
+        }
+      }}
+      onPointerMove={(e) => {
+        if (e.pointerType === 'touch' && e.isPrimary) {
+          handleTouchMove(e as unknown as ThreeEvent<TouchEvent>);
+        }
+      }}
+    >
       <Sky isDay={themeMode === "light"} />
       <Book
         position={islandPosition}

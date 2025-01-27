@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 import { fadeIn } from "../utils/motion";
 import { getProjects } from "../services/supabaseService";
 import type { project as Project } from "../services/supabaseService";
@@ -37,6 +38,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const [[currentImageIndex, direction], setPage] = useState([0, 0]);
   const [isHovered, setIsHovered] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const { t } = useTranslation();
 
   const paginate = useCallback(
     (newDirection: number) => {
@@ -107,8 +109,8 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={1}
-            onDragEnd={(event, { offset, velocity }) => {
-              const swipe = swipePower(offset.x, velocity.x);
+            onDragEnd={(_: never, info: PanInfo) => {
+              const swipe = swipePower(info.offset.x, info.velocity.x);
 
               if (swipe < -swipeConfidenceThreshold) {
                 paginate(1);
@@ -129,14 +131,14 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
 
         {/* Dots Navigation */}
         {project.images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-40 bg-white/80 backdrop-blur-lg rounded-full p-1">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-40 bg-white/50 backdrop-blur-lg rounded-full p-1">
             {project.images.map((_, idx) => (
               <button
                 key={idx}
                 className={`w-2 h-2 rounded-full transition-colors ${
                   currentImageIndex === idx
                     ? "bg-blue-500"
-                    : "bg-gray-300/40"
+                    : "bg-gray-300"
                 } ${
                   isTransitioning ? "pointer-events-none" : "hover:bg-blue-400"
                 }`}
@@ -152,10 +154,10 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
       {/* Content */}
       <div className="p-6">
         <h3 className="text-xl font-semibold mb-3 dark:text-white">
-          {project.title}
+          {t(project.title)}
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed">
-          {project.description}
+          {t(project.description)}
         </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
@@ -170,25 +172,33 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         </div>
 
         <div className="flex gap-4 mt-4">
-          {project.demo && (
+          {project.demo ? (
             <a
               href={project.demo}
               className="text-sm blue-gradient_text font-medium hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Live Demo
+              {t("projects_live_demo")}
             </a>
+          ) : (
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {t("projects_not_deployed")}
+            </span>
           )}
-          {project.sourceCode && (
+          {project.sourceCode ? (
             <a
               href={project.sourceCode}
               className="text-sm text-gray-500 dark:text-gray-400 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Source Code
+              {t("projects_source_code")}
             </a>
+          ) : (
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {t("projects_private")}
+            </span>
           )}
         </div>
       </div>
