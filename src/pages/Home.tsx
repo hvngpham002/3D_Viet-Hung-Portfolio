@@ -161,8 +161,10 @@ const SceneContent = ({
   const rotationSpeed = useRef({ x: 0, y: 0 });
   const dampingFactor = 0.95;
   const zoomSpeed = 0.001;
-  const minZoom = 1;
+  const minZoom = 2;
   const maxZoom = 10;
+  const touchStartDistance = useRef(0);
+  const initialZoom = useRef(0);
 
   const adjustIslandForScreenSize = (): ScreenAdjustment => {
     let screenScale: [number, number, number] = [0.1, 0.1, 0.1];
@@ -316,58 +318,52 @@ const SceneContent = ({
     };
   }, [gl, handleMouseDown, handleMouseUp, handleMouseMove]);
 
-  const handleTouchMove = useCallback((event: ThreeEvent<TouchEvent>) => {
-    event.stopPropagation();
+  // Add touch zoom handlers
+  const handleTouchStart = useCallback((event: TouchEvent) => {
     if (event.touches.length === 2) {
-      const touch1 = event.touches[0];
-      const touch2 = event.touches[1];
-      // Calculate distance using client coordinates
-      const currentDistance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      const newZoom = camera.position.z + (touchDistance.current - currentDistance) * zoomSpeed * 0.5;
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      touchStartDistance.current = Math.sqrt(dx * dx + dy * dy);
+      initialZoom.current = camera.position.z;
+      event.preventDefault();
+    }
+  }, [camera]);
+
+  const handleTouchMove = useCallback((event: TouchEvent) => {
+    if (event.touches.length === 2) {
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const scale = touchStartDistance.current / distance;
+      const newZoom = initialZoom.current * scale;
       camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
-      touchDistance.current = currentDistance;
+      event.preventDefault();
     }
-  }, [camera, maxZoom, minZoom, zoomSpeed]);
+  }, [camera, maxZoom, minZoom]);
 
-  const touchDistance = useRef(0);
-
-  // Add this handler above handleWheel
-  const handleTouchStart = useCallback((event: ThreeEvent<TouchEvent>) => {
-    event.stopPropagation();
-    if (event.touches.length === 2) {
-      const touch1 = event.touches[0];
-      const touch2 = event.touches[1];
-
-      touchDistance.current = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-    }
-  }, []);
-
-  const handleWheel = (event: ThreeEvent<WheelEvent>) => {
-    event.stopPropagation();
+  // Add wheel zoom handler
+  const handleWheel = useCallback((event: ThreeEvent<WheelEvent>) => {
     const newZoom = camera.position.z + event.deltaY * zoomSpeed;
     camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
-  };
+  }, [camera, maxZoom, minZoom, zoomSpeed]);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('wheel', handleWheel as unknown as EventListener);
+
+    return () => {
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('wheel', handleWheel as unknown as EventListener);
+    };
+  }, [gl, handleTouchStart, handleTouchMove, handleWheel]);
 
   return (
     <group
       ref={groupRef}
       onWheel={handleWheel}
-      onPointerDown={(e) => {
-        if (e.pointerType === 'touch' && e.isPrimary) {
-          handleTouchStart(e as unknown as ThreeEvent<TouchEvent>);
-        }
-      }}
-      onPointerMove={(e) => {
-        if (e.pointerType === 'touch' && e.isPrimary) {
-          handleTouchMove(e as unknown as ThreeEvent<TouchEvent>);
-        }
-      }}
     >
       <Sky isDay={themeMode === "light"} />
       <Book
