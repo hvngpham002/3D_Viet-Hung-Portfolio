@@ -19,6 +19,7 @@ import ciriAnimations from "../assets/3d/animations/animations.glb";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { GLTFResult } from "../types/3d";
+import { ThreeEvent } from "@react-three/fiber";
 
 type CiriProps = {
   isRotating: boolean;
@@ -318,6 +319,73 @@ const Ciri = ({
     [setIsRotating]
   );
 
+  const touchDistance = useRef(0);
+  const zoomSpeed = 0.01;
+  const minZoom = 1;
+  const maxZoom = 10;
+  const camera = useThree((state) => state.camera);
+
+  const handleTouchStart = useCallback((event: ThreeEvent<TouchEvent>) => {
+    event.stopPropagation();
+    (event.nativeEvent as TouchEvent).preventDefault();
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+
+      touchDistance.current = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+    } else if (event.touches.length === 1) {
+      document.body.classList.add("dragging");
+      gl.domElement.style.cursor = "ew-resize";
+      setIsRotating(true);
+      lastX.current = event.touches[0].clientX;
+    }
+  }, [gl, setIsRotating]);
+
+  const handleTouchMove = useCallback((event: ThreeEvent<TouchEvent>) => {
+    event.stopPropagation();
+    (event.nativeEvent as TouchEvent).preventDefault();
+    
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      const newZoom = camera.position.z + (touchDistance.current - currentDistance) * zoomSpeed * 0.5;
+      camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+      touchDistance.current = currentDistance;
+    } else if (event.touches.length === 1 && isRotating) {
+      const clientX = event.touches[0].clientX;
+      const delta = (clientX - lastX.current) / viewport.width;
+
+      const newProgress = pathProgress.current + delta * 0.01;
+      if (newProgress >= 0 && newProgress <= 1) {
+        pathProgress.current = newProgress;
+        movementSpeed.current = delta * 0.01;
+        movingForward.current = delta > 0;
+      }
+      lastX.current = clientX;
+    }
+  }, [camera, maxZoom, minZoom, zoomSpeed, viewport.width, isRotating]);
+
+  const handleTouchEnd = useCallback((event: ThreeEvent<TouchEvent>) => {
+    event.stopPropagation();
+    (event.nativeEvent as TouchEvent).preventDefault();
+    document.body.classList.remove("dragging");
+    gl.domElement.style.cursor = "grab";
+    setIsRotating(false);
+  }, [gl, setIsRotating]);
+
+  const handleWheel = useCallback((event: ThreeEvent<WheelEvent>) => {
+    event.stopPropagation();
+    const newZoom = camera.position.z + event.deltaY * zoomSpeed;
+    camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+  }, [camera, maxZoom, minZoom, zoomSpeed]);
+
   useFrame((_, delta) => {
     if (!isRotating) {
       movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
@@ -400,6 +468,9 @@ const Ciri = ({
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("touchstart", handleTouchStart as any);
+    canvas.addEventListener("touchmove", handleTouchMove as any);
+    canvas.addEventListener("touchend", handleTouchEnd as any);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
@@ -407,6 +478,9 @@ const Ciri = ({
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointerup", handlePointerUp);
       canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("touchstart", handleTouchStart as any);
+      canvas.removeEventListener("touchmove", handleTouchMove as any);
+      canvas.removeEventListener("touchend", handleTouchEnd as any);
       document.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -415,6 +489,9 @@ const Ciri = ({
     handlePointerDown,
     handlePointerUp,
     handlePointerMove,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     handleKeyDown,
     handleKeyUp,
   ]);
@@ -469,7 +546,26 @@ const Ciri = ({
   }, [materials]);
 
   return (
-    <group ref={group} {...props}>
+    <group
+      ref={group}
+      {...props}
+      onPointerDown={(e) => {
+        if (e.pointerType === 'touch') {
+          handleTouchStart(e as unknown as ThreeEvent<TouchEvent>);
+        }
+      }}
+      onPointerMove={(e) => {
+        if (e.pointerType === 'touch') {
+          handleTouchMove(e as unknown as ThreeEvent<TouchEvent>);
+        }
+      }}
+      onPointerUp={(e) => {
+        if (e.pointerType === 'touch') {
+          handleTouchEnd(e as unknown as ThreeEvent<TouchEvent>);
+        }
+      }}
+      onWheel={handleWheel}
+    >
       <group name="Scene" rotation={[-Math.PI / 2, 0, 0]}>
         <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
           <group name="RootNode1">
