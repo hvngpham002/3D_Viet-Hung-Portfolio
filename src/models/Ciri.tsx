@@ -411,28 +411,14 @@ const Ciri = ({
   }, []);
 
   useEffect(() => {
-    const canvas = gl.domElement;
-    canvas.addEventListener("pointerdown", handlePointerDown);
-    canvas.addEventListener("pointerup", handlePointerUp);
-    canvas.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      canvas.removeEventListener("pointerdown", handlePointerDown);
-      canvas.removeEventListener("pointerup", handlePointerUp);
-      canvas.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [
-    gl,
-    handlePointerDown,
-    handlePointerUp,
-    handlePointerMove,
-    handleKeyDown,
-    handleKeyUp,
-  ]);
+  }, [handleKeyDown, handleKeyUp]);
 
   useEffect(() => {
     if (isSceneRotating) {
@@ -484,7 +470,24 @@ const Ciri = ({
   }, [materials]);
 
   return (
-    <group ref={group} {...props}>
+    <group 
+      ref={group} 
+      {...props}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        handlePointerDown(e.nativeEvent);
+      }}
+      onPointerUp={(e) => {
+        e.stopPropagation();
+        handlePointerUp(e.nativeEvent);
+      }}
+      onPointerMove={(e) => {
+        if (isRotating) {
+          e.stopPropagation();
+          handlePointerMove(e.nativeEvent);
+        }
+      }}
+    >
       <group name="Scene" rotation={[-Math.PI / 2, 0, 0]}>
         <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
           <group name="RootNode1">
