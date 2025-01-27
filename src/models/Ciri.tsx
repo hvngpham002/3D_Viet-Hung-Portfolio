@@ -248,10 +248,6 @@ const Ciri = ({
       document.body.classList.add("dragging");
       gl.domElement.style.cursor = "ew-resize";
 
-      // Only stop propagation for single touch events
-      if (!("touches" in e) || e.touches.length === 1) {
-        e.stopPropagation();
-      }
       setIsRotating(true);
 
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -267,10 +263,6 @@ const Ciri = ({
       document.body.classList.remove("dragging");
       gl.domElement.style.cursor = "grab";
 
-      // Only stop propagation for single touch events
-      if (!("touches" in e) || e.touches.length === 1) {
-        e.stopPropagation();
-      }
       setIsRotating(false);
     },
     [setIsRotating, gl]
@@ -278,14 +270,7 @@ const Ciri = ({
 
   const handlePointerMove = useCallback(
     (e: PointerEvent | TouchEvent) => {
-      // Only handle single touch events
       if ("touches" in e && e.touches.length > 1) return;
-
-      // Only prevent default and stop propagation for single touch events
-      if (!("touches" in e) || e.touches.length === 1) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
 
       if (isRotating) {
         const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -411,14 +396,21 @@ const Ciri = ({
   }, []);
 
   useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
     return () => {
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleKeyDown, handleKeyUp]);
+  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
 
   useEffect(() => {
     if (isSceneRotating) {
@@ -473,20 +465,6 @@ const Ciri = ({
     <group 
       ref={group} 
       {...props}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        handlePointerDown(e.nativeEvent);
-      }}
-      onPointerUp={(e) => {
-        e.stopPropagation();
-        handlePointerUp(e.nativeEvent);
-      }}
-      onPointerMove={(e) => {
-        if (isRotating) {
-          e.stopPropagation();
-          handlePointerMove(e.nativeEvent);
-        }
-      }}
     >
       <group name="Scene" rotation={[-Math.PI / 2, 0, 0]}>
         <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
