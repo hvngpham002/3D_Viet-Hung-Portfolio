@@ -242,10 +242,16 @@ const Ciri = ({
     (e: PointerEvent | TouchEvent) => {
       if ("button" in e && e.button !== 0) return;
 
+      // Only handle single touch events
+      if ("touches" in e && e.touches.length > 1) return;
+
       document.body.classList.add("dragging");
       gl.domElement.style.cursor = "ew-resize";
 
-      e.stopPropagation();
+      // Only stop propagation for single touch events
+      if (!("touches" in e) || e.touches.length === 1) {
+        e.stopPropagation();
+      }
       setIsRotating(true);
 
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -261,7 +267,10 @@ const Ciri = ({
       document.body.classList.remove("dragging");
       gl.domElement.style.cursor = "grab";
 
-      e.stopPropagation();
+      // Only stop propagation for single touch events
+      if (!("touches" in e) || e.touches.length === 1) {
+        e.stopPropagation();
+      }
       setIsRotating(false);
     },
     [setIsRotating, gl]
@@ -269,8 +278,14 @@ const Ciri = ({
 
   const handlePointerMove = useCallback(
     (e: PointerEvent | TouchEvent) => {
-      e.stopPropagation();
-      e.preventDefault();
+      // Only handle single touch events
+      if ("touches" in e && e.touches.length > 1) return;
+
+      // Only prevent default and stop propagation for single touch events
+      if (!("touches" in e) || e.touches.length === 1) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
 
       if (isRotating) {
         const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
