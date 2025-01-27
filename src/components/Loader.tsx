@@ -192,6 +192,11 @@ const Loader = ({ onStarted }: LoaderProps) => {
           )}
         </div>
       )}
+
+      {/* Version Mark */}
+      <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 text-xs sm:text-sm text-gray-500">
+        v1.0.0
+      </div>
     </div>
   );
 };
