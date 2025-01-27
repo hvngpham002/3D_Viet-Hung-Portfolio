@@ -61,8 +61,8 @@ const About = () => {
       {/* Hero Section */}
       <motion.div variants={textVariant()} className="mb-8">
         <h1 className="text-2xl md:text-4xl font-bold dark:text-white">
-          {t("Hello, I'm")}{" "}
-          <span className="blue-gradient_text drop-shadow">{t("Hung")}.</span>
+          {t("about_greeting")}{" "}
+          <span className="blue-gradient_text drop-shadow">{t("about_name")}.</span>
         </h1>
       </motion.div>
 
@@ -76,7 +76,7 @@ const About = () => {
       {/* Skills Grid */}
       <motion.div variants={fadeIn("up", "spring", 0.7, 1)} className="mb-24">
         <h2 className="text-3xl font-bold mb-8 dark:text-white">
-          {t("Skills")}
+          {t("about_skills")}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {skills.map((skill, index) => (
@@ -100,7 +100,7 @@ const About = () => {
       {/* Experience Timeline */}
       <motion.div variants={fadeIn("up", "spring", 0.9, 1)}>
         <h2 className="text-3xl font-bold mb-8 dark:text-white">
-          {t("Experiences")}
+          {t("about_exp")}
         </h2>
         <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-700">
           {experiences.map((exp, index) => (

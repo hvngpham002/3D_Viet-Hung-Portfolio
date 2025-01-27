@@ -1,67 +1,67 @@
 [{
     "year": "2024 - 2025",
-    "company": "NVIDIA",
-    "role": "Software Engineer",
+    "company": "about_exp_company_1",
+    "role": "about_exp_title_1",
     "country": "usa-flag.png",
     "logo": "nvidia.webp",
     "points": [
-      "Contributed to Drive OS, an autonomous vehicles operating system solution, by integrating host-side tool support for the next-generation DRIVE Thor SoC.",
-      "Developed proof-of-concept React modules for a GUI to improve user-experience.",
-      "Collaborated on updating build profile variants to optimize display performance and expand error reporting.",
-      "Contributed to existing tool and driver’s documentation to expedite integration of future processors."
+      "about_exp_company_1_desc_1",
+      "about_exp_company_1_desc_2",
+      "about_exp_company_1_desc_3",
+      "about_exp_company_1_desc_4"
     ]
   },
   {
     "year": "2023 - 2024",
-    "company": "Mingju Consulting & Management",
-    "role": "Technical Lead & Market Analyst",
+    "company": "about_exp_company_2",
+    "role": "about_exp_title_2",
     "country": "china-flag.png",
     "logo": "mingju.png",
     "points": [
-      "Engineered interactive data visualization dashboard to visualize industry hiring trends.",
-      "Built automated data processing pipelines, handling large datasets of industry employment statistics.",
-      "Created reusable chart components and data filtering systems.",
-      "Implemented responsive visualization tools supporting cross-platform accessibility and export functionality."
+      "about_exp_company_2_desc_1",
+      "about_exp_company_2_desc_2",
+      "about_exp_company_2_desc_3",
+      "about_exp_company_2_desc_4"
     ]
   },
   {
     "year": "2022 - 2023",
-    "company": "New England Clean Energy",
-    "role": "Software Developer & Technical Staff",
+    "company": "about_exp_company_3",
+    "role": "about_exp_title_3",
     "country": "usa-flag.png",
     "logo": "new-england-clean-energy.png",
     "points": [
-      "Initiated migration from WordPress to React-based architecture, establishing component libraries and development workflows.",
-      "Integrated Aurora Solar and Google Project Sunroof APIs with React, creating a unified solar panel mapping interface.",
-      "Maintained existing WordPress platform while progressively implementing components for new features.",
-      "Developed proof-of-concept React modules for solar cost estimation.",
-      "Led technical documentation efforts for the stack migration, creating guidelines for component migration and API integration."
+      "about_exp_company_3_desc_1",
+      "about_exp_company_3_desc_2",
+      "about_exp_company_3_desc_3",
+      "about_exp_company_3_desc_4",
+      "about_exp_company_3_desc_5"
     ]
   },
   {
     "year": "2021 - 2022",
-    "company": "Worcester Polytechnic Institute",
-    "role": "Teaching Assistant",
+    "company": "about_exp_company_4",
+    "role": "about_exp_title_4",
     "country": "usa-flag.png",
     "logo": "wpi.png",
     "points": [
-      "Mentored students in software engineering best practices, including Git version control, code review processes, and testing methodologies.",
-      "Led technical workshops on React component architecture, state management, and frontend development patterns.",
-      "Guided a team of ten student engineers in developing a full-stack application, implementing Agile practices including sprint planning and code reviews.",
-      "Evaluated and provided detailed feedback on coding assignments focusing on clean code principles, algorithm optimization, and software design patterns."
+      "about_exp_company_4_desc_1",
+      "about_exp_company_4_desc_2",
+      "about_exp_company_4_desc_3",
+      "about_exp_company_4_desc_4"
     ]
   },
   {
     "year": "2020 - 2021",
-    "company": "Minh Hung Investment & Development JSC",
-    "role": "Web Developer",
+    "company": "about_exp_company_5",
+    "role": "about_exp_title_5",
     "country": "vietnam-flag.png",
     "logo": "minh-hung.png",
     "points": [
-      "Architected a full-stack e-commerce platform using Laravel API backend and React frontend.",
-      "Built a scalable platform using Laravel model-view-controller architecture.",
-      "Developed a customizable content-management-system interface for inventory management.",
-      "Created responsive UI components using React, ensuring cross-browser and mobile compatibility."
+      "about_exp_company_5_desc_1",
+      "about_exp_company_5_desc_2",
+      "about_exp_company_5_desc_3",
+      "about_exp_company_5_desc_4"
     ]
   }
 ]

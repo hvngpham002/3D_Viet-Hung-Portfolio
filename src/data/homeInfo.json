@@ -1,0 +1,25 @@
+[{
+        "stage": 1,
+        "text": "home_info_1",
+        "link": "/projects",
+        "linkText": "view_project"
+    },
+    {
+        "stage": 2,
+        "text": "home_info_2",
+        "link": "/projects",
+        "linkText": "view_project"
+    },
+    {
+        "stage": 3,
+        "text": "home_info_3",
+        "link": "/projects",
+        "linkText": "view_project"
+    },
+    {
+        "stage": 4,
+        "text": "home_info_4",
+        "link": "/projects",
+        "linkText": "view_project"
+    }
+]

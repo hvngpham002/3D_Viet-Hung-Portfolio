@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { Canvas } from "@react-three/fiber";
 import Sif from "../models/Sif";
 import Bonfire from "../models/Bonfire";
+import { reloadTranslations } from "../i18n";
+
 import {
   ContactShadows,
   Environment,
@@ -200,6 +202,13 @@ const Scene = ({ currentAnimation }: SceneProps) => {
 
 const Contact = () => {
   const { t } = useTranslation();
+
+  const [isTranslationsLoading, setIsTranslationsLoading] = useState(true);
+
+  useEffect(() => {
+    reloadTranslations().finally(() => setIsTranslationsLoading(false));
+  }, []);
+
   const [form, setForm] = useState<FormData>({
     name: "",
     email: "",
@@ -276,14 +285,25 @@ const Contact = () => {
       const width = window.innerWidth;
       if (width >= 1024 && formRef.current && canvasContainerRef.current) {
         // Desktop
-        const h1 = formRef.current.previousElementSibling as HTMLElement;
-        const form = formRef.current;
-        const button = formRef.current.querySelector("button") as HTMLElement;
+        if (isTranslationsLoading) {
+          // When loading, calculate height based on loading bars
+          const loadingBars = formRef.current.querySelectorAll('.loading-bar');
+          let totalHeight = 0;
+          loadingBars.forEach((bar) => {
+            totalHeight += (bar as HTMLElement).offsetHeight;
+          });
+          canvasContainerRef.current.style.height = `${totalHeight + 200}px`;
+        } else {
+          // Existing logic for loaded state
+          const h1 = formRef.current.previousElementSibling as HTMLElement;
+          const form = formRef.current;
+          const button = formRef.current.querySelector("button") as HTMLElement;
 
-        if (h1 && form && button) {
-          const totalHeight =
-            h1.offsetHeight + form.offsetHeight + button.offsetHeight;
-          canvasContainerRef.current.style.height = `${totalHeight + 30}px`;
+          if (h1 && form && button) {
+            const totalHeight =
+              h1.offsetHeight + form.offsetHeight + button.offsetHeight;
+            canvasContainerRef.current.style.height = `${totalHeight + 30}px`;
+          }
         }
       } else if (canvasContainerRef.current && formRef.current) {
         // Mobile
@@ -310,78 +330,95 @@ const Contact = () => {
       window.removeEventListener("resize", updateCanvasHeight);
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [isTranslationsLoading]);
 
   return (
     <section className="relative flex lg:flex-row flex-col max-container h-[100svh] overflow-hidden">
       {alert.show && <Alert {...alert} />}
 
       <div className="flex-1 min-w-[50%] flex flex-col px-3 lg:px-4 py-1 lg:py-4 lg:h-auto">
-        <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
-          {t("Want To Work With Me")}?
-        </h1>
+        {isTranslationsLoading ? (
+          <div className="loading-bar h-8 w-auto rounded-md bg-gray-500 dark:bg-gray-700" />
+        ) : (
+          <>
+            <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
+              {t("contact_title")}
+            </h1>
+          </>
+        )}
         <form
           ref={formRef}
           className="w-full flex flex-col gap-1.5 lg:gap-7 mt-1 lg:mt-14"
           onSubmit={handleSubmit}
         >
-          <label className="text-black-500 font-semibold dark:text-white">
-            {t("Name")}:
-            <input
-              type="text"
-              name="name"
-              className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-              placeholder={t("Sir Astorias, The Abysswalker")}
-              required
-              value={form.name}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-          </label>
-          <label className="text-black-500 font-semibold dark:text-white">
-            {t("Email")}:
-            <input
-              type="email"
-              name="email"
-              className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-              placeholder={t("sif@gmail.com")}
-              required
-              value={form.email}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-          </label>
-          <label className="text-black-500 font-semibold dark:text-white">
-            {t("Message")}:
-            <textarea
-              name="message"
-              rows={2}
-              className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-              placeholder={t("Let me know how I can be of service!")}
-              required
-              value={form.message}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-          </label>
+          {isTranslationsLoading ? (
+            <React.Fragment>
+              <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700  py-0.5 lg:py-2 mt-1" />
+              <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
+              <div className="loading-bar h-24 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
+              <div className="loading-bar h-8 lg:h-10 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 mt-1 lg:mt-0" />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <label className="text-black-500 font-semibold dark:text-white">
+                {t("contact_name")}:
+                <input
+                  type="text"
+                  name="name"
+                  className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                  placeholder={t("Sir Astorias, The Abysswalker")}
+                  required
+                  value={form.name}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </label>
+              <label className="text-black-500 font-semibold dark:text-white">
+                {t("contact_email")}:
+                <input
+                  type="email"
+                  name="email"
+                  className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                  placeholder={t("sif@gmail.com")}
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </label>
+              <label className="text-black-500 font-semibold dark:text-white">
+                {t("contact_message")}:
+                <textarea
+                  name="message"
+                  rows={2}
+                  className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                  placeholder={t("contact_message_placeholder")}
+                  required
+                  value={form.message}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </label>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {isLoading ? t("Sending...") : t("Send Message")}
-          </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isLoading ? t("Sending...") : t("contact_send_message")}
+              </button>
+            </React.Fragment>
+          )}
         </form>
       </div>
       <div
         ref={canvasContainerRef}
-        className="lg:w-1/2 w-full lg:h-auto lg:border-l border-t lg:border-t-0 border-white"
+        className="lg:w-1/2 w-full lg:h-auto"
       >
         <Canvas
           shadows
