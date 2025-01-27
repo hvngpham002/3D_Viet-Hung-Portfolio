@@ -91,6 +91,11 @@ const Home = () => {
           }}
           dpr={[1, window.innerHeight > 1080 ? 1.5 : 2]}
           performance={{ min: 0.5 }}
+          style={{ touchAction: 'none' }}
+          onTouchMove={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
         >
           <Suspense fallback={null}>
             <directionalLight
