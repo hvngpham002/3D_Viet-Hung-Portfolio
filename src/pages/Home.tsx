@@ -29,6 +29,7 @@ const Home = () => {
   const [currentStage, setCurrentStage] = useState<number | null>(1);
   const [isSceneRotating, setIsSceneRotating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const moveIntervalRef = useRef<number | null>(null);
 
   const themeMode = useSelector((state: RootState) => state.theme.mode);
 
@@ -67,6 +68,53 @@ const Home = () => {
           },
         };
 
+  const simulateKeyPress = (key: string) => {
+    // Create and dispatch keydown event
+    const keydownEvent = new KeyboardEvent("keydown", { key });
+    document.dispatchEvent(keydownEvent);
+  };
+
+  const simulateKeyRelease = (key: string) => {
+    // Create and dispatch keyup event
+    const keyupEvent = new KeyboardEvent("keyup", { key });
+    document.dispatchEvent(keyupEvent);
+  };
+
+  const handleMoveStart = (key: string) => {
+    // Initial press
+    simulateKeyPress(key);
+
+    // Clear any existing interval
+    if (moveIntervalRef.current) {
+      clearInterval(moveIntervalRef.current);
+    }
+
+    // Set up continuous movement
+    moveIntervalRef.current = window.setInterval(() => {
+      simulateKeyPress(key);
+    }, 16); // ~60fps
+  };
+
+  const handleMoveEnd = (key: string) => {
+    // Clear the interval
+    if (moveIntervalRef.current) {
+      clearInterval(moveIntervalRef.current);
+      moveIntervalRef.current = null;
+    }
+
+    // Release the key
+    simulateKeyRelease(key);
+  };
+
+  // Clean up interval on unmount
+  useEffect(() => {
+    return () => {
+      if (moveIntervalRef.current) {
+        clearInterval(moveIntervalRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
       {/* Loader at the top level with highest z-index */}
@@ -91,7 +139,7 @@ const Home = () => {
           }}
           dpr={[1, window.innerHeight > 1080 ? 1.5 : 2]}
           performance={{ min: 0.5 }}
-          style={{ touchAction: 'none' }}
+          style={{ touchAction: "none" }}
           onTouchMove={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -140,6 +188,64 @@ const Home = () => {
           <div className="pointer-events-auto">
             {currentStage && <HomeInfo currentStage={currentStage} />}
           </div>
+        </div>
+
+        {/* Control Buttons */}
+        <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-4 pointer-events-auto">
+          <button
+            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30"
+            onTouchStart={() => handleMoveStart("ArrowLeft")}
+            onTouchEnd={() => handleMoveEnd("ArrowLeft")}
+            onMouseDown={() => handleMoveStart("ArrowLeft")}
+            onMouseUp={() => handleMoveEnd("ArrowLeft")}
+            onMouseLeave={() => handleMoveEnd("ArrowLeft")}
+            aria-label="Move Left"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6 dark:text-white text-black"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+            <span className="text-xs font-medium dark:text-white text-black mt-1">
+              LEFT
+            </span>
+          </button>
+          <button
+            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30"
+            onTouchStart={() => handleMoveStart("ArrowRight")}
+            onTouchEnd={() => handleMoveEnd("ArrowRight")}
+            onMouseDown={() => handleMoveStart("ArrowRight")}
+            onMouseUp={() => handleMoveEnd("ArrowRight")}
+            onMouseLeave={() => handleMoveEnd("ArrowRight")}
+            aria-label="Move Right"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6 dark:text-white text-black"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+            <span className="text-xs font-medium dark:text-white text-black mt-1">
+              RIGHT
+            </span>
+          </button>
         </div>
       </div>
     </>
@@ -319,52 +425,61 @@ const SceneContent = ({
   }, [gl, handleMouseDown, handleMouseUp, handleMouseMove]);
 
   // Add touch zoom handlers
-  const handleTouchStart = useCallback((event: TouchEvent) => {
-    if (event.touches.length === 2) {
-      const dx = event.touches[0].clientX - event.touches[1].clientX;
-      const dy = event.touches[0].clientY - event.touches[1].clientY;
-      touchStartDistance.current = Math.sqrt(dx * dx + dy * dy);
-      initialZoom.current = camera.position.z;
-      event.preventDefault();
-    }
-  }, [camera]);
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      if (event.touches.length === 2) {
+        const dx = event.touches[0].clientX - event.touches[1].clientX;
+        const dy = event.touches[0].clientY - event.touches[1].clientY;
+        touchStartDistance.current = Math.sqrt(dx * dx + dy * dy);
+        initialZoom.current = camera.position.z;
+        event.preventDefault();
+      }
+    },
+    [camera]
+  );
 
-  const handleTouchMove = useCallback((event: TouchEvent) => {
-    if (event.touches.length === 2) {
-      const dx = event.touches[0].clientX - event.touches[1].clientX;
-      const dy = event.touches[0].clientY - event.touches[1].clientY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const scale = touchStartDistance.current / distance;
-      const newZoom = initialZoom.current * scale;
-      camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
-      event.preventDefault();
-    }
-  }, [camera, maxZoom, minZoom]);
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      if (event.touches.length === 2) {
+        const dx = event.touches[0].clientX - event.touches[1].clientX;
+        const dy = event.touches[0].clientY - event.touches[1].clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const scale = touchStartDistance.current / distance;
+        const newZoom = initialZoom.current * scale;
+        camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+        event.preventDefault();
+      }
+    },
+    [camera, maxZoom, minZoom]
+  );
 
   // Add wheel zoom handler
-  const handleWheel = useCallback((event: ThreeEvent<WheelEvent>) => {
-    const newZoom = camera.position.z + event.deltaY * zoomSpeed;
-    camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
-  }, [camera, maxZoom, minZoom, zoomSpeed]);
+  const handleWheel = useCallback(
+    (event: ThreeEvent<WheelEvent>) => {
+      const newZoom = camera.position.z + event.deltaY * zoomSpeed;
+      camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
+    },
+    [camera, maxZoom, minZoom, zoomSpeed]
+  );
 
   useEffect(() => {
     const canvas = gl.domElement;
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('wheel', handleWheel as unknown as EventListener);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    canvas.addEventListener("wheel", handleWheel as unknown as EventListener);
 
     return () => {
-      canvas.removeEventListener('touchstart', handleTouchStart);
-      canvas.removeEventListener('touchmove', handleTouchMove);
-      canvas.removeEventListener('wheel', handleWheel as unknown as EventListener);
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener(
+        "wheel",
+        handleWheel as unknown as EventListener
+      );
     };
   }, [gl, handleTouchStart, handleTouchMove, handleWheel]);
 
   return (
-    <group
-      ref={groupRef}
-      onWheel={handleWheel}
-    >
+    <group ref={groupRef} onWheel={handleWheel}>
       <Sky isDay={themeMode === "light"} />
       <Book
         position={islandPosition}
