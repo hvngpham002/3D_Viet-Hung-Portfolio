@@ -5,6 +5,8 @@ import arrow from "/icons/arrow.svg";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { getHomeInfo } from "../services/supabaseService";
+import type { homeInfo } from "../services/supabaseService";
 
 
 type InfoBoxProps = {
@@ -46,13 +48,26 @@ type HomeInfoProps = {
 
 const HomeInfo = ({ currentStage }: HomeInfoProps) => {
   const { t } = useTranslation();
-
   const [isVisible, setIsVisible] = useState(false);
   const [content, setContent] = useState({
     text: "",
     link: "",
     linkText: "",
   });
+  const [homeInfoData, setHomeInfoData] = useState<homeInfo[]>([]);
+
+  useEffect(() => {
+    const fetchHomeInfo = async () => {
+      try {
+        const data = await getHomeInfo();
+        setHomeInfoData(data);
+      } catch (error) {
+        console.error('Error fetching home info:', error);
+      }
+    };
+
+    fetchHomeInfo();
+  }, []);
 
   useEffect(() => {
     setIsVisible(false);
@@ -61,50 +76,20 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
       if (currentStage === null) {
         setContent({ text: "", link: "", linkText: "" });
       } else {
-        switch (currentStage) {
-          case 1:
-            setContent({
-              text: t(
-                "I first embarked on the path as a self-taught developer, developing an e-commerce application for a local firm in Vietnam."
-              ),
-              link: "/projects",
-              linkText: t("View Project"),
-            });
-            break;
-          case 2:
-            setContent({
-              text: t(
-                "I moved to the United States to pursue software engineering at Worcester Polytechnic Institute."
-              ),
-              link: "/projects",
-              linkText: t("View Project"),
-            });
-            break;
-          case 3:
-            setContent({
-              text: t(
-                "I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development."
-              ),
-              link: "/projects",
-              linkText: t("View Project"),
-            });
-            break;
-          case 4:
-            setContent({
-              text: t(
-                "I completed a software engineering contract at NVIDIA."
-              ),
-              link: "/projects",
-              linkText: t("View Project"),
-            });
-            break;
+        const stageInfo = homeInfoData.find(info => info.stage === currentStage);
+        if (stageInfo) {
+          setContent({
+            text: t(stageInfo.text),
+            link: stageInfo.link,
+            linkText: t(stageInfo.linkText),
+          });
         }
         setIsVisible(true);
       }
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [currentStage, t]);
+  }, [currentStage, homeInfoData, t]);
 
   return (
     <InfoBox

@@ -34,6 +34,14 @@ export interface translation {
   vi: string;
 }
 
+export interface homeInfo {
+  id: number;
+  stage: number;
+  text: string;
+  link: string;
+  linkText: string;
+}
+
 // Experiences
 export const getExperiences = async () => {
   const { data, error } = await supabase
@@ -98,4 +106,18 @@ export const initializeTranslations = async () => {
     console.error('Error loading translations:', error);
     return null;
   }
+};
+
+export const getHomeInfo = async (): Promise<homeInfo[]> => {
+  const { data, error } = await supabase
+    .from('home_info')
+    .select('*')
+    .order('stage', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching home info:', error);
+    throw new Error(error.message);
+  }
+
+  return data || [];
 };
