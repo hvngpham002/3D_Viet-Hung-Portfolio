@@ -146,22 +146,22 @@ const Ciri = ({
           {
             position: new THREE.Vector3(-1.5, -1.25, -1.0),
             stage: 1,
-            threshold: 0.5,
+            threshold: 0.8,
           },
           {
             position: new THREE.Vector3(-0.5, -1.2, -1.0),
             stage: 2,
-            threshold: 0.5,
+            threshold: 0.8,
           },
           {
             position: new THREE.Vector3(1.0, -1.12, -1.0),
             stage: 3,
-            threshold: 0.5,
+            threshold: 0.8,
           },
           {
             position: new THREE.Vector3(2.0, -1.2, -1.0),
             stage: 4,
-            threshold: 0.5,
+            threshold: 0.8,
           },
         ]
       : [
@@ -192,7 +192,7 @@ const Ciri = ({
       ? [
           new THREE.Vector3(-1.5, -1.25, -1.0),
           new THREE.Vector3(-1.0, -1.2, -1.0),
-          new THREE.Vector3(-0.5, -1.10, -1.0),
+          new THREE.Vector3(-0.5, -1.1, -1.0),
           new THREE.Vector3(0.0, -1.05, -1.0),
           new THREE.Vector3(0.5, -1.08, -1.0),
           new THREE.Vector3(1.5, -1.15, -1.0),
@@ -221,15 +221,14 @@ const Ciri = ({
         const distanceSquared = dx * dx + dy * dy + dz * dz;
         const thresholdSquared = threshold * threshold;
 
-        if (
-          distanceSquared < thresholdSquared &&
-          distanceSquared < minDistance
-        ) {
+        if (distanceSquared < thresholdSquared && distanceSquared < minDistance) {
           minDistance = distanceSquared;
           newStage = stage;
         }
       });
-      if (lastStage.current !== newStage && newStage !== null) {
+
+      // Only update if we have a valid stage and it's different from the current one
+      if (newStage !== null && lastStage.current !== newStage) {
         lastStage.current = newStage;
         setCurrentStage(newStage);
       }
@@ -240,40 +239,29 @@ const Ciri = ({
 
   const handlePointerDown = useCallback(
     (e: PointerEvent | TouchEvent) => {
-      if ("button" in e && e.button !== 0) return;
+      // Ignore touch events on mobile
+      if ("touches" in e) return;
 
-      // Only handle single touch events
-      if ("touches" in e && e.touches.length > 1) return;
+      if ("button" in e && e.button !== 0) return;
 
       document.body.classList.add("dragging");
       gl.domElement.style.cursor = "ew-resize";
 
       setIsRotating(true);
 
-      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const clientX = e.clientX;
       lastX.current = clientX;
-    },
-    [setIsRotating, gl]
-  );
-
-  const handlePointerUp = useCallback(
-    (e: PointerEvent | TouchEvent) => {
-      if ("button" in e && e.button !== 0) return;
-
-      document.body.classList.remove("dragging");
-      gl.domElement.style.cursor = "grab";
-
-      setIsRotating(false);
     },
     [setIsRotating, gl]
   );
 
   const handlePointerMove = useCallback(
     (e: PointerEvent | TouchEvent) => {
-      if ("touches" in e && e.touches.length > 1) return;
+      // Ignore touch events on mobile
+      if ("touches" in e) return;
 
       if (isRotating) {
-        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        const clientX = e.clientX;
         const delta = (clientX - lastX.current) / viewport.width;
 
         const newProgress = pathProgress.current + delta * 0.01;
@@ -288,18 +276,67 @@ const Ciri = ({
     [isRotating, viewport.width]
   );
 
+  const handlePointerUp = useCallback(
+    (e: PointerEvent | TouchEvent) => {
+      // Ignore touch events on mobile
+      if ("touches" in e) return;
+
+      if ("button" in e && e.button !== 0) return;
+
+      document.body.classList.remove("dragging");
+      gl.domElement.style.cursor = "grab";
+
+      setIsRotating(false);
+    },
+    [setIsRotating, gl]
+  );
+
+  const keyState = useRef({
+    ArrowLeft: false,
+    ArrowRight: false
+  });
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      // Only handle real keyboard events, not simulated ones
+      if (!e.isTrusted) return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        if (!isRotating) setIsRotating(true);
+        keyState.current[e.key] = true;
+      }
+    },
+    [isRotating, setIsRotating]
+  );
+
+  const handleKeyUp = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        keyState.current[e.key] = false;
+        if (!keyState.current.ArrowLeft && !keyState.current.ArrowRight) {
+          setIsRotating(false);
+        }
+      }
+    },
+    [setIsRotating]
+  );
+
+  // Separate handler for simulated events from on-screen buttons
+  const handleSimulatedKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      // Only handle simulated events
+      if (e.isTrusted) return;
+
       if (e.key === "ArrowLeft") {
         if (!isRotating) setIsRotating(true);
-        const newProgress = pathProgress.current - 0.01;
+        const newProgress = pathProgress.current - 0.008;
         if (newProgress >= 0) {
           pathProgress.current = newProgress;
           movingForward.current = false;
         }
       } else if (e.key === "ArrowRight") {
         if (!isRotating) setIsRotating(true);
-        const newProgress = pathProgress.current + 0.01;
+        const newProgress = pathProgress.current + 0.008;
         if (newProgress <= 1) {
           pathProgress.current = newProgress;
           movingForward.current = true;
@@ -309,16 +346,23 @@ const Ciri = ({
     [isRotating, setIsRotating]
   );
 
-  const handleKeyUp = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        setIsRotating(false);
-      }
-    },
-    [setIsRotating]
-  );
-
   useFrame((_, delta) => {
+    // Handle keyboard movement in the frame update
+    if (keyState.current.ArrowLeft) {
+      const newProgress = pathProgress.current - 0.003;
+      if (newProgress >= 0) {
+        pathProgress.current = newProgress;
+        movingForward.current = false;
+      }
+    }
+    if (keyState.current.ArrowRight) {
+      const newProgress = pathProgress.current + 0.003;
+      if (newProgress <= 1) {
+        pathProgress.current = newProgress;
+        movingForward.current = true;
+      }
+    }
+
     if (!isRotating) {
       movementSpeed.current *= Math.pow(dampingFactor, delta * 60);
 
@@ -401,6 +445,7 @@ const Ciri = ({
     canvas.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleSimulatedKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
     return () => {
@@ -409,8 +454,17 @@ const Ciri = ({
       canvas.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleSimulatedKeyDown);
     };
-  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp]);
+  }, [
+    gl,
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerMove,
+    handleKeyDown,
+    handleSimulatedKeyDown,
+    handleKeyUp,
+  ]);
 
   useEffect(() => {
     if (isSceneRotating) {
@@ -462,10 +516,7 @@ const Ciri = ({
   }, [materials]);
 
   return (
-    <group 
-      ref={group} 
-      {...props}
-    >
+    <group ref={group} {...props}>
       <group name="Scene" rotation={[-Math.PI / 2, 0, 0]}>
         <group name="6cde9eeb2b3a4e03a99be448a154a10cfbx">
           <group name="RootNode1">
