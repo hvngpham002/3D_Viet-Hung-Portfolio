@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { NavLink } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
-import LanguageToggle from './LanguageToggle';
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { NavLink } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
+import LanguageToggle from "./LanguageToggle";
+import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { reloadTranslations } from "../i18n";
+import React from "react";
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -13,6 +15,12 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const [isTranslationsLoading, setIsTranslationsLoading] = useState(true);
+
+  useEffect(() => {
+    reloadTranslations().finally(() => setIsTranslationsLoading(false));
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full h-16 flex items-center justify-between p-4 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80">
@@ -25,64 +33,76 @@ const Navbar = () => {
 
       {/* Desktop Navigation */}
       <nav className="hidden lg:flex text-xl gap-7 font-medium">
-        <NavLink
-          to="/about"
-          className={({ isActive }) =>
-            isActive ? 'text-blue-500' : 'text-black dark:text-white'
-          }
-        >
-          {t('About')}
-        </NavLink>
-        <NavLink
-          to="/projects"
-          className={({ isActive }) =>
-            isActive ? 'text-blue-500' : 'text-black dark:text-white'
-          }
-        >
-          {t('Projects')}
-        </NavLink>
-        <NavLink
-          to="/contact"
-          className={({ isActive }) =>
-            isActive ? 'text-blue-500' : 'text-black dark:text-white'
-          }
-        >
-          {t('Contact')}
-        </NavLink>
+        {isTranslationsLoading ? (
+         <div className="loading-bar h-8 w-72 rounded-md bg-gray-500 dark:bg-gray-700" />
+        ) : (
+          <React.Fragment>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                isActive ? "text-blue-500" : "text-black dark:text-white"
+              }
+            >
+              {t("About")}
+            </NavLink>
+            <NavLink
+              to="/projects"
+              className={({ isActive }) =>
+                isActive ? "text-blue-500" : "text-black dark:text-white"
+              }
+            >
+              {t("Projects")}
+            </NavLink>
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                isActive ? "text-blue-500" : "text-black dark:text-white"
+              }
+            >
+              {t("Contact")}
+            </NavLink>
+          </React.Fragment>
+        )}
       </nav>
 
       {/* Mobile Navigation */}
       <div
         className={`${
-          isOpen ? 'flex' : 'hidden'
+          isOpen ? "flex" : "hidden"
         } lg:hidden fixed top-20 right-4 w-48 bg-white dark:bg-gray-900 rounded-lg p-4 flex-col gap-4 shadow-xl z-50 border border-gray-200 dark:border-gray-700`}
       >
         <NavLink
           to="/about"
           className={({ isActive }) =>
-            `${isActive ? 'text-blue-500' : 'text-black dark:text-white'} p-2 rounded-lg transition-colors`
+            `${
+              isActive ? "text-blue-500" : "text-black dark:text-white"
+            } p-2 rounded-lg transition-colors`
           }
           onClick={() => setIsOpen(false)}
         >
-          {t('About')}
+          {t("About")}
         </NavLink>
         <NavLink
           to="/projects"
           className={({ isActive }) =>
-            `${isActive ? 'text-blue-500' : 'text-black dark:text-white'} p-2 rounded-lg transition-colors`
+            `${
+              isActive ? "text-blue-500" : "text-black dark:text-white"
+            } p-2 rounded-lg transition-colors`
           }
           onClick={() => setIsOpen(false)}
         >
-          {t('Projects')}
+          {t("Projects")}
         </NavLink>
         <NavLink
           to="/contact"
           className={({ isActive }) =>
-            `${isActive ? 'text-blue-500' : 'text-black dark:text-white'} p-2 rounded-lg transition-colors`
+            `${
+              isActive ? "text-blue-500" : "text-black dark:text-white"
+            } p-2 rounded-lg transition-colors`
           }
           onClick={() => setIsOpen(false)}
         >
-          {t('Contact')}
+          {t("Contact")}
         </NavLink>
       </div>
 

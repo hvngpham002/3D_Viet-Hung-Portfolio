@@ -1,22 +1,25 @@
-[
-  {
+[{
     "images": [
-      "/images/project1.jpg",
-      "/images/project2.jpg"
+      "/images/portfolio_home.png",
+      "/images/portfolio_about.png",
+      "/images/portfolio_contact.png",
+      "/images/portfolio_loader.png"
     ],
-    "title": "3D Interactive Portfolio",
-    "description": "An immersive 3D portfolio website featuring interactive animations, dynamic lighting, and multilingual support.", 
+    "title": "project_1_title",
+    "description": "project_1_desc",
     "tags": ["React", "Redux", "Three.js", "React-Three-Fiber", "Tailwind", "Framer Motion"],
     "source_code": "https://github.com/HungVPham/3D_Viet-Hung-Portfolio",
-    "demo": null
+    "demo": "/"
   },
   {
     "images": [
-      "/images/project3.jpg",
-      "/images/project4.jpg"
+      "/images/goathacks_home.png",
+      "/images/goathacks_registration.png",
+      "/images/goathacks_faq.png",
+      "/images/goathacks_sponsors.png"
     ],
-    "title": "Hackathon@WPI (GoatHacks)",
-    "description": "Annual hackathon event hosted by WPI sponsored by industry leads like MathWorks and ACM.",
+    "title": "project_2_title",
+    "description": "project_2_desc",
     "tags": ["Python", "Flask", "DevPost", "HTML/CSS", "JavaScript"],
     "source_code": null,
     "demo": "https://hack.wpi.edu/index.html"
@@ -26,19 +29,22 @@
       "/images/gwent_setup.png",
       "/images/gwent_playing.png"
     ],
-    "title": "Gwent Card Game Clone",
-    "description": "A personal interpretation of CD PROJEKT RED's Gwent card game from The Witcher 3, featuring strategic AI gameplay, advanced state management, and authentic game mechanics.",
+    "title": "project_3_title",
+    "description": "project_3_desc",
     "tags": ["React", "Typescript", "Redux Toolkit"],
     "source_code": "https://github.com/HungVPham/gwent-learning-project",
     "demo": "https://gwent-learning-project.vercel.app"
   },
   {
     "images": [
-      "/images/project3.jpg",
-      "/images/project4.jpg"
+      "/images/ecom_home.png",
+      "/images/ecom_listing.png",
+      "/images/ecom_cart.png",
+      "/images/ecom_contact.png",
+      "/images/ecom_adm_catalogue.png"
     ],
-    "title": "Minh Hung Investment & Development JSC",
-    "description": "E-commerce platform with a customizable content management system for inventory management.",
+    "title": "project_4_title",
+    "description": "project_4_desc",
     "tags": ["Laravel", "React", "MySQL", "PHP"],
     "source_code": null,
     "demo": null
