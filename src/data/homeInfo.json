@@ -7,19 +7,19 @@
     {
         "stage": 2,
         "text": "home_info_2",
-        "link": "/projects",
-        "linkText": "view_project"
+        "link": "/about",
+        "linkText": "view_experience"
     },
     {
         "stage": 3,
         "text": "home_info_3",
-        "link": "/projects",
-        "linkText": "view_project"
+        "link": "/about",
+        "linkText": "view_experience"
     },
     {
         "stage": 4,
         "text": "home_info_4",
-        "link": "/projects",
-        "linkText": "view_project"
+        "link": "/about",
+        "linkText": "view_experience"
     }
 ]
