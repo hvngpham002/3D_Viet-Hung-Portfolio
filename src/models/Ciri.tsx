@@ -87,10 +87,6 @@ const Ciri = ({
 
       const armature = group.current.getObjectByName("Armature");
       if (armature) {
-        const originalRotation = isRotating
-          ? new THREE.Euler(-Math.PI, 0, 0)
-          : new THREE.Euler(Math.PI / 2, 0, 0);
-
         armature.rotation.set(Math.PI, 0, 0);
 
         const action = actions[animationName];
@@ -102,7 +98,12 @@ const Ciri = ({
         const onFinished = () => {
           action.stop();
           mixer.removeEventListener("finished", onFinished);
-          armature.rotation.copy(originalRotation);
+
+          // After animation, set rotation based on current state
+          const defaultRotation = isRotating
+            ? new THREE.Euler(-Math.PI, 0, 0)
+            : new THREE.Euler(Math.PI / 2, 0, 0);
+          armature.rotation.copy(defaultRotation);
         };
         mixer.addEventListener("finished", onFinished);
 
@@ -221,7 +222,10 @@ const Ciri = ({
         const distanceSquared = dx * dx + dy * dy + dz * dz;
         const thresholdSquared = threshold * threshold;
 
-        if (distanceSquared < thresholdSquared && distanceSquared < minDistance) {
+        if (
+          distanceSquared < thresholdSquared &&
+          distanceSquared < minDistance
+        ) {
           minDistance = distanceSquared;
           newStage = stage;
         }
@@ -293,7 +297,7 @@ const Ciri = ({
 
   const keyState = useRef({
     ArrowLeft: false,
-    ArrowRight: false
+    ArrowRight: false,
   });
 
   const handleKeyDown = useCallback(
@@ -514,6 +518,19 @@ const Ciri = ({
       });
     }
   }, [materials]);
+
+  useEffect(() => {
+    const armature = group.current?.getObjectByName("Armature");
+    if (!armature || isSceneRotating) return;
+
+    // Only set default rotation when no animations are running
+    if (!Object.values(actions).some((action) => action?.isRunning())) {
+      const defaultRotation = isRotating
+        ? new THREE.Euler(-Math.PI, 0, 0)
+        : new THREE.Euler(Math.PI / 2, 0, 0);
+      armature.rotation.copy(defaultRotation);
+    }
+  }, [isRotating, isSceneRotating, actions]);
 
   return (
     <group ref={group} {...props}>
