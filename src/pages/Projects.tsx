@@ -250,27 +250,32 @@ const Projects = () => {
   }
 
   return (
-    <motion.section
-      initial="hidden"
-      animate="show"
-      className="max-container min-h-screen py-32 px-4 sm:px-6 lg:px-8"
-    >
-      <motion.div variants={fadeIn("up", "spring", 0.5, 1)} className="mb-16">
-        <h2 className="text-3xl font-bold mb-8 dark:text-white">
-          {t("Projects")}
-        </h2>
-        <div className="border-b-2 border-gray-200 dark:border-gray-700 w-20 my-8" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id || index}
-              project={project}
-              index={index}
-            />
-          ))}
-        </div>
-      </motion.div>
-    </motion.section>
+    <>
+      <motion.section
+        initial="hidden"
+        animate="show"
+        className="max-container min-h-screen py-32 px-4 sm:px-6 lg:px-8"
+      >
+        <motion.div variants={fadeIn("up", "spring", 0.5, 1)} className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 dark:text-white">
+            {t("Projects")}
+          </h2>
+          <div className="border-b-2 border-gray-200 dark:border-gray-700 w-20 my-8" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={project.id || index}
+                project={project}
+                index={index}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </motion.section>
+      <footer className="py-4 text-center text-gray-500 text-sm">
+        © 2025 Viet Hung Pham. All rights reserved.
+      </footer>
+    </>
   );
 };
 
