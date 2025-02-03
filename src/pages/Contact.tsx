@@ -333,121 +333,125 @@ const Contact = () => {
   }, [isTranslationsLoading]);
 
   return (
-    <section className="relative flex lg:flex-row flex-col max-container h-[100svh] overflow-hidden">
-      {alert.show && <Alert {...alert} />}
-
-      <div className="flex-1 min-w-[50%] flex flex-col px-3 lg:px-4 py-1 lg:py-4 lg:h-auto">
-        {isTranslationsLoading ? (
-          <div className="loading-bar h-8 w-auto rounded-md bg-gray-500 dark:bg-gray-700" />
-        ) : (
-          <>
-            <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
-              {t("contact_title")}
-            </h1>
-          </>
-        )}
-        <form
-          ref={formRef}
-          className="w-full flex flex-col gap-1.5 lg:gap-7 mt-1 lg:mt-14"
-          onSubmit={handleSubmit}
-        >
+    <>
+      <section className="relative flex lg:flex-row flex-col max-container h-[100svh] overflow-hidden">
+        {alert.show && <Alert {...alert} />}
+        <div className="flex-1 min-w-[50%] flex flex-col px-3 lg:px-4 py-1 lg:py-4 lg:h-auto">
           {isTranslationsLoading ? (
-            <React.Fragment>
-              <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700  py-0.5 lg:py-2 mt-1" />
-              <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
-              <div className="loading-bar h-24 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
-              <div className="loading-bar h-8 lg:h-10 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 mt-1 lg:mt-0" />
-            </React.Fragment>
+            <div className="loading-bar h-8 w-auto rounded-md bg-gray-500 dark:bg-gray-700" />
           ) : (
-            <React.Fragment>
-              <label className="text-black-500 font-semibold dark:text-white">
-                {t("contact_name")}:
-                <input
-                  type="text"
-                  name="name"
-                  className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                  placeholder={t("Sir Astorias, The Abysswalker")}
-                  required
-                  value={form.name}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                />
-              </label>
-              <label className="text-black-500 font-semibold dark:text-white">
-                {t("contact_email")}:
-                <input
-                  type="email"
-                  name="email"
-                  className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                  placeholder={t("sif@gmail.com")}
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                />
-              </label>
-              <label className="text-black-500 font-semibold dark:text-white">
-                {t("contact_message")}:
-                <textarea
-                  name="message"
-                  rows={2}
-                  className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                  placeholder={t("contact_message_placeholder")}
-                  required
-                  value={form.message}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                />
-              </label>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {isLoading ? t("Sending...") : t("contact_send_message")}
-              </button>
-            </React.Fragment>
+            <>
+              <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
+                {t("contact_title")}
+              </h1>
+            </>
           )}
-        </form>
-      </div>
-      <div
-        ref={canvasContainerRef}
-        className="lg:w-1/2 w-full lg:h-auto"
-      >
-        <Canvas
-          shadows
-          dpr={[1, 2]}
-          camera={{
-            position: [0, 0, 5],
-            fov: 75,
-            near: 0.1,
-            far: 1000,
-          }}
-          gl={{
-            antialias: true,
-            toneMapping: THREE.ACESFilmicToneMapping,
-            outputColorSpace: THREE.SRGBColorSpace,
-          }}
-          className="h-full"
-        >
-          <Suspense
-            fallback={
-              <Html center>
-                <div className="custom-spinner mt-20" />
-              </Html>
-            }
+          <form
+            ref={formRef}
+            className="w-full flex flex-col gap-1.5 lg:gap-7 mt-1 lg:mt-14"
+            onSubmit={handleSubmit}
           >
-            <Scene currentAnimation={currentAnimation} />
-          </Suspense>
-        </Canvas>
-      </div>
-    </section>
+            {isTranslationsLoading ? (
+              <React.Fragment>
+                <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700  py-0.5 lg:py-2 mt-1" />
+                <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
+                <div className="loading-bar h-24 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
+                <div className="loading-bar h-8 lg:h-10 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 mt-1 lg:mt-0" />
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <label className="text-black-500 font-semibold dark:text-white">
+                  {t("contact_name")}: 
+                  <input
+                    type="text"
+                    name="name"
+                    className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                    placeholder={t("Sir Astorias, The Abysswalker")}
+                    required
+                    value={form.name}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+                <label className="text-black-500 font-semibold dark:text-white">
+                  {t("contact_email")}: 
+                  <input
+                    type="email"
+                    name="email"
+                    className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                    placeholder={t("sif@gmail.com")}
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+                <label className="text-black-500 font-semibold dark:text-white">
+                  {t("contact_message")}: 
+                  <textarea
+                    name="message"
+                    rows={2}
+                    className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
+                    placeholder={t("contact_message_placeholder")}
+                    required
+                    value={form.message}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {isLoading ? t("Sending...") : t("contact_send_message")}
+                </button>
+              </React.Fragment>
+            )}
+          </form>
+        </div>
+        <div
+          ref={canvasContainerRef}
+          className="lg:w-1/2 w-full lg:h-auto"
+        >
+          <Canvas
+            shadows
+            dpr={[1, 2]}
+            camera={{
+              position: [0, 0, 5],
+              fov: 75,
+              near: 0.1,
+              far: 1000,
+            }}
+            gl={{
+              antialias: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              outputColorSpace: THREE.SRGBColorSpace,
+            }}
+            className="h-full"
+          >
+            <Suspense
+              fallback={
+                <Html center>
+                  <div className="custom-spinner mt-20" />
+                </Html>
+              }
+            >
+              <Scene currentAnimation={currentAnimation} />
+            </Suspense>
+          </Canvas>
+        </div>
+      </section>
+      <footer className="py-4 text-center text-gray-500 text-sm">
+        © 2025 Viet Hung Pham. All rights reserved.
+      </footer>
+    </>
   );
 };
 

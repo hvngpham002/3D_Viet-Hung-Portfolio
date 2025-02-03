@@ -271,7 +271,7 @@ const Home = () => {
         <div className="flex md:hidden flex-col absolute bottom-8 left-0 right-0 items-center justify-center gap-4 pointer-events-auto select-none">
           <div className="flex gap-4">
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("q")}
               onTouchEnd={() => handleMoveEnd("q")}
               onMouseDown={() => handleMoveStart("q")}
@@ -282,7 +282,7 @@ const Home = () => {
               <span className="text-lg font-bold dark:text-white text-black select-none">Q</span>
             </button>
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("w")}
               onTouchEnd={() => handleMoveEnd("w")}
               onMouseDown={() => handleMoveStart("w")}
@@ -293,7 +293,7 @@ const Home = () => {
               <span className="text-lg font-bold dark:text-white text-black select-none">W</span>
             </button>
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("e")}
               onTouchEnd={() => handleMoveEnd("e")}
               onMouseDown={() => handleMoveStart("e")}
@@ -304,7 +304,7 @@ const Home = () => {
               <span className="text-lg font-bold dark:text-white text-black select-none">E</span>
             </button>
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("r")}
               onTouchEnd={() => handleMoveEnd("r")}
               onMouseDown={() => handleMoveStart("r")}
@@ -317,7 +317,7 @@ const Home = () => {
           </div>
           <div className="flex gap-4">
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("ArrowLeft")}
               onTouchEnd={() => handleMoveEnd("ArrowLeft")}
               onMouseDown={() => handleMoveStart("ArrowLeft")}
@@ -325,13 +325,13 @@ const Home = () => {
               onMouseLeave={() => handleMoveEnd("ArrowLeft")}
               aria-label="Move Left"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 dark:text-white text-black select-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 dark:text-white text-black select-none">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
               </svg>
-              <span className="text-xs font-medium dark:text-white text-black mt-1 select-none">LEFT</span>
+              <span className="text-[0.6rem] font-medium dark:text-white text-black mt-1 select-none">LEFT</span>
             </button>
             <button
-              className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
+              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
               onTouchStart={() => handleMoveStart("ArrowRight")}
               onTouchEnd={() => handleMoveEnd("ArrowRight")}
               onMouseDown={() => handleMoveStart("ArrowRight")}
@@ -339,10 +339,10 @@ const Home = () => {
               onMouseLeave={() => handleMoveEnd("ArrowRight")}
               aria-label="Move Right"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 dark:text-white text-black select-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 dark:text-white text-black select-none">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
               </svg>
-              <span className="text-xs font-medium dark:text-white text-black mt-1 select-none">RIGHT</span>
+              <span className="text-[0.6rem] font-medium dark:text-white text-black mt-1 select-none">RIGHT</span>
             </button>
           </div>
         </div>
