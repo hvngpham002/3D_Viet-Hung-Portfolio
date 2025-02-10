@@ -24,7 +24,7 @@
 
     "view_project": "Xem Dự Án",
     "view_experience": "Xem Kinh Nghiệm",
-    
+
     "home_info_1": "Tôi bắt đầu con đường tự học để trở thành kỹ sư phần mềm, phát triển ứng dụng thương mại điện tử cho một công ty địa phương.",
     "home_info_2": "Tôi đến Hoa Kỳ để tiếp tục theo đuổi ngành kỹ thuật phần mềm tại Massachusetts.",
     "home_info_3": "Tôi đến các trung tâm công nghệ ở Hàng Châu, Trung Quốc để nghiên cứu về tuyển dụng và phát triển công nghệ cao.",
@@ -38,7 +38,7 @@
     "contact_send_message": "Gửi Lời Nhắn",
     "contact_sending": "Gửi Lời Nhắn...",
 
-    "about_bio": "Tôi là kỹ sư phần mềm tập trung vào chi tiết với 5 năm kinh nghiệm thực tế về phát triển web full-stack, kỹ thuật phần mềm hệ thống và thực tập kỹ thuật. Với nền tảng vững chắc về các ngôn ngữ như Java, Python, C và C++, tôi thích giải quyết thách thức cả trong phát triển web và ở cấp độ hệ thống. Từ việc tạo giao diện người dùng đẹp mắt đến tối ưu hiệu năng back-end, tôi đam mê xây dựng các giải pháp phần mềm vừa hiệu quả vừa thân thiện với người dùng.",
+    "about_bio": "Tôi là một kỹ sư phần mềm tận tâm và chú trọng đến chi tiết, với 5 năm kinh nghiệm thực tiễn trong phát triển web full-stack, kỹ thuật phần mềm hệ thống và thực tập kỹ thuật. Với nền tảng vững chắc về các ngôn ngữ như Java, Python, C và C++, tôi đam mê giải quyết các thách thức trong phát triển web cũng như ở cấp hệ thống. Từ việc tạo ra giao diện người dùng tinh tế đến tối ưu hóa hiệu suất back-end, tôi thích xây dựng các giải pháp phần mềm hiệu quả và thân thiện với người dùng.",
 
     "about_greeting": "Xin chào, tôi là",
     "about_name": "Hưng",
@@ -48,40 +48,24 @@
     "about_exp_title_1": "Kỹ Sư Phần Mềm",
     "about_exp_title_2": "Trưởng Nhóm Kỹ Thuật & Chuyên Viên Phân Tích Thị Trường",
     "about_exp_title_3": "Nhân viên Phát Triển Phần Mềm & Kỹ Thuật",
-    "about_exp_title_4": "Trợ Giảng",
-    "about_exp_title_5": "Kỹ Sư Phát Triển Web",
+    "about_exp_title_4": "Kỹ Sư Phát Triển Web",
 
     "about_exp_company_1": "NVIDIA",
     "about_exp_company_2": "Công Ty Tư Vấn & Quản Lý Minh Châu",
-    "about_exp_company_3": "Học Viện Bách Khoa Worcester",
-    "about_exp_company_4": "Công Ty Năng Lượng Mới New England",
-    "about_exp_company_5": "Công Ty CP Đầu Tư & Phát Triển Minh Hưng",
+    "about_exp_company_3": "Công Ty Năng Lượng Mới New England",
+    "about_exp_company_4": "Công Ty CP Đầu Tư & Phát Triển Minh Hưng",
 
-    "about_exp_company_1_desc_1": "Đóng góp vào Drive OS, một giải pháp hệ điều hành xe tự hành, bằng cách tích hợp hỗ trợ công cụ phía máy chủ cho bộ xử lý DRIVE Thor.",
-    "about_exp_company_1_desc_2": "Phát triển các mô-đun React cho GUI nhằm cải thiện trải nghiệm của người dùng.",
-    "about_exp_company_1_desc_3": "Hợp tác cập nhật các biến thể cấu hình bản dựng để tối ưu hóa hiệu suất hiển thị và mở rộng báo cáo lỗi.",
-    "about_exp_company_1_desc_4": "Đóng góp vào tài liệu về công cụ và trình điều khiển hiện có để đẩy nhanh quá trình tích hợp các bộ xử lý trong tương lai.",
+    "about_exp_company_1_desc_1": "Tích hợp hỗ trợ công cụ C++ phía máy chủ và nâng cao phần mềm trình điều khiển hiển thị cho DRIVE Thor SoC, giúp các ứng dụng ô tô an toàn quan trọng cải thiện khả năng phát hiện lỗi và tuân thủ các tiêu chuẩn an toàn chức năng.",
+    "about_exp_company_1_desc_2": "Phát triển các thành phần giao diện người dùng dựa trên React để trực quan hóa đầu vào/đầu ra của công cụ, hợp lý hóa quy trình xác thực, và đóng góp vào tài liệu bộ công cụ để đẩy nhanh việc áp dụng trong các nhóm đối tác.",
 
-    "about_exp_company_2_desc_1": "Thiết kế bảng điều khiển và tương tác dữ liệu để trực phân tích xu hướng tuyển dụng.",
-    "about_exp_company_2_desc_2": "Xây dựng các quy trình xử lý dữ liệu tự động và xử lý các tập dữ liệu lớn về số liệu thống kê tuyển dụng.",
-    "about_exp_company_2_desc_3": "Tạo các thành phần biểu đồ và hệ thống lọc dữ liệu có thể tái sử dụng.",
-    "about_exp_company_2_desc_4": "Triển khai các công cụ trực quan hóa và chức năng xuất để đáp ứng truy cập đa nền tảng.",
+    "about_exp_company_2_desc_1": "Thiết kế và triển khai bảng điều khiển xu hướng tuyển dụng tương tác với trực quan hóa dữ liệu theo thời gian thực, tối ưu hóa hiệu suất và khả năng phản hồi trên nhiều thiết bị.",
+    "about_exp_company_2_desc_2": "Xây dựng các chuỗi quy trình xử lý dữ liệu tự động và tích hợp REST API để nâng cao độ chính xác và tính phù hợp của dữ liệu, đồng thời phát triển các thành phần biểu đồ TypeScript có thể tái sử dụng để đơn giản hóa quá trình phát triển trong tương lai.",
 
-    "about_exp_company_3_desc_1": "Bắt đầu di chuyển từ WordPress sang kiến ​​trúc React và thiết lập thư viện thành phần và quy trình phát triển.",
-    "about_exp_company_3_desc_2": "Tích hợp API Aurora Solar và Google Project Sunroof với React, tạo ra giao diện lập bản đồ tấm pin mặt trời thống nhất.",
-    "about_exp_company_3_desc_3": "Duy trì nền tảng WordPress hiện có trong khi dần triển khai các thành phần React cho các tính năng mới.",
-    "about_exp_company_3_desc_4": "Phát triển các mô-đun React để ước tính chi phí năng lượng mặt trời.",
-    "about_exp_company_3_desc_5": "Tiến hành các nỗ lực lập tài liệu kỹ thuật cho quá trình di chuyển, tạo hướng dẫn cho việc di chuyển thành phần và tích hợp API.",
+    "about_exp_company_3_desc_1": "Dẫn dắt quá trình chuyển đổi từ WordPress sang React, cải thiện hiệu suất, tối ưu hóa quy trình làm việc và tích hợp API bản đồ năng lượng mặt trời để nâng cao độ chính xác của báo giá.",
+    "about_exp_company_3_desc_2": "Phát triển các công cụ ước tính chi phí động, tự động hóa đồng bộ dữ liệu và viết hướng dẫn di chuyển để đẩy nhanh quá trình phát triển và cải thiện trải nghiệm người dùng.",
 
-    "about_exp_company_4_desc_1": "Hướng dẫn sinh viên về các phương pháp tốt nhất trong kỹ thuật phần mềm, bao gồm kiểm soát phiên bản Git, quy trình đánh kiểm duyệt code và phương pháp thử nghiệm.",
-    "about_exp_company_4_desc_2": "Dẫn dắt các hội thảo kỹ thuật về kiến ​​trúc thành phần React, quản lý trạng thái và các mô hình phát triển giao diện người dùng.",
-    "about_exp_company_4_desc_3": "Hướng dẫn một nhóm gồm mười sinh viên kỹ sư phát triển ứng dụng dựa trên các phương pháp Agile bao gồm lập kế hoạch chạy nước rút và kiểm duyệt code.",
-    "about_exp_company_4_desc_4": "Đánh giá và cung cấp phản hồi chi tiết về các bài tập lập trình tập trung vào các nguyên tắc code sạch, tối ưu hóa thuật toán và các mẫu thiết kế phần mềm.",
-
-    "about_exp_company_5_desc_1": "Thiết kế một nền tảng thương mại điện tử đầy đủ chức năng bằng Laravel ở phần backend và React ở phần frontend.",
-    "about_exp_company_5_desc_2": "Xây dựng một nền tảng có khả năng mở rộng bằng cách sử dụng kiến ​​trúc model-view-controller của Laravel.",
-    "about_exp_company_5_desc_3": "Phát triển giao diện hệ thống quản lý nội dung có thể tùy chỉnh để quản lý hàng tồn kho.",
-    "about_exp_company_5_desc_4": "Tạo các thành phần UI phản hồi bằng React để đảm bảo khả năng tương thích trên nhiều trình duyệt và thiết bị di động.",
+    "about_exp_company_4_desc_1": "Phát triển nền tảng thương mại điện tử full-stack với Laravel và React, tích hợp xác thực theo vai trò, xử lý thanh toán và đồng bộ kho hàng tự động.",
+    "about_exp_company_4_desc_2": "Xây dựng hệ thống CMS để quản lý sản phẩm, tối ưu hóa độ tin cậy của API bằng kiểm thử, và thiết kế giao diện người dùng đáp ứng để mang lại trải nghiệm mượt mà.",
 
     "projects_live_demo": "Xem Demo",
     "projects_source_code": "Xem Code",

@@ -24,7 +24,7 @@
 
     "view_project": "View Project",
     "view_experience": "View Experience",
-    
+
     "home_info_1": "I first embarked on the path as a self-taught developer, developing an e-commerce application for a local firm in Vietnam.",
     "home_info_2": "I moved to the United States to pursue software engineering at Worcester Polytechnic Institute.",
     "home_info_3": "I journeyed to the tech hubs of Hangzhou, China to investigate high-technology recruitment and development.",
@@ -37,7 +37,7 @@
     "contact_message_placeholder": "Let me know how I can be of service!",
     "contact_send_message": "Send Message",
 
-    "about_bio": "I'm a dedicated and detail-focused software engineer with 5 years of hands-on experience in full-stack web development, systems software engineering, and technical internships. With a strong foundation in languages like Java, Python, C, and C++, I love tackling challenges both in web-development and at the system level. From creating sleek user interfaces to optimizing back-end performance, I'm passionate about building software solutions that are both efficient and user-friendly.",
+    "about_bio": "I'm a dedicated and detail-focused software engineer with 5 years of hands-on experience in full-stack web development, systems software engineering, and technical internships. With a strong foundation in languages like Java, Python, C, and C++, I love tackling web development challenges and system-level challenges. From creating sleek user interfaces to optimizing back-end performance, I enjoy building efficient and user-friendly software solutions.",
 
     "about_greeting": "Hello, I'm",
     "about_name": "Hung",
@@ -47,41 +47,24 @@
     "about_exp_title_1": "Software Engineer",
     "about_exp_title_2": "Technical Lead & Market Analyst",
     "about_exp_title_3": "Software Developer & Technical Staff",
-    "about_exp_title_4": "Teaching Assistant",
-    "about_exp_title_5": "Web Developer",
+    "about_exp_title_4": "Web Developer",
 
     "about_exp_company_1": "NVIDIA",
     "about_exp_company_2": "Mingju Consulting & Management",
-    "about_exp_company_3": "Worcester Polytechnic Institute",
-    "about_exp_company_4": "New England Clean Energy",
-    "about_exp_company_5": "Minh Hung Investment & Development JSC",
+    "about_exp_company_3": "New England Clean Energy",
+    "about_exp_company_4": "Minh Hung Investment & Development JSC",
 
-    "about_exp_company_1_desc_1": "Contributed to Drive OS, an autonomous vehicles operating system solution, by integrating host-side tool support for the next-generation DRIVE Thor SoC.",
-    "about_exp_company_1_desc_2": "Developed proof-of-concept React modules for a GUI to improve user-experience.",
-    "about_exp_company_1_desc_3": "Collaborated on updating build profile variants to optimize display performance and expand error reporting.",
-    "about_exp_company_1_desc_4": "Contributed to existing tool and driver’s documentation to expedite integration of future processors.",
+    "about_exp_company_1_desc_1": "Integrated host-side C++ tooling support and enhanced display driver firmware for DRIVE Thor SoC, enabling safety-critical automotive applications with improved error detection and compliance with functional safety standards.",
+    "about_exp_company_1_desc_2": "Developed React-based GUI components to visualize tool input/output, streamlining validation workflows, and contributed to toolchain documentation to accelerate adoption across partner teams.",
 
+    "about_exp_company_2_desc_1": "Designed and implemented an interactive hiring trends dashboard with real-time data visualization, optimizing performance and responsiveness across devices.",
+    "about_exp_company_2_desc_2": "Built automated data pipelines and integrated REST APIs to enhance data accuracy and relevance, while developing reusable TypeScript chart components to streamline future development.",
 
-    "about_exp_company_2_desc_1": "Engineered interactive data visualization dashboard to visualize industry hiring trends.",
-    "about_exp_company_2_desc_2": "Built automated data processing pipelines, handling large datasets of industry employment statistics.",
-    "about_exp_company_2_desc_3": "Created reusable chart components and data filtering systems.",
-    "about_exp_company_2_desc_4": "Implemented responsive visualization tools supporting cross-platform accessibility and export functionality.",
+    "about_exp_company_3_desc_1": "Led migration from WordPress to React, improving performance, streamlining workflows, and integrating solar mapping APIs to enhance quote accuracy.",
+    "about_exp_company_3_desc_2": "Developed dynamic cost estimation tools, automated data synchronization, and authored migration guidelines to accelerate development and improve user experience.",
 
-    "about_exp_company_3_desc_1": "Initiated migration from WordPress to React-based architecture, establishing component libraries and development workflows.",
-    "about_exp_company_3_desc_2": "Integrated Aurora Solar and Google Project Sunroof APIs with React, creating a unified solar panel mapping interface.",
-    "about_exp_company_3_desc_3": "Maintained existing WordPress platform while progressively implementing components for new features.",
-    "about_exp_company_3_desc_4": "Developed proof-of-concept React modules for solar cost estimation.",
-    "about_exp_company_3_desc_5": "Led technical documentation efforts for the stack migration, creating guidelines for component migration and API integration.",
-
-    "about_exp_company_4_desc_1": "Mentored students in software engineering best practices, including Git version control, code review processes, and testing methodologies.",
-    "about_exp_company_4_desc_2": "Led technical workshops on React component architecture, state management, and frontend development patterns.",
-    "about_exp_company_4_desc_3": "Guided a team of ten student engineers in developing a full-stack application, implementing Agile practices including sprint planning and code reviews.",
-    "about_exp_company_4_desc_4": "Evaluated and provided detailed feedback on coding assignments focusing on clean code principles, algorithm optimization, and software design patterns.",
-
-    "about_exp_company_5_desc_1": "Architected a full-stack e-commerce platform using Laravel API backend and React frontend.",
-    "about_exp_company_5_desc_2": "Built a scalable platform using Laravel model-view-controller architecture.",
-    "about_exp_company_5_desc_3": "Developed a customizable content-management-system interface for inventory management.",
-    "about_exp_company_5_desc_4": "Created responsive UI components using React, ensuring cross-browser and mobile compatibility.",
+    "about_exp_company_4_desc_1": "Developed a full-stack e-commerce platform with Laravel and React, integrating role-based authentication, payment processing, and automated inventory syncing.",
+    "about_exp_company_4_desc_2": "Built a dynamic CMS for product management, optimized API reliability with testing, and designed a responsive UI for seamless user experience.",
 
     "projects_live_demo": "Live Demo",
     "projects_source_code": "View Source Code",

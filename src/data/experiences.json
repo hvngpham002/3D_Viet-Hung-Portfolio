@@ -6,9 +6,7 @@
     "logo": "nvidia.webp",
     "points": [
       "about_exp_company_1_desc_1",
-      "about_exp_company_1_desc_2",
-      "about_exp_company_1_desc_3",
-      "about_exp_company_1_desc_4"
+      "about_exp_company_1_desc_2"
     ]
   },
   {
@@ -19,9 +17,7 @@
     "logo": "mingju.png",
     "points": [
       "about_exp_company_2_desc_1",
-      "about_exp_company_2_desc_2",
-      "about_exp_company_2_desc_3",
-      "about_exp_company_2_desc_4"
+      "about_exp_company_2_desc_2"
     ]
   },
   {
@@ -32,36 +28,18 @@
     "logo": "new-england-clean-energy.png",
     "points": [
       "about_exp_company_3_desc_1",
-      "about_exp_company_3_desc_2",
-      "about_exp_company_3_desc_3",
-      "about_exp_company_3_desc_4",
-      "about_exp_company_3_desc_5"
-    ]
-  },
-  {
-    "year": "2021 - 2022",
-    "company": "about_exp_company_4",
-    "role": "about_exp_title_4",
-    "country": "usa-flag.png",
-    "logo": "wpi.png",
-    "points": [
-      "about_exp_company_4_desc_1",
-      "about_exp_company_4_desc_2",
-      "about_exp_company_4_desc_3",
-      "about_exp_company_4_desc_4"
+      "about_exp_company_3_desc_2"
     ]
   },
   {
     "year": "2020 - 2021",
-    "company": "about_exp_company_5",
-    "role": "about_exp_title_5",
+    "company": "about_exp_company_4",
+    "role": "about_exp_title_4",
     "country": "vietnam-flag.png",
     "logo": "minh-hung.png",
     "points": [
-      "about_exp_company_5_desc_1",
-      "about_exp_company_5_desc_2",
-      "about_exp_company_5_desc_3",
-      "about_exp_company_5_desc_4"
+      "about_exp_company_4_desc_1",
+      "about_exp_company_4_desc_2"
     ]
   }
 ]
