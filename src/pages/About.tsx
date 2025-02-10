@@ -1,10 +1,41 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn, textVariant } from "../utils/motion";
 import { useState, useEffect } from "react";
 import { getExperiences, getSkills } from "../services/supabaseService";
 import type { experience, skill } from "../services/supabaseService";
+import type { ReactNode } from "react";
+import React from "react";
+
+interface RadialMenuItemProps {
+  rotate?: number;
+  children: ReactNode;
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+}
+
+const RadialMenuItem = ({
+  rotate = 0,
+  children,
+  onClick,
+}: RadialMenuItemProps) => {
+  return (
+    <motion.div
+      className="absolute w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center cursor-pointer"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{
+        scale: 1,
+        opacity: 1,
+        x: Math.cos(rotate * (Math.PI / 180)) * 110 - 16,
+        y: Math.sin(rotate * (Math.PI / 180)) * 110 - 16,
+      }}
+      whileHover={{ scale: 1.2 }}
+      onClick={onClick}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const About = () => {
   const { t } = useTranslation();
@@ -64,14 +95,67 @@ const About = () => {
           variants={textVariant()}
           className="mb-8 flex flex-col items-center"
         >
-          <img
-            src="/images/profile.jpg"
-            alt="Profile"
-            className="w-44 h-44 rounded-full border-4 border-gray-300 mb-4"
-          />
-          <h1 className="text-2xl md:text-4xl font-bold dark:text-white">
+          <div className="relative inline-block profile-container">
+            <motion.div className="relative cursor-pointer">
+              <img
+                src="/images/profile.jpg"
+                alt="Profile"
+                className="w-44 h-44 rounded-full border-4 border-gray-300 transition-transform duration-300"
+              />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <AnimatePresence>
+                  <React.Fragment>
+                    <RadialMenuItem
+                      rotate={-65}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open("/Viet Hung Resume.pdf", "_blank");
+                      }}
+                    >
+                      <img
+                        src="/images/cv.svg"
+                        alt="Resume"
+                        className="w-6 h-6 invert"
+                      />
+                    </RadialMenuItem>
+                    <RadialMenuItem
+                      rotate={-45}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(
+                          "https://linkedin.com/in/vhungpham",
+                          "_blank"
+                        );
+                      }}
+                    >
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                      </svg>
+                    </RadialMenuItem>
+                    <RadialMenuItem
+                      rotate={-25}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open("https://github.com/HungVPham", "_blank");
+                      }}
+                    >
+                      <img
+                        src="/icons/github.svg"
+                        alt="GitHub"
+                        className="w-5 h-5 invert"
+                      />
+                    </RadialMenuItem>
+                  </React.Fragment>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
+          <h1 className="text-2xl md:text-4xl font-bold dark:text-white mt-4">
             {t("about_greeting")}{" "}
-
             <span className="blue-gradient_text drop-shadow">
               {t("about_name")}.
             </span>
