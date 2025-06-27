@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Suspense, useState, useRef, useEffect, useCallback } from "react";
+import { Suspense, useState, useRef, useEffect, useCallback, lazy } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
 import Loader from "../components/Loader";
-import Sky from "../models/Sky";
-import Book from "../models/Book";
-import Dragon from "../models/Dragon";
-import Ciri from "../models/Ciri";
-import Flag from "../models/Flag";
 import HomeInfo from "../components/HomeInfo";
 import * as THREE from "three";
+
+const Sky = lazy(() => import("../models/Sky"));
+const Book = lazy(() => import("../models/Book"));
+const Dragon = lazy(() => import("../models/Dragon"));
+const Ciri = lazy(() => import("../models/Ciri"));
+const Flag = lazy(() => import("../models/Flag"));
 
 type SceneContentProps = {
   isRotating: boolean;
@@ -384,12 +385,12 @@ const SceneContent = ({
   };
 
   const adjustDragonForScreenSize = (): ScreenAdjustment => {
-    let screenScale: [number, number, number] = [0.8, 0.8, 0.8];
+    let screenScale: [number, number, number] = [30.0, 30.0, 30.0];
     const screenPosition = new THREE.Vector3(0, 0.4, -1);
     const rotation = new THREE.Euler(0, 1.25, 0);
 
     if (window.innerWidth < 768) {
-      screenScale = [0.6, 0.6, 0.6];
+      screenScale = [20.0, 20.0, 20.0];
     }
 
     return [screenScale, screenPosition, rotation];
