@@ -11,6 +11,12 @@ describe("Alert Component", () => {
   it("applies appropriate styling based on alert type", () => {
     render(<Alert text="Success message" type="success" />);
     const alertElement = screen.getByText("Success message").closest("div");
-    expect(alertElement).toHaveClass("success"); // Adjust based on your actual class names
+    expect(alertElement).toHaveClass("bg-blue-800");
+
+    render(<Alert text="Danger message" type="danger" />);
+    const dangerAlertElement = screen
+      .getByText("Danger message")
+      .closest("div");
+    expect(dangerAlertElement).toHaveClass("bg-red-800");
   });
 });
