@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Suspense, useState, useRef, useEffect, useCallback, lazy } from "react";
+import { Suspense, useState, useRef, useEffect, useCallback, lazy, memo, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
@@ -34,54 +34,54 @@ const Home = () => {
 
   const themeMode = useSelector((state: RootState) => state.theme.mode);
 
-  const lightingConfig =
+  const lightingConfig = useMemo(() =>
     themeMode === "light"
       ? {
-          directionalLight: {
-            position: new THREE.Vector3(0, 10, 0),
-            intensity: 2.5,
-            color: "#ffffff",
-          },
-          ambientLight: {
-            intensity: 2.5,
-            color: "#c6fff5",
-          },
-          hemisphereLight: {
-            color: "#fafbd5",
-            groundColor: "#696152",
-            intensity: 2.5,
-          },
-        }
+        directionalLight: {
+          position: new THREE.Vector3(0, 10, 0),
+          intensity: 2.5,
+          color: "#ffffff",
+        },
+        ambientLight: {
+          intensity: 2.5,
+          color: "#c6fff5",
+        },
+        hemisphereLight: {
+          color: "#fafbd5",
+          groundColor: "#696152",
+          intensity: 2.5,
+        },
+      }
       : {
-          directionalLight: {
-            position: new THREE.Vector3(0, 10, 0),
-            intensity: 1.5,
-            color: "#e0eaff",
-          },
-          ambientLight: {
-            intensity: 0.6,
-            color: "#c8f2ff",
-          },
-          hemisphereLight: {
-            color: "#b8c6f3",
-            groundColor: "#a1b3d8",
-            intensity: 0.6,
-          },
-        };
+        directionalLight: {
+          position: new THREE.Vector3(0, 10, 0),
+          intensity: 1.5,
+          color: "#e0eaff",
+        },
+        ambientLight: {
+          intensity: 0.6,
+          color: "#c8f2ff",
+        },
+        hemisphereLight: {
+          color: "#b8c6f3",
+          groundColor: "#a1b3d8",
+          intensity: 0.6,
+        },
+      }, [themeMode]);
 
-  const simulateKeyPress = (key: string) => {
+  const simulateKeyPress = useCallback((key: string) => {
     // Create and dispatch keydown event
     const keydownEvent = new KeyboardEvent("keydown", { key });
     document.dispatchEvent(keydownEvent);
-  };
+  }, []);
 
-  const simulateKeyRelease = (key: string) => {
+  const simulateKeyRelease = useCallback((key: string) => {
     // Create and dispatch keyup event
     const keyupEvent = new KeyboardEvent("keyup", { key });
     document.dispatchEvent(keyupEvent);
-  };
+  }, []);
 
-  const handleMoveStart = (key: string) => {
+  const handleMoveStart = useCallback((key: string) => {
     // Initial press
     simulateKeyPress(key);
 
@@ -94,9 +94,9 @@ const Home = () => {
     moveIntervalRef.current = window.setInterval(() => {
       simulateKeyPress(key);
     }, 16); // ~60fps
-  };
+  }, [simulateKeyPress]);
 
-  const handleMoveEnd = (key: string) => {
+  const handleMoveEnd = useCallback((key: string) => {
     // Clear the interval
     if (moveIntervalRef.current) {
       clearInterval(moveIntervalRef.current);
@@ -105,7 +105,7 @@ const Home = () => {
 
     // Release the key
     simulateKeyRelease(key);
-  };
+  }, [simulateKeyRelease]);
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -128,9 +128,8 @@ const Home = () => {
       <div className="fixed top-0 left-0 right-0 bottom-0">
         <Canvas
           shadows
-          className={`w-full h-screen bg-transparent ${
-            isRotating ? "cursor-grabbing" : "cursor-grab"
-          }`}
+          className={`w-full h-screen bg-transparent ${isRotating ? "cursor-grabbing" : "cursor-grab"
+            }`}
           camera={{ position: [0, 0, 5], near: 0.1, far: 1000 }}
           gl={{
             antialias: window.innerHeight <= 1080,
@@ -170,8 +169,7 @@ const Home = () => {
               groundColor={lightingConfig.hemisphereLight.groundColor}
               intensity={lightingConfig.hemisphereLight.intensity}
             />
-
-            <SceneContent
+            <MemoizedSceneContent
               isRotating={isRotating}
               setIsRotating={setIsRotating}
               currentStage={currentStage}
@@ -623,5 +621,7 @@ const SceneContent = ({
     </group>
   );
 };
+
+const MemoizedSceneContent = memo(SceneContent);
 
 export default Home;

@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { Suspense, useRef, useState, useEffect } from "react";
+import React, { Suspense, useRef, useState, useEffect, lazy } from "react";
 import emailjs from "@emailjs/browser";
 import { useTranslation } from "react-i18next";
 import { Canvas } from "@react-three/fiber";
-import Sif from "../models/Sif";
-import Bonfire from "../models/Bonfire";
 import { reloadTranslations } from "../i18n";
+
+const Sif = lazy(() => import("../models/Sif"));
+const Bonfire = lazy(() => import("../models/Bonfire"));
 
 import {
   ContactShadows,

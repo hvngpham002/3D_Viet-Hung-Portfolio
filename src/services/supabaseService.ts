@@ -1,5 +1,3 @@
-import { supabase } from "../lib/supabaseClient";
-
 export interface experience {
   id?: number;
   year: string;
@@ -8,6 +6,7 @@ export interface experience {
   country: string;
   logo: string;
   points: string[];
+  linkText: string;
 }
 
 export interface skill {
@@ -42,8 +41,14 @@ export interface homeInfo {
   linkText: string;
 }
 
+const getSupabaseClient = async () => {
+  const { default: getSupabase } = await import("../lib/supabaseClient");
+  return getSupabase();
+};
+
 // Experiences
 export const getExperiences = async () => {
+  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from("experiences")
     .select("*")
@@ -55,6 +60,7 @@ export const getExperiences = async () => {
 
 // Skills
 export const getSkills = async () => {
+  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from("skills")
     .select("*")
@@ -65,6 +71,7 @@ export const getSkills = async () => {
 
 // Projects
 export const getProjects = async () => {
+  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from("projects")
     .select("*");
@@ -75,6 +82,7 @@ export const getProjects = async () => {
 
 // Translations
 export const getTranslations = async () => {
+  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from("translations")
     .select("*");
@@ -109,6 +117,7 @@ export const initializeTranslations = async () => {
 };
 
 export const getHomeInfo = async (): Promise<homeInfo[]> => {
+  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from('home_info')
     .select('*')
