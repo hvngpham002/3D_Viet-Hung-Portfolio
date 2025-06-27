@@ -13,7 +13,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
 import * as THREE from "three";
-import dragonScene from "../assets/3d/dragon.glb";
+import dragonScene from "../assets/3d/dragon-optimized.glb";
 import { a } from "@react-spring/three";
 import { useFrame } from "@react-three/fiber";
 

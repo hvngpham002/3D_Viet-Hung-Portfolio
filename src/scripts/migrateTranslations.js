@@ -9,19 +9,20 @@ import {
 } from 'url';
 import {
     dirname,
-    join
+    join,
+    resolve
 } from 'path';
 import {
     readFileSync
 } from 'fs';
 
-// Initialize environment variables
-config();
-
 // Get the directory path
 const __filename = fileURLToPath(
     import.meta.url);
 const __dirname = dirname(__filename);
+
+// Initialize environment variables
+config({ path: resolve(__dirname, '../../.env') });
 
 // Read translation files
 const en = JSON.parse(readFileSync(join(__dirname, '../locales/en.json'), 'utf8'));

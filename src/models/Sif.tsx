@@ -7,11 +7,12 @@ Source: https://sketchfab.com/3d-models/great-grey-wolf-sif-dark-souls-remastere
 Title: Great Grey Wolf Sif - Dark Souls Remastered
 */
 
+
 import { useEffect, useRef, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { Group, Object3D, Material, SkinnedMesh } from "three";
 import { GLTF } from "three-stdlib";
-import sifScene from "../assets/3d/sif.glb";
+import sifScene from "../assets/3d/sif-optimized.glb";
 
 type SifProps = {
   currentAnimation: "idle" | "walking" | "running" | "attack";
