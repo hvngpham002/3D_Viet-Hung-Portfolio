@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-import { Home, About, Projects, Contact } from './pages/index';
+import Loader from './components/Loader';
+
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Projects = lazy(() => import('./pages/Projects'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 const App = () => {
   const themeMode = useSelector((state: RootState) => state.theme.mode);
@@ -15,12 +21,14 @@ const App = () => {
       <main className="bg-slate-300/50 dark:bg-slate-800">
         <Router>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
+          <Suspense fallback={<Loader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </Suspense>
         </Router>
       </main>
     </div>

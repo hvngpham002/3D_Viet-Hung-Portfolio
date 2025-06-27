@@ -101,6 +101,7 @@ const About = () => {
                 src="/images/profile.jpg"
                 alt="Profile"
                 className="w-44 h-44 rounded-full border-4 border-gray-300 transition-transform duration-300"
+                loading="lazy"
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <AnimatePresence>
@@ -116,6 +117,7 @@ const About = () => {
                         src="/images/cv.svg"
                         alt="Resume"
                         className="w-6 h-6 invert"
+                        loading="lazy"
                       />
                     </RadialMenuItem>
                     <RadialMenuItem
@@ -147,6 +149,7 @@ const About = () => {
                         src="/icons/github.svg"
                         alt="GitHub"
                         className="w-5 h-5 invert"
+                        loading="lazy"
                       />
                     </RadialMenuItem>
                   </React.Fragment>
@@ -190,6 +193,7 @@ const About = () => {
                   src={`/icons/${skill.icon}`}
                   alt={skill.name}
                   className="w-6 h-6 md:w-7 md:h-7 md:mr-3 mb-1 md:mb-0"
+                  loading="lazy"
                 />
                 <span className="text-gray-800 dark:text-gray-300 hidden md:block">
                   {skill.name}
@@ -219,11 +223,13 @@ const About = () => {
                       src={`/images/${exp.logo}`}
                       alt={exp.company}
                       className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                      loading="lazy"
                     />
                     <img
                       src={`/icons/${exp.country}`}
                       alt="Country flag"
                       className="w-4 h-4 md:w-5 md:h-5 absolute -top-1 -right-1"
+                      loading="lazy"
                     />
                   </div>
                   <div className="flex flex-col items-center gap-2">

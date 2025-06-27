@@ -125,6 +125,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               alt={`${project.title} - Image ${currentImageIndex + 1}`}
               className="w-full h-full object-cover"
               draggable="false"
+              loading="lazy"
             />
           </motion.div>
         </AnimatePresence>
