@@ -4,7 +4,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
 
-import flagScene from "../assets/3d/flag.glb";
+import flagScene from "../assets/3d/flag-optimized.glb";
 
 type GLTFResult = GLTF & {
   nodes: {
