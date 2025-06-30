@@ -79,6 +79,25 @@ const Sky = ({ isDay }: SkyProps) => {
     }
   }, [isDay, skyColor, emissiveColor]);
 
+  useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (skyRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        skyRef.current.traverse((child: THREE.Object3D) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach((material) => material?.dispose());
+            } else {
+              child.material?.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, []);
+
   return (
     <primitive
       ref={skyRef}

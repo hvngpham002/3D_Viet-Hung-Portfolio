@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { getHomeInfo } from "../services/supabaseService";
-import type { homeInfo } from "../services/supabaseService";
+import type { homeInfo } from "../types/supabase";
 
 
 type InfoBoxProps = {

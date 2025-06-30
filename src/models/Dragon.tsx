@@ -8,7 +8,7 @@ Source: https://sketchfab.com/3d-models/dragon-flying-cycle-ae0831702eac462a9969
 Title: Dragon Flying Cycle
 */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -30,6 +30,25 @@ const Dragon = (props: DragonProps) => {
   const { actions } = useAnimations(animations, group);
 
   const clock = useRef(0); // A clock to keep track of the time
+  const direction = useMemo(() => new THREE.Vector3(), []);
+
+  useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (group.current) {
+        group.current.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material?.dispose());
+            } else {
+              child.material?.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [group]);
 
   useEffect(() => {
     if (actions["Take 001"]) {
@@ -73,11 +92,7 @@ const Dragon = (props: DragonProps) => {
         Math.sin((clock.current + delta * speed) * speed * waveFrequency);
 
     // Calculate direction to the next position (including vertical movement)
-    const direction = new THREE.Vector3(
-      nextX - x,
-      nextY - y,
-      nextZ - z
-    ).normalize();
+    direction.set(nextX - x, nextY - y, nextZ - z).normalize();
 
     // Calculate rotation angles
     const horizontalAngle = Math.atan2(direction.x, direction.z);

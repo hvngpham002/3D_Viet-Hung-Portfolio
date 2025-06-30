@@ -1,54 +1,15 @@
-export interface experience {
-  id?: number;
-  year: string;
-  company: string;
-  role: string;
-  country: string;
-  logo: string;
-  points: string[];
-  linkText: string;
-}
+import {
+  experience,
+  skill,
+  project,
+  homeInfo,
+} from "../types/supabase";
+import getSupabase from "../lib/supabaseClient";
 
-export interface skill {
-  id?: number;
-  name: string;
-  icon: string;
-}
-
-export interface project {
-  id?: number;
-  images: string[];
-  title: string;
-  description: string;
-  tags: string[];
-  sourceCode: string;
-  demo: string;
-}
-
-export interface translation {
-  id?: number;
-  key: string;
-  en: string;
-  zh: string;
-  vi: string;
-}
-
-export interface homeInfo {
-  id: number;
-  stage: number;
-  text: string;
-  link: string;
-  linkText: string;
-}
-
-const getSupabaseClient = async () => {
-  const { default: getSupabase } = await import("../lib/supabaseClient");
-  return getSupabase();
-};
+const supabase = getSupabase();
 
 // Experiences
-export const getExperiences = async () => {
-  const supabase = await getSupabaseClient();
+export const getExperiences = async (): Promise<experience[]> => {
   const { data, error } = await supabase
     .from("experiences")
     .select("*")
@@ -59,19 +20,17 @@ export const getExperiences = async () => {
 };
 
 // Skills
-export const getSkills = async () => {
-  const supabase = await getSupabaseClient();
+export const getSkills = async (): Promise<skill[]> => {
   const { data, error } = await supabase
     .from("skills")
-    .select("*")
+    .select("*");
 
   if (error) throw error;
   return data;
 };
 
 // Projects
-export const getProjects = async () => {
-  const supabase = await getSupabaseClient();
+export const getProjects = async (): Promise<project[]> => {
   const { data, error } = await supabase
     .from("projects")
     .select("*");
@@ -82,7 +41,6 @@ export const getProjects = async () => {
 
 // Translations
 export const getTranslations = async () => {
-  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from("translations")
     .select("*");
@@ -117,7 +75,6 @@ export const initializeTranslations = async () => {
 };
 
 export const getHomeInfo = async (): Promise<homeInfo[]> => {
-  const supabase = await getSupabaseClient();
   const { data, error } = await supabase
     .from('home_info')
     .select('*')

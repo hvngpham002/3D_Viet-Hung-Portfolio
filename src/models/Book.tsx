@@ -28,6 +28,33 @@ const Book = (props: BookProps) => {
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (group.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        group.current.traverse(
+          (child: {
+            geometry: { dispose: () => void };
+            material: {
+              forEach: (arg0: (material: any) => any) => void;
+              dispose: () => void;
+            };
+          }) => {
+            if (child instanceof THREE.Mesh) {
+              child.geometry?.dispose();
+              if (Array.isArray(child.material)) {
+                child.material.forEach((material) => material?.dispose());
+              } else {
+                child.material?.dispose();
+              }
+            }
+          }
+        );
+      }
+    };
+  }, [group]);
+
+  useEffect(() => {
     Object.values(materials).forEach((material) => {
       if (material instanceof THREE.MeshStandardMaterial) {
         material.roughness = 0.5;
@@ -65,14 +92,20 @@ const Book = (props: BookProps) => {
                       castShadow
                       receiveShadow
                       geometry={nodes["Scene_Texture-base_0"]?.geometry}
-                      material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial()}
+                      material={
+                        materials["Texture-base"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                     <mesh
                       name="Scene_Texture-base_0_1"
                       castShadow
                       receiveShadow
                       geometry={nodes["Scene_Texture-base_0_1"]?.geometry}
-                      material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial()}
+                      material={
+                        materials["Texture-base"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                     <mesh
                       name="Scene_Texture-base-gloss-jpg_0"
@@ -81,14 +114,20 @@ const Book = (props: BookProps) => {
                       geometry={
                         nodes["Scene_Texture-base-gloss-jpg_0"]?.geometry
                       }
-                      material={materials["Texture-base-gloss-jpg"] ?? new THREE.MeshStandardMaterial()}
+                      material={
+                        materials["Texture-base-gloss-jpg"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                     <mesh
                       name="Scene_Book-tittle_0"
                       castShadow
                       receiveShadow
                       geometry={nodes["Scene_Book-tittle_0"]?.geometry}
-                      material={materials["Book-tittle"] ?? new THREE.MeshStandardMaterial()}
+                      material={
+                        materials["Book-tittle"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                   </a.group>
                   <a.group
@@ -109,7 +148,10 @@ const Book = (props: BookProps) => {
                         geometry={
                           nodes["Mill-wind-wheel_Texture-base_0"]?.geometry
                         }
-                        material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial()}
+                        material={
+                          materials["Texture-base"] ??
+                          new THREE.MeshStandardMaterial()
+                        }
                       />
                     </group>
                   </a.group>
@@ -129,7 +171,10 @@ const Book = (props: BookProps) => {
                         geometry={
                           nodes["Mill-water-wheel_Texture-base_0"]?.geometry
                         }
-                        material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial()}
+                        material={
+                          materials["Texture-base"] ??
+                          new THREE.MeshStandardMaterial()
+                        }
                       />
                     </a.group>
                   </a.group>
@@ -147,10 +192,19 @@ const Book = (props: BookProps) => {
                       name="0"
                       castShadow
                       receiveShadow
-                      geometry={nodes["0"]?.geometry ?? new THREE.BufferGeometry()}
-                      material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial({ color: 0xcccccc })}
-                      morphTargetDictionary={nodes["0"]?.morphTargetDictionary ?? {}}
-                      morphTargetInfluences={nodes["0"]?.morphTargetInfluences ?? []}
+                      geometry={
+                        nodes["0"]?.geometry ?? new THREE.BufferGeometry()
+                      }
+                      material={
+                        materials["Texture-base"] ??
+                        new THREE.MeshStandardMaterial({ color: 0xcccccc })
+                      }
+                      morphTargetDictionary={
+                        nodes["0"]?.morphTargetDictionary ?? {}
+                      }
+                      morphTargetInfluences={
+                        nodes["0"]?.morphTargetInfluences ?? []
+                      }
                     />
                   </a.group>
                 </a.group>
@@ -167,10 +221,19 @@ const Book = (props: BookProps) => {
                       name="1"
                       castShadow
                       receiveShadow
-                      geometry={nodes["1"]?.geometry ?? new THREE.BufferGeometry()}
-                      material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial({ color: 0xcccccc })}
-                      morphTargetDictionary={nodes["1"]?.morphTargetDictionary ?? {}}
-                      morphTargetInfluences={nodes["1"]?.morphTargetInfluences ?? []}
+                      geometry={
+                        nodes["1"]?.geometry ?? new THREE.BufferGeometry()
+                      }
+                      material={
+                        materials["Texture-base"] ??
+                        new THREE.MeshStandardMaterial({ color: 0xcccccc })
+                      }
+                      morphTargetDictionary={
+                        nodes["1"]?.morphTargetDictionary ?? {}
+                      }
+                      morphTargetInfluences={
+                        nodes["1"]?.morphTargetInfluences ?? []
+                      }
                     />
                   </a.group>
                 </a.group>
@@ -184,10 +247,13 @@ const Book = (props: BookProps) => {
                       name="Waterfall_Texture-base-gloss-jpg_0"
                       castShadow
                       receiveShadow
-                        geometry={
-                          nodes["Waterfall_Texture-base-gloss-jpg_0"]?.geometry
-                        }
-                        material={materials["Texture-base-gloss-jpg"] ?? new THREE.MeshStandardMaterial()}
+                      geometry={
+                        nodes["Waterfall_Texture-base-gloss-jpg_0"]?.geometry
+                      }
+                      material={
+                        materials["Texture-base-gloss-jpg"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                   </a.group>
                 </a.group>
@@ -202,7 +268,10 @@ const Book = (props: BookProps) => {
                       castShadow
                       receiveShadow
                       geometry={nodes["deers_Texture-base_0"]?.geometry}
-                      material={materials["Texture-base"] ?? new THREE.MeshStandardMaterial()}
+                      material={
+                        materials["Texture-base"] ??
+                        new THREE.MeshStandardMaterial()
+                      }
                     />
                   </a.group>
                 </a.group>
