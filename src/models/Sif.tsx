@@ -13,6 +13,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import { Group, Object3D, Material, SkinnedMesh } from "three";
 import { GLTF } from "three-stdlib";
 import sifScene from "../assets/3d/sif-optimized.glb";
+import * as THREE from "three";
 
 type SifProps = {
   currentAnimation: "idle" | "walking" | "running" | "attack";
@@ -65,6 +66,25 @@ const Sif = ({ currentAnimation, ...props }: SifProps) => {
       }
     };
   }, [actions, currentAnimation, currentAnimationMap]);
+
+  useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (group.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        group.current.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material?.dispose());
+            } else {
+              child.material?.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [group]);
 
   return (
     <group ref={group} {...props} dispose={null}>

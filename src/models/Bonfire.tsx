@@ -7,7 +7,7 @@ Source: https://sketchfab.com/3d-models/bonfire-dark-souls-a090bdd8ca6841d1855f3
 Title: Bonfire / Dark Souls
 */
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import bonfireScene from "../assets/3d/bonfire.glb";
 
@@ -43,6 +43,24 @@ const Bonfire = (props: BonfireProps) => {
     mat.needsUpdate = true; // Explicitly mark material for update
     return mat;
   }, [materials]); // Narrow dependency
+
+  useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (nodes.Object_10) {
+        nodes.Object_10.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material?.dispose());
+            } else {
+              child.material?.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [nodes]);
 
   return (
     <group {...props} dispose={null}>

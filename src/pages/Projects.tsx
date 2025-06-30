@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { PanInfo } from "framer-motion";
 import { fadeIn } from "../utils/motion";
 import { getProjects } from "../services/supabaseService";
-import type { project as Project } from "../services/supabaseService";
+import type { project as Project } from "../types/supabase";
 
 interface ProjectCardProps {
   project: Project;

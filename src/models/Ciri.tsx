@@ -430,6 +430,32 @@ const Ciri = ({
   });
 
   useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (group.current) {
+        group.current.traverse(
+          (child: {
+            geometry: { dispose: () => void };
+            material: {
+              forEach: (arg0: (material: any) => any) => void;
+              dispose: () => void;
+            };
+          }) => {
+            if (child instanceof THREE.Mesh) {
+              child.geometry?.dispose();
+              if (Array.isArray(child.material)) {
+                child.material.forEach((material) => material?.dispose());
+              } else {
+                child.material?.dispose();
+              }
+            }
+          }
+        );
+      }
+    };
+  }, [group]);
+
+  useEffect(() => {
     // Reduce geometry detail on higher resolutions
     if (window.innerHeight > 1080) {
       group.current?.traverse((child: THREE.Object3D) => {

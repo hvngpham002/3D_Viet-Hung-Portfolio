@@ -6,8 +6,12 @@ import { useTranslation } from "react-i18next";
 import { Canvas } from "@react-three/fiber";
 import { reloadTranslations } from "../i18n";
 
-const Sif = lazy(() => import("../models/Sif"));
-const Bonfire = lazy(() => import("../models/Bonfire"));
+const Sif = lazy(() =>
+  import("../models/Sif").then((module) => ({ default: module.default }))
+);
+const Bonfire = lazy(() =>
+  import("../models/Bonfire").then((module) => ({ default: module.default }))
+);
 
 import {
   ContactShadows,
@@ -288,7 +292,7 @@ const Contact = () => {
         // Desktop
         if (isTranslationsLoading) {
           // When loading, calculate height based on loading bars
-          const loadingBars = formRef.current.querySelectorAll('.loading-bar');
+          const loadingBars = formRef.current.querySelectorAll(".loading-bar");
           let totalHeight = 0;
           loadingBars.forEach((bar) => {
             totalHeight += (bar as HTMLElement).offsetHeight;
@@ -362,7 +366,7 @@ const Contact = () => {
             ) : (
               <React.Fragment>
                 <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_name")}: 
+                  {t("contact_name")}:
                   <input
                     type="text"
                     name="name"
@@ -376,7 +380,7 @@ const Contact = () => {
                   />
                 </label>
                 <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_email")}: 
+                  {t("contact_email")}:
                   <input
                     type="email"
                     name="email"
@@ -390,7 +394,7 @@ const Contact = () => {
                   />
                 </label>
                 <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_message")}: 
+                  {t("contact_message")}:
                   <textarea
                     name="message"
                     rows={2}
@@ -417,10 +421,7 @@ const Contact = () => {
             )}
           </form>
         </div>
-        <div
-          ref={canvasContainerRef}
-          className="lg:w-1/2 w-full lg:h-auto"
-        >
+        <div ref={canvasContainerRef} className="lg:w-1/2 w-full lg:h-auto">
           <Canvas
             shadows
             dpr={[1, 2]}
@@ -434,6 +435,10 @@ const Contact = () => {
               antialias: true,
               toneMapping: THREE.ACESFilmicToneMapping,
               outputColorSpace: THREE.SRGBColorSpace,
+              premultipliedAlpha: false,
+              powerPreference: "high-performance",
+              stencil: false,
+              depth: true,
             }}
             className="h-full"
           >

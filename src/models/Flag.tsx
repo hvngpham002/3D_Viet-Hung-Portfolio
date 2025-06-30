@@ -87,6 +87,25 @@ const Flag = (props: FlagProps) => {
     }
   }, [actions, materials, group]);
 
+  useEffect(() => {
+    return () => {
+      // Dispose of geometries and materials
+      if (group.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        group.current.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material?.dispose());
+            } else {
+              child.material?.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [group]);
+
   return (
     <group ref={group} {...props}>
       <group name="Sketchfab_Scene">

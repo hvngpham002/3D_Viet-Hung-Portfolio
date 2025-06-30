@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn, textVariant } from "../utils/motion";
 import { useState, useEffect } from "react";
 import { getExperiences, getSkills } from "../services/supabaseService";
-import type { experience, skill } from "../services/supabaseService";
+import type { experience, skill } from "../types/supabase";
 import type { ReactNode } from "react";
 import React from "react";
 
