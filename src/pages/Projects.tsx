@@ -85,7 +85,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
   return (
     <motion.div
       variants={fadeIn("up", "spring", index * 0.2, 1)}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+      className="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -157,7 +157,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         <h3 className="text-xl font-semibold mb-3 dark:text-white">
           {t(project.title)}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed">
+        <p className="text-gray-500 dark:text-gray-200 mb-4 text-sm leading-relaxed">
           {t(project.description)}
         </p>
 
@@ -183,21 +183,21 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               {t("projects_live_demo")}
             </a>
           ) : (
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-200">
               {t("projects_not_deployed")}
             </span>
           )}
           {project.sourceCode ? (
             <a
               href={project.sourceCode}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:underline"
+              className="text-sm text-gray-500 dark:text-gray-200 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
               {t("projects_source_code")}
             </a>
           ) : (
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-200">
               {t("projects_private")}
             </span>
           )}

@@ -195,7 +195,7 @@ const Loader = ({ onStarted }: LoaderProps) => {
 
       {/* Version Mark */}
       <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 text-xs sm:text-sm text-gray-500">
-        v1.0.8 
+        v1.0.9 
       </div>
     </div>
   );
