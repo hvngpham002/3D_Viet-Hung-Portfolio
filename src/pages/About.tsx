@@ -106,7 +106,7 @@ const About = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <AnimatePresence>
                   <React.Fragment>
-                    <RadialMenuItem
+                    {/* <RadialMenuItem
                       rotate={-65}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -119,7 +119,7 @@ const About = () => {
                         className="w-6 h-6 invert"
                         loading="lazy"
                       />
-                    </RadialMenuItem>
+                    </RadialMenuItem> */}
                     <RadialMenuItem
                       rotate={-45}
                       onClick={(e) => {
@@ -142,7 +142,7 @@ const About = () => {
                       rotate={-25}
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open("https://github.com/HungVPham", "_blank");
+                        window.open("https://github.com/hvngpham002", "_blank");
                       }}
                     >
                       <img
@@ -187,7 +187,7 @@ const About = () => {
             {skills.map((skill, index) => (
               <div
                 key={skill.id || index}
-                className="flex flex-col md:flex-row items-center p-2 md:p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                className="flex flex-col md:flex-row items-center p-2 md:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 <img
                   src={`/icons/${skill.icon}`}
@@ -211,55 +211,95 @@ const About = () => {
           <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8 dark:text-white">
             {t("about_exp")}
           </h2>
-          <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-700">
-            {experiences.map((exp, index) => (
-              <div
-                key={exp.id || index}
-                className="relative pl-16 md:pl-20 group"
-              >
-                <div className="absolute -left-5 top-0 flex flex-col items-center gap-2">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center relative">
-                    <img
-                      src={`/images/${exp.logo}`}
-                      alt={exp.company}
-                      className="w-8 h-8 md:w-10 md:h-10 object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src={`/icons/${exp.country}`}
-                      alt="Country flag"
-                      className="w-4 h-4 md:w-5 md:h-5 absolute -top-1 -right-1"
-                      loading="lazy"
-                    />
+          <div className="relative flex flex-col items-center">
+            {/* Central vertical line */}
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 w-1 bg-gray-200 dark:bg-gray-700 h-full z-0" style={{ minHeight: experiences.length * 180 }} />
+            <div className="w-full flex flex-col">
+              {experiences.map((exp, index) => {
+                const isLeft = index % 2 === 0;
+                // Calculate dynamic minHeight based on points length (if available)
+                // Use 120px as base, add 24px per point if points exist, else 120px
+                const pointsLength = Array.isArray(exp.points) ? exp.points.length : 0;
+                const minHeight = 120 + (pointsLength > 0 ? pointsLength * 24 : 0);
+                return (
+                  <div
+                    key={exp.id || index}
+                    className={`relative flex w-full items-center z-10
+                      ${
+                        // On md+ screens, alternate left/right. On small screens, always center.
+                        'justify-center md:justify-' + (isLeft ? 'start' : 'end')
+                      }
+                    `}
+                    style={{ minHeight }}
+                  >
+                    {/* Timeline dot and year */}
+                    {/* On mobile, place dot/year inline with card; on md+, keep absolute center */}
+                    <div
+                      className={
+                        `flex flex-col items-center z-20
+                        md:absolute md:left-1/2 md:-translate-x-1/2
+                        ${
+                          // On mobile, put dot to the left of the card
+                          'mr-4 md:mr-0'
+                        }
+                        `
+                      }
+                    >
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center border-2 border-blue-400 shadow-md relative">
+                        <img
+                          src={`/images/${exp.logo}`}
+                          alt={exp.company}
+                          className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                          loading="lazy"
+                        />
+                        <img
+                          src={`/icons/${exp.country}`}
+                          alt="Country flag"
+                          className="w-4 h-4 md:w-5 md:h-5 absolute -top-1 -right-1"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-sm md:text-md font-semibold dark:text-white mt-2">
+                        {exp.year}
+                      </span>
+                    </div>
+                    {/* Experience card */}
+                    <div
+                      className={`w-full max-w-xl flex
+                        md:w-1/2
+                        ${
+                          // On md+ screens, alternate left/right. On small screens, always center and row with dot
+                          'justify-center items-center flex-row ' +
+                          (isLeft ? 'md:pr-16 md:pr-24 md:justify-end' : 'md:pl-16 md:pl-24 md:justify-start')
+                        }
+                      `}
+                    >
+                      {/* On mobile, dot/year is already rendered inline; on md+, it's absolutely centered */}
+                      <div className="bg-white dark:bg-gray-700 p-3 md:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow w-full">
+                        <div className="flex flex-col">
+                          <h3 className="text-lg md:text-xl font-semibold dark:text-white">
+                            {t(exp.role)}
+                          </h3>
+                          <h4 className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                            @ {t(exp.company)}
+                          </h4>
+                        </div>
+                        {/* <ul className="list-disc pl-4 md:pl-5 space-y-1 md:space-y-2 mt-2">
+                          {exp.points.map((point, pointIndex) => (
+                            <li
+                              key={pointIndex}
+                              className="text-xs md:text-base text-gray-600 dark:text-gray-400"
+                            >
+                              {t(point)}
+                            </li>
+                          ))}
+                        </ul> */}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="text-xs md:text-sm font-medium dark:text-white">
-                      {exp.year}
-                    </span>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-800 p-3 md:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <div className="flex flex-col mb-4">
-                    <h3 className="text-lg md:text-xl font-semibold dark:text-white">
-                      {t(exp.role)}
-                    </h3>
-                    <h4 className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-                      @ {t(exp.company)}
-                    </h4>
-                  </div>
-                  <ul className="list-disc pl-4 md:pl-5 space-y-1 md:space-y-2">
-                    {exp.points.map((point, pointIndex) => (
-                      <li
-                        key={pointIndex}
-                        className="text-xs md:text-base text-gray-600 dark:text-gray-400"
-                      >
-                        {t(point)}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
         </motion.div>
       </motion.section>
