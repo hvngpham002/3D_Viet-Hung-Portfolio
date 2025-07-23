@@ -7,6 +7,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Loader from './components/Loader';
+import VersionMark from './components/VersionMark';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -30,6 +31,9 @@ const App = () => {
             </Routes>
           </Suspense>
         </Router>
+
+      {/* Version Mark */}
+      <VersionMark />
       </main>
     </div>
   );

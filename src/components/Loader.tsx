@@ -5,6 +5,7 @@ import LanguageToggle from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { reloadTranslations } from "../i18n";
 import React from "react";
+import VersionMark from "./VersionMark";
 
 interface LoaderProps {
   onStarted?: () => void;
@@ -145,11 +146,10 @@ const Loader = ({ onStarted }: LoaderProps) => {
       {/* Interactive Loader/Button */}
       <button
         onClick={() => canStart && onStarted?.()}
-        className={`relative group ${
-          canStart
-            ? "cursor-pointer hover:scale-105 transition-transform"
-            : "cursor-default"
-        }`}
+        className={`relative group ${canStart
+          ? "cursor-pointer hover:scale-105 transition-transform"
+          : "cursor-default"
+          }`}
         disabled={!canStart}
         aria-label={
           canStart ? t("Click to start experience") : t("Loading models")
@@ -193,11 +193,10 @@ const Loader = ({ onStarted }: LoaderProps) => {
         </div>
       )}
 
-      {/* Version Mark */}
-      <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 text-xs sm:text-sm text-gray-500">
-        v1.0.9 
-      </div>
+      <VersionMark />
     </div>
+
+
   );
 };
 
