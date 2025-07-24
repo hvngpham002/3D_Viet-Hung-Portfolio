@@ -1,5 +1,4 @@
 {
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }],
   "headers": [
     {
       "source": "/(.*).(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot|otf|glb|gltf)",
