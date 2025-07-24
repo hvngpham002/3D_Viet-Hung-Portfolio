@@ -7,8 +7,8 @@
   { "name": "Tailwind", "icon": "tailwindcss.svg" },
   { "name": "Node.js", "icon": "nodejs.svg" },
   { "name": "Git", "icon": "git.svg" },
-  { "name": "Python", "icon": "python.png" },
-  { "name": "Java", "icon": "java.png" },
-  { "name": "C", "icon": "c.png" },
-  { "name": "C++", "icon": "c++.png" }
+  { "name": "Python", "icon": "python.webp" },
+  { "name": "Java", "icon": "java.webp" },
+  { "name": "C", "icon": "c.webp" },
+  { "name": "C++", "icon": "c++.webp" }
 ]
