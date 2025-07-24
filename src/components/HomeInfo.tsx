@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import arrow from "/icons/arrow.svg";
 import { useTranslation } from "react-i18next";
@@ -101,4 +101,4 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
   );
 };
 
-export default HomeInfo;
+export default memo(HomeInfo);
