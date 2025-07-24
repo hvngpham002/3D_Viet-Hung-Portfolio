@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
 import Loader from "../components/Loader";
-import HomeInfo from "../components/HomeInfo";
+const HomeInfo = lazy(() => import("../components/HomeInfo"));
 import * as THREE from "three";
 import useArrowHandlers from "../hooks/useArrowHandlers";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -55,12 +55,14 @@ const Home = () => {
 
   const themeMode = useSelector((state: RootState) => state.theme.mode);
 
+  const lightDirection = useMemo(() => new THREE.Vector3(0, 10, 0), []);
+
   const lightingConfig = useMemo(
     () =>
       themeMode === "light"
         ? {
             directionalLight: {
-              position: new THREE.Vector3(0, 10, 0),
+              position: lightDirection,
               intensity: 2.5,
               color: "#ffffff",
             },
@@ -76,7 +78,7 @@ const Home = () => {
           }
         : {
             directionalLight: {
-              position: new THREE.Vector3(0, 10, 0),
+              position: lightDirection,
               intensity: 1.5,
               color: "#e0eaff",
             },
@@ -90,7 +92,7 @@ const Home = () => {
               intensity: 0.6,
             },
           },
-    [themeMode]
+    [themeMode, lightDirection]
   );
 
   const simulateKeyPress = useCallback((key: string) => {
@@ -567,7 +569,7 @@ const SceneContent = ({
         lastY.current = (event as MouseEvent).clientY;
       }
     },
-    [gl, setIsSceneRotating]
+    [setIsSceneRotating]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -575,7 +577,7 @@ const SceneContent = ({
       setIsSceneRotating(false);
       gl.domElement.style.cursor = "grab";
     }
-  }, [isSceneRotating, setIsSceneRotating, gl.domElement.style]);
+  }, [isSceneRotating, setIsSceneRotating]);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {

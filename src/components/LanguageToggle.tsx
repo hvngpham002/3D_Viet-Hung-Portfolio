@@ -14,9 +14,9 @@ const LanguageToggle = () => {
   // Language options
   const languages = [
     { code: '', flag: '🌐' },
-    { code: 'en', flag: '/icons/usa-flag.png' },
-    { code: 'vi', flag: '/icons/vietnam-flag.png' },
-    { code: 'zh', flag: '/icons/china-flag.png' },
+    { code: 'en', flag: '/icons/usa-flag.webp' },
+    { code: 'vi', flag: '/icons/vietnam-flag.webp' },
+    { code: 'zh', flag: '/icons/china-flag.webp' },
   ];
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language);

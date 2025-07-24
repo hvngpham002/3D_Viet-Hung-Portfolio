@@ -2,7 +2,7 @@
     "year": "2024 - 2025",
     "company": "about_exp_company_1",
     "role": "about_exp_title_1",
-    "country": "usa-flag.png",
+    "country": "usa-flag.webp",
     "logo": "nvidia.webp",
     "points": [
       "about_exp_company_1_desc_1",
@@ -13,8 +13,8 @@
     "year": "2023 - 2024",
     "company": "about_exp_company_2",
     "role": "about_exp_title_2",
-    "country": "china-flag.png",
-    "logo": "mingju.png",
+    "country": "china-flag.webp",
+    "logo": "mingju.webp",
     "points": [
       "about_exp_company_2_desc_1",
       "about_exp_company_2_desc_2"
@@ -24,8 +24,8 @@
     "year": "2022 - 2023",
     "company": "about_exp_company_3",
     "role": "about_exp_title_3",
-    "country": "usa-flag.png",
-    "logo": "new-england-clean-energy.png",
+    "country": "usa-flag.webp",
+    "logo": "new-england-clean-energy.webp",
     "points": [
       "about_exp_company_3_desc_1",
       "about_exp_company_3_desc_2"
@@ -35,8 +35,8 @@
     "year": "2020 - 2021",
     "company": "about_exp_company_4",
     "role": "about_exp_title_4",
-    "country": "vietnam-flag.png",
-    "logo": "minh-hung.png",
+    "country": "vietnam-flag.webp",
+    "logo": "minh-hung.webp",
     "points": [
       "about_exp_company_4_desc_1",
       "about_exp_company_4_desc_2"

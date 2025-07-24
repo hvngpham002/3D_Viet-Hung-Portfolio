@@ -98,7 +98,7 @@ const About = () => {
           <div className="relative inline-block profile-container">
             <motion.div className="relative cursor-pointer">
               <img
-                src="/images/profile.jpg"
+                src="/images/profile.webp"
                 alt="Profile"
                 className="w-44 h-44 rounded-full border-4 border-gray-300 transition-transform duration-300"
                 loading="lazy"
