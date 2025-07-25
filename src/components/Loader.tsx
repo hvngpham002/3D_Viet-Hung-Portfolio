@@ -193,7 +193,7 @@ const Loader = ({ onStarted }: LoaderProps) => {
         </div>
       )}
 
-      <VersionMark />
+      <VersionMark version={"1.1.2"} />
     </div>
 
 

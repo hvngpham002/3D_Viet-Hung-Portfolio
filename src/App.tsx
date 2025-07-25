@@ -33,7 +33,7 @@ const App = () => {
         </Router>
 
       {/* Version Mark */}
-      <VersionMark />
+      <VersionMark version={"1.1.2"}/>
       </main>
     </div>
   );
