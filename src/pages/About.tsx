@@ -226,8 +226,8 @@ const About = () => {
                     key={exp.id || index}
                     className={`relative flex w-full items-center z-10
                       ${
-                        // On md+ screens, alternate left/right. On small screens, always center.
-                        'justify-center md:justify-' + (isLeft ? 'start' : 'end')
+                      // On md+ screens, alternate left/right. On small screens, always center.
+                      'justify-center md:justify-' + (isLeft ? 'start' : 'end')
                       }
                     `}
                     style={{ minHeight }}
@@ -239,8 +239,8 @@ const About = () => {
                         `flex flex-col items-center z-20
                         md:absolute md:left-1/2 md:-translate-x-1/2
                         ${
-                          // On mobile, put dot to the left of the card
-                          'mr-4 md:mr-0'
+                        // On mobile, put dot to the left of the card
+                        'mr-4 md:mr-0'
                         }
                         `
                       }
@@ -268,9 +268,9 @@ const About = () => {
                       className={`w-full max-w-xl flex
                         md:w-1/2
                         ${
-                          // On md+ screens, alternate left/right. On small screens, always center and row with dot
-                          'justify-center items-center flex-row ' +
-                          (isLeft ? 'md:pr-16 md:pr-24 md:justify-end' : 'md:pl-16 md:pl-24 md:justify-start')
+                        // On md+ screens, alternate left/right. On small screens, always center and row with dot
+                        'justify-center items-center flex-row ' +
+                        (isLeft ? 'md:pr-16 md:pr-24 md:justify-end' : 'md:pl-16 md:pl-24 md:justify-start')
                         }
                       `}
                     >

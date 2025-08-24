@@ -9,7 +9,7 @@ import React from "react";
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const logoText = "CK.P";
+  const logoText = "PVH";
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {

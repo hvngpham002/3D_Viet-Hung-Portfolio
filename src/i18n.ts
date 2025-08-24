@@ -43,7 +43,14 @@ i18n.on('languageChanged', (lng: string) => {
   localStorage.setItem('i18n_lng', lng);
 });
 
-// Optional: function to reload translations
-export const reloadTranslations = (): Promise<void> => loadTranslations();
+// Optional: function to reload translations with timeout
+export const reloadTranslations = (): Promise<void> => {
+  return Promise.race([
+    loadTranslations(),
+    new Promise<void>((_, reject) => 
+      setTimeout(() => reject(new Error('Translation loading timeout')), 4000)
+    )
+  ]);
+};
 
 export default i18n;
