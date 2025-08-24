@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { reloadTranslations } from "../i18n";
 import React from "react";
 import VersionMark from "./VersionMark";
+import { APP_VERSION } from "../constants/version";
 
 interface LoaderProps {
   onStarted?: () => void;
@@ -193,7 +194,7 @@ const Loader = ({ onStarted }: LoaderProps) => {
         </div>
       )}
 
-      <VersionMark version={"1.1.2"} />
+      <VersionMark version={APP_VERSION} />
     </div>
 
 
