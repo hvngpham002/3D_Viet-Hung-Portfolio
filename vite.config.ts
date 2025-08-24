@@ -13,5 +13,13 @@ export default defineConfig(({ mode }) => ({
       brotliSize: true,
     })] : []),
   ],
-  assetsInclude: ['**/*.glb']
+  assetsInclude: ['**/*.glb'],
+  server: {
+    port: 5174,
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  }
 }));
