@@ -2,6 +2,7 @@
 import { NavLink } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import LanguageToggle from "./LanguageToggle";
+import ChatBot from "./ChatBot";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { reloadTranslations } from "../i18n";
@@ -107,6 +108,7 @@ const Navbar = () => {
       </div>
 
       <nav className="flex items-center gap-3">
+        <ChatBot />
         <ThemeToggle />
         <LanguageToggle />
         {/* Mobile menu button */}

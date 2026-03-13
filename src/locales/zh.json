@@ -79,6 +79,12 @@
   "project_1_desc": "一个身临其境的 3D 作品集网站，具有交互式动画、动态照明和多语言支持",
   "project_2_desc": "由 WPI 主办、MathWorks 和 ACM 等行业领先企业赞助的年度黑客马拉松活动",
   "project_3_desc": "对《巫师 3》中 CD PROJEKT RED 的 Gwent 纸牌游戏的个人诠释，具有战略性 AI 游戏玩法、高级状态管理和真实的游戏机制",
-  "project_4_desc": "带有可定制内容管理系统的电子商务平台，用于库存管理"
+  "project_4_desc": "带有可定制内容管理系统的电子商务平台，用于库存管理",
 
+  "chatbot_title": "询问我的信息！",
+  "chatbot_greeting": "你好！欢迎询问有关 Hung 的经历、技能或项目的任何问题。",
+  "chatbot_placeholder": "询问关于 Hung...",
+  "chatbot_rate_limit": "已达到请求限制，请稍等片刻后再试。",
+  "chatbot_error": "抱歉，发生了错误，请重试。",
+  "chatbot_no_answer": "抱歉，我无法处理该请求。"
 }

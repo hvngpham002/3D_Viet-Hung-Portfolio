@@ -79,5 +79,12 @@
     "project_1_desc": "An immersive 3D portfolio website featuring interactive animations, dynamic lighting, and multilingual support.",
     "project_2_desc": "Annual hackathon event hosted by WPI sponsored by industry leads like MathWorks and ACM.",
     "project_3_desc": "A personal interpretation of CD PROJEKT RED's Gwent card game from The Witcher 3, featuring strategic AI gameplay, advanced state management, and authentic game mechanics.",
-    "project_4_desc": "E-commerce platform with a customizable content management system for inventory management."
+    "project_4_desc": "E-commerce platform with a customizable content management system for inventory management.",
+
+    "chatbot_title": "Ask about me!",
+    "chatbot_greeting": "Hi! Ask anything about Hung's experience, skills, or projects.",
+    "chatbot_placeholder": "Ask about Hung...",
+    "chatbot_rate_limit": "Rate limit reached. Please wait a moment and try again.",
+    "chatbot_error": "Sorry, there was an error. Please try again.",
+    "chatbot_no_answer": "Sorry, I could not process that."
 }
