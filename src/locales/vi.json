@@ -80,8 +80,12 @@
     "project_1_desc": "Một trang web hồ sơ 3D hấp dẫn với mô hình tương tác, ánh sáng động và hỗ trợ đa ngôn ngữ.",
     "project_2_desc": "Sự kiện hackathon hàng năm do WPI tổ chức, được tài trợ bởi các đối tác như MathWorks và ACM.",
     "project_3_desc": "Một bản sao cá nhân của game bài Gwent từ The Witcher 3, với chiến thuật AI, quản lý trạng thái nâng cao và cơ chế game chân thực.",
-    "project_4_desc": "Một nền tảng thương mại điện tử với hệ thống quản lý nội dung tùy chỉnh để quản lý kho hàng."
+    "project_4_desc": "Một nền tảng thương mại điện tử với hệ thống quản lý nội dung tùy chỉnh để quản lý kho hàng.",
 
-
-
+    "chatbot_title": "Hỏi về tôi!",
+    "chatbot_greeting": "Xin chào! Hãy hỏi bất cứ điều gì về kinh nghiệm, kỹ năng hoặc dự án của Hưng.",
+    "chatbot_placeholder": "Hỏi về Hưng...",
+    "chatbot_rate_limit": "Đã đạt giới hạn yêu cầu. Vui lòng chờ một chút rồi thử lại.",
+    "chatbot_error": "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.",
+    "chatbot_no_answer": "Xin lỗi, tôi không thể xử lý yêu cầu đó."
 }
