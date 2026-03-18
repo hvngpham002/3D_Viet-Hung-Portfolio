@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => ({
   ],
   assetsInclude: ['**/*.glb'],
   build: {
+    assetsInlineLimit: 0,
     chunkSizeWarningLimit: 900,
     rollupOptions: {
       onwarn(warning, defaultHandler) {
