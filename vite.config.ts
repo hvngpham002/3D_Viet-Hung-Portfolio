@@ -1,4 +1,4 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -6,7 +6,6 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    splitVendorChunkPlugin(),
     ...(mode === 'analyze' ? [visualizer({
       filename: './stats.html',
       open: true,
@@ -14,6 +13,31 @@ export default defineConfig(({ mode }) => ({
     })] : []),
   ],
   assetsInclude: ['**/*.glb'],
+  build: {
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      onwarn(warning, defaultHandler) {
+        if (warning.code === 'EVAL' && warning.id?.includes('three-stdlib')) return;
+        defaultHandler(warning);
+      },
+      output: {
+        manualChunks: (id) => {
+          // Only split pure Three.js libs — they have no React dependency
+          if (id.includes('node_modules/three-stdlib')) {
+            return 'three-stdlib';
+          }
+          if (id.includes('node_modules/three/')) {
+            return 'three-core';
+          }
+          // Everything else (React, react-dom, @react-three, i18next, framer-motion, etc.)
+          // stays in vendor to avoid splitting React across chunks
+          if (id.includes('node_modules/')) {
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
   server: {
     port: 5174,
     headers: {
