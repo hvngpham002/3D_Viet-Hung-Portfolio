@@ -36,6 +36,15 @@ const Ciri = ({
 }: CiriProps) => {
   const group = useRef<any>();
 
+  // Cached objects to avoid per-frame allocations in useFrame
+  const _direction = useRef(new THREE.Vector3());
+  const _islandTilt = useRef(new THREE.Matrix4());
+  const _adjustedUp = useRef(new THREE.Vector3());
+  const _alignMatrix = useRef(new THREE.Matrix4());
+  const _xAxis = useRef(new THREE.Vector3());
+  const _zAxis = useRef(new THREE.Vector3());
+  const _targetQuat = useRef(new THREE.Quaternion());
+
   const { nodes, animations: baseAnimations } = useGLTF(
     ciriScene
   ) as GLTFResult;
@@ -390,33 +399,25 @@ const Ciri = ({
     const nextT = Math.min(pathProgress.current + 0.01, 1);
     const nextPoint = curve.getPoint(nextT);
 
-    // Calculate direction vector
-    const direction = new THREE.Vector3()
-      .subVectors(nextPoint, point)
-      .normalize();
+    // Calculate direction vector (reuse cached objects)
+    const direction = _direction.current.subVectors(nextPoint, point).normalize();
 
     if (direction.lengthSq() > 0.001) {
-      // Create a rotation matrix for the island's tilt
-      const islandTilt = new THREE.Matrix4().makeRotationX(0.25);
+      // Rotation matrix for the island's tilt
+      const islandTilt = _islandTilt.current.makeRotationX(0.25);
 
       // Apply island tilt to our up vector
-      const adjustedUp = new THREE.Vector3(0, 1, 0).applyMatrix4(islandTilt);
+      const adjustedUp = _adjustedUp.current.set(0, 1, 0).applyMatrix4(islandTilt);
 
-      // Create a matrix that will align our character to the tilted surface
-      const alignMatrix = new THREE.Matrix4();
-      const xAxis = new THREE.Vector3()
-        .crossVectors(adjustedUp, direction)
-        .normalize();
-      const zAxis = new THREE.Vector3()
-        .crossVectors(xAxis, adjustedUp)
-        .normalize();
+      // Matrix that aligns character to the tilted surface
+      const alignMatrix = _alignMatrix.current;
+      const xAxis = _xAxis.current.crossVectors(adjustedUp, direction).normalize();
+      const zAxis = _zAxis.current.crossVectors(xAxis, adjustedUp).normalize();
 
       alignMatrix.makeBasis(xAxis, adjustedUp, zAxis);
 
       // Convert to quaternion for smoother interpolation
-      const targetQuaternion = new THREE.Quaternion().setFromRotationMatrix(
-        alignMatrix
-      );
+      const targetQuaternion = _targetQuat.current.setFromRotationMatrix(alignMatrix);
 
       // Apply the rotation
       group.current.quaternion.copy(targetQuaternion);
@@ -455,19 +456,6 @@ const Ciri = ({
     };
   }, [group]);
 
-  useEffect(() => {
-    // Reduce geometry detail on higher resolutions
-    if (window.innerHeight > 1080) {
-      group.current?.traverse((child: THREE.Object3D) => {
-        if ((child as THREE.Mesh).isMesh) {
-          const mesh = child as THREE.Mesh;
-          mesh.geometry.dispose(); // Clean up old geometry
-          // Reduce geometry detail
-          mesh.geometry = mesh.geometry.clone().toNonIndexed();
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const canvas = gl.domElement;

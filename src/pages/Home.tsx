@@ -192,11 +192,11 @@ const Home = () => {
               position={lightingConfig.directionalLight.position}
               intensity={lightingConfig.directionalLight.intensity}
               shadow-camera-near={0.1}
-              shadow-camera-far={50}
-              shadow-camera-left={-10}
-              shadow-camera-right={10}
-              shadow-camera-top={10}
-              shadow-camera-bottom={-10}
+              shadow-camera-far={30}
+              shadow-camera-left={-6}
+              shadow-camera-right={6}
+              shadow-camera-top={6}
+              shadow-camera-bottom={-6}
               castShadow
             />
             <ambientLight
