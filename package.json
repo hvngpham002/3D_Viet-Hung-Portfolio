@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "start": "vite preview --host --port $PORT",
+    "start": "vite preview --host --port ${PORT:-4173}",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
