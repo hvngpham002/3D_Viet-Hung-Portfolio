@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { Suspense, useRef, useState, useEffect, lazy } from "react";
 import emailjs from "@emailjs/browser";
@@ -43,6 +42,29 @@ declare global {
   }
 }
 
+interface LightConfig {
+  ambientLight: {
+    intensity: number;
+    color: string;
+  };
+  directionalLight: {
+    intensity: number;
+    color: string;
+    position: [number, number, number];
+  };
+  spotLight: {
+    intensity: number;
+    color: string;
+    position: [number, number, number];
+  };
+  shadows: {
+    contactOpacity: number;
+    accumulativeOpacity: number;
+    color: string;
+  };
+  environment: "dawn" | "night" | "sunset" | "warehouse" | "city" | "apartment" | "studio" | "park" | "lobby" | "forest";
+}
+
 type SceneProps = {
   currentAnimation: "idle" | "walking" | "running" | "attack";
 };
@@ -69,7 +91,7 @@ const Scene = ({ currentAnimation }: SceneProps) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const lightSettings = {
+  const lightSettings: { light: LightConfig; dark: LightConfig } = {
     light: {
       ambientLight: {
         intensity: 0.3,
@@ -78,12 +100,12 @@ const Scene = ({ currentAnimation }: SceneProps) => {
       directionalLight: {
         intensity: 0.8,
         color: "#ffe4b3",
-        position: [5, 5, 5] as [number, number, number],
+        position: [5, 5, 5],
       },
       spotLight: {
         intensity: 1.0,
         color: "#ffa726",
-        position: [3.0, 2.0, -10.0] as [number, number, number],
+        position: [3.0, 2.0, -10.0],
       },
       shadows: {
         contactOpacity: 0.25,
@@ -100,12 +122,12 @@ const Scene = ({ currentAnimation }: SceneProps) => {
       directionalLight: {
         intensity: 1.5,
         color: "#e2c96e",
-        position: [5, 5, 5] as [number, number, number],
+        position: [5, 5, 5],
       },
       spotLight: {
         intensity: 2.2,
         color: "#ffa041",
-        position: [3.0, 2.0, -10.0] as [number, number, number],
+        position: [3.0, 2.0, -10.0],
       },
       shadows: {
         contactOpacity: 0.4,
@@ -122,7 +144,7 @@ const Scene = ({ currentAnimation }: SceneProps) => {
   return (
     <React.Fragment>
       {/* Environment and ambient lighting */}
-      <Environment preset={currentLightConfig.environment as any} />
+      <Environment preset={currentLightConfig.environment} />
 
       <ambientLight
         intensity={currentLightConfig.ambientLight.intensity}
