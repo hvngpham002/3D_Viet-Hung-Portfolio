@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import Loader from "../components/Loader";
 const HomeInfo = lazy(() => import("../components/HomeInfo"));
 import * as THREE from "three";
@@ -645,7 +645,7 @@ const SceneContent = ({
 
   // Add wheel zoom handler
   const handleWheel = useCallback(
-    (event: ThreeEvent<WheelEvent>) => {
+    (event: WheelEvent) => {
       const newZoom = camera.position.z + event.deltaY * zoomSpeed;
       camera.position.z = THREE.MathUtils.clamp(newZoom, minZoom, maxZoom);
     },
@@ -656,20 +656,17 @@ const SceneContent = ({
     const canvas = gl.domElement;
     canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
     canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
-    canvas.addEventListener("wheel", handleWheel as unknown as EventListener);
+    canvas.addEventListener("wheel", handleWheel);
 
     return () => {
       canvas.removeEventListener("touchstart", handleTouchStart);
       canvas.removeEventListener("touchmove", handleTouchMove);
-      canvas.removeEventListener(
-        "wheel",
-        handleWheel as unknown as EventListener
-      );
+      canvas.removeEventListener("wheel", handleWheel);
     };
   }, [gl, handleTouchStart, handleTouchMove, handleWheel]);
 
   return (
-    <group ref={groupRef} onWheel={handleWheel}>
+    <group ref={groupRef}>
       <Sky isDay={themeMode === "light"} />
       <Book
         position={islandPosition}
