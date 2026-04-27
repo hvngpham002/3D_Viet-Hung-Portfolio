@@ -9,10 +9,26 @@ const ThemeToggle = () => {
 
   return (
     <button
+      type="button"
       onClick={() => dispatch(toggleTheme())}
-      className="w-10 h-10 rounded-full text-lg shadow-lg"
+      aria-label={`Switch to ${themeMode === 'light' ? 'night' : 'day'} mode`}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 2,
+        background: 'var(--paper-1)',
+        border: '1px solid var(--rule-strong)',
+        color: 'var(--ink-900)',
+        fontFamily: 'var(--font-display)',
+        fontStyle: 'italic',
+        fontSize: 18,
+        boxShadow: 'var(--shadow-press)',
+        cursor: 'pointer',
+        display: 'grid',
+        placeItems: 'center',
+      }}
     >
-      {themeMode === 'light' ? '☀️' : '🌙'}
+      {themeMode === 'light' ? '☀' : '☾'}
     </button>
   );
 };

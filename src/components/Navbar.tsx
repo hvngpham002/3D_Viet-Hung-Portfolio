@@ -10,115 +10,126 @@ import React from "react";
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const logoText = "PVH";
   const [isOpen, setIsOpen] = useState(false);
+  const [isTranslationsLoading, setIsTranslationsLoading] = useState(true);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const [isTranslationsLoading, setIsTranslationsLoading] = useState(true);
-
   useEffect(() => {
     reloadTranslations().finally(() => setIsTranslationsLoading(false));
   }, []);
 
+  const navItem = (to: string, label: string) => (
+    <NavLink
+      key={to}
+      to={to}
+      className={({ isActive }) =>
+        `font-display text-lg md:text-xl ${
+          isActive ? "italic scribble" : "not-italic"
+        } text-ink-900 no-underline`
+      }
+      onClick={() => setIsOpen(false)}
+    >
+      {label}
+    </NavLink>
+  );
+
+  const navLinks = [
+    { to: "/about", label: t("About") },
+    { to: "/projects", label: t("Projects") },
+    { to: "/contact", label: t("Contact") },
+  ];
+
   return (
-    <header className="fixed top-0 left-0 right-0 w-full h-16 flex items-center justify-between p-4 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-between px-4 md:px-6"
+      style={{
+        background: "color-mix(in srgb, var(--paper-0) 85%, transparent)",
+        backdropFilter: "blur(8px)",
+        borderBottom: "1px solid var(--rule-strong)",
+      }}
+    >
       <NavLink
         to="/"
-        className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 items-center justify-center flex font-bold shadow-md"
+        className="flex items-center gap-3 no-underline"
+        aria-label="Home"
       >
-        <p className="blue-gradient_text dark:text-white">{logoText}</p>
+        <img
+          src="/logo.png"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="h-[38px] w-[38px] object-contain"
+        />
+        <span className="hidden flex-col leading-none sm:flex">
+          <span className="font-display text-lg text-ink-900">Pham Viet Hung</span>
+          <span className="t-eyebrow" style={{ fontSize: 9 }}>
+            Engineer · Wanderer
+          </span>
+        </span>
       </NavLink>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden lg:flex text-xl gap-7 font-medium">
+      <nav className="hidden items-center gap-8 lg:flex">
         {isTranslationsLoading ? (
-         <div className="loading-bar h-8 w-72 rounded-md bg-gray-500 dark:bg-gray-700" />
+          <div className="loading-bar h-6 w-60 rounded-sm" />
         ) : (
           <React.Fragment>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-black dark:text-white"
-              }
-            >
-              {t("About")}
-            </NavLink>
-            <NavLink
-              to="/projects"
-              className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-black dark:text-white"
-              }
-            >
-              {t("Projects")}
-            </NavLink>
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                isActive ? "text-blue-500" : "text-black dark:text-white"
-              }
-            >
-              {t("Contact")}
-            </NavLink>
+            {navLinks.map(({ to, label }) => navItem(to, label))}
           </React.Fragment>
         )}
       </nav>
 
-      {/* Mobile Navigation */}
       <div
-        className={`${
-          isOpen ? "flex" : "hidden"
-        } lg:hidden fixed top-20 right-4 w-48 bg-white dark:bg-gray-900 rounded-lg p-4 flex-col gap-4 shadow-xl z-50 border border-gray-200 dark:border-gray-700`}
+        className={`${isOpen ? "flex" : "hidden"} fixed right-4 top-20 z-50 w-52 flex-col lg:hidden`}
+        style={{
+          background: "var(--paper-1)",
+          border: "1px solid var(--rule-strong)",
+          boxShadow: "var(--shadow-card)",
+          padding: 8,
+        }}
       >
-        <NavLink
-          to="/about"
-          className={({ isActive }) =>
-            `${
-              isActive ? "text-blue-500" : "text-black dark:text-white"
-            } p-2 rounded-lg transition-colors`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          {t("About")}
-        </NavLink>
-        <NavLink
-          to="/projects"
-          className={({ isActive }) =>
-            `${
-              isActive ? "text-blue-500" : "text-black dark:text-white"
-            } p-2 rounded-lg transition-colors`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          {t("Projects")}
-        </NavLink>
-        <NavLink
-          to="/contact"
-          className={({ isActive }) =>
-            `${
-              isActive ? "text-blue-500" : "text-black dark:text-white"
-            } p-2 rounded-lg transition-colors`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          {t("Contact")}
-        </NavLink>
+        {navLinks.map(({ to, label }, index) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              `px-4 py-2.5 font-display text-lg italic no-underline ${
+                isActive ? "text-accent" : "text-ink-900"
+              }`
+            }
+            style={{
+              borderBottom: index < navLinks.length - 1 ? "1px dotted var(--rule)" : "none",
+            }}
+            onClick={() => setIsOpen(false)}
+          >
+            {label}
+          </NavLink>
+        ))}
       </div>
 
-      <nav className="flex items-center gap-3">
+      <nav className="flex items-center gap-2">
         <ChatBot />
         <ThemeToggle />
         <LanguageToggle />
-        {/* Mobile menu button */}
         <button
+          type="button"
           onClick={toggleMenu}
-          className="lg:hidden text-black dark:text-white focus:outline-none shadow-lg rounded-full p-2 bg-gray-200 dark:bg-gray-700"
+          className="grid place-items-center lg:hidden"
           aria-label="Toggle menu"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 2,
+            background: "var(--paper-1)",
+            border: "1px solid var(--rule-strong)",
+            color: "var(--ink-900)",
+            boxShadow: "var(--shadow-press)",
+          }}
         >
           <svg
-            className="w-6 h-6"
+            className="h-5 w-5"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"

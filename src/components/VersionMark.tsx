@@ -1,14 +1,13 @@
 interface VersionMarkProps {
-    version: string
+  version: string;
 }
-
 
 const VersionMark = ({ version }: VersionMarkProps) => {
-    return (
-    <div className="fixed bottom-2 sm:bottom-3 right-2 sm:right-3 text-xs sm:text-sm text-gray-500 z-50">
-        v{version}
+  return (
+    <div className="pointer-events-none fixed bottom-2 right-2 z-50 hidden font-mono text-[10px] font-semibold tracking-[0.18em] text-ink-300 sm:block sm:bottom-3 sm:right-3 sm:text-[11px]">
+      v {version}
     </div>
-    )
-}
+  );
+};
 
 export default VersionMark;

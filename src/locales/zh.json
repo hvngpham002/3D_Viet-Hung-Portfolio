@@ -48,11 +48,13 @@
   "about_exp_title_2": "技术主管 & 市场分析师",
   "about_exp_title_3": "软件开发 & 技术员",
   "about_exp_title_4": "网页开发",
+  "about_exp_title_5": "云工程实习生",
 
   "about_exp_company_1": "NVIDIA",
   "about_exp_company_2": "明驹咨询管理",
   "about_exp_company_3": "伍斯特理工学院",
   "about_exp_company_4": "明兴投资发展股份公司",
+  "about_exp_company_5": "Saigon Think Inc.",
 
   "about_exp_company_1_desc_1": "集成主机端 C++ 工具支持并增强 DRIVE Thor SoC 的显示驱动固件，提高安全关键汽车应用的错误检测能力，并确保符合功能安全标准。",
   "about_exp_company_1_desc_2": "开发基于 React 的 GUI 组件以可视化工具的输入/输出，优化验证工作流程，并参与工具链文档编写，以加速合作团队的采用。",
@@ -65,6 +67,9 @@
 
   "about_exp_company_4_desc_1": "开发基于 Laravel 和 React 的全栈电商平台，集成基于角色的身份验证、支付处理和自动库存同步。",
   "about_exp_company_4_desc_2": "构建动态 CMS 进行产品管理，通过测试优化 API 可靠性，并设计响应式 UI 以提供流畅的用户体验。",
+
+  "about_exp_company_5_desc_1": "通过协助配置 Azure 资源，包括用于非结构化数据的 Azure Blob Storage 和用于关系型记录的 Azure SQL，掌握了云架构的基础知识。",
+  "about_exp_company_5_desc_2": "通过使用 Microsoft PowerApps 构建用于数据验证和手动记录录入的简单界面，获得了低代码开发的实践经验。",
 
   "projects_live_demo": "查看演示",
   "projects_source_code": "查看代码",

@@ -8,19 +8,19 @@ describe("Alert Component", () => {
     expect(screen.getByText("Test message")).toBeInTheDocument();
   });
 
-  it("applies appropriate styling based on alert type", () => {
-    // Test for success type
-    const { rerender } = render(
-      <Alert text="Success message" type="success" />
-    );
-    let alertElement = screen.getByText("Success message").closest("div");
-    expect(alertElement).toHaveClass("bg-blue-800");
-    expect(alertElement).not.toHaveClass("bg-red-800");
+  it("renders the success strip with alert semantics", () => {
+    render(<Alert text="Success message" type="success" />);
 
-    // Test for danger type
-    rerender(<Alert text="Danger message" type="danger" />);
-    alertElement = screen.getByText("Danger message").closest("div");
-    expect(alertElement).toHaveClass("bg-red-800");
-    expect(alertElement).not.toHaveClass("bg-blue-800");
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText("SENT")).toBeInTheDocument();
+    expect(screen.getByText("Success message")).toBeInTheDocument();
+  });
+
+  it("renders the danger strip with alert semantics", () => {
+    render(<Alert text="Danger message" type="danger" />);
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText("FAILED")).toBeInTheDocument();
+    expect(screen.getByText("Danger message")).toBeInTheDocument();
   });
 });

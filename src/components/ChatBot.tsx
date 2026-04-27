@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 import resumeContent from '../data/resume.md?raw';
 
 interface Message {
@@ -25,6 +27,7 @@ ${resumeContent}`;
 
 const ChatBot = () => {
   const { t } = useTranslation();
+  const themeMode = useSelector((state: RootState) => state.theme.mode);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -106,52 +109,124 @@ const ChatBot = () => {
   const panel = (
     <div
       ref={panelRef}
-      className="fixed inset-x-3 bottom-4 h-[65vh] sm:inset-auto sm:h-auto sm:top-16 sm:right-4 sm:w-80 sm:h-[28rem] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col z-[9999] border border-gray-200 dark:border-gray-700 overflow-hidden"
+      className={`card-paper corners fixed inset-x-3 bottom-4 z-[9999] flex h-[65vh] flex-col overflow-hidden sm:inset-auto sm:right-4 sm:top-16 sm:h-[28rem] sm:w-[21rem] ${
+        themeMode === 'dark' ? 'dark' : ''
+      }`}
+      style={{
+        color: 'var(--ink-900)',
+        background: 'var(--paper-0)',
+        border: '1px solid var(--rule-strong)',
+        borderRadius: 2,
+        boxShadow: 'var(--shadow-card)',
+      }}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-blue-500 text-white">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-300" />
-          <span className="font-semibold text-sm">{t('chatbot_title')}</span>
+      <span className="corner-tl" aria-hidden="true" />
+      <span className="corner-br" aria-hidden="true" />
+
+      <div
+        className="flex items-center justify-between px-4 py-3"
+        style={{
+          color: 'var(--paper-0)',
+          background: 'var(--ink-900)',
+        }}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <span
+            className="t-display-italic grid h-7 w-7 shrink-0 place-items-center text-lg leading-none"
+            style={{ border: '1px solid currentColor' }}
+          >
+            Q
+          </span>
+          <div className="min-w-0 leading-none">
+            <div className="t-display-italic truncate text-[17px] leading-5">The Quill</div>
+            <div className="t-mono mt-1 truncate text-[9px] uppercase tracking-[0.16em] opacity-70">
+              ASK ABOUT HUNG
+            </div>
+          </div>
         </div>
         <button
+          type="button"
           onClick={() => setIsOpen(false)}
-          className="text-white/80 hover:text-white transition-colors"
+          className="grid h-8 w-8 shrink-0 place-items-center opacity-70 transition-opacity hover:opacity-100"
+          style={{
+            color: 'var(--paper-0)',
+          }}
           aria-label="Close chatbot"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-            <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.8"
+            className="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         </button>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3">
         {messages.length === 0 && (
-          <p className="text-gray-400 dark:text-gray-500 text-xs text-center mt-4 px-4">
+          <p className="t-display-italic mx-auto mt-5 max-w-[16rem] px-4 text-center text-sm leading-6 text-ink-500">
             {t('chatbot_greeting')}
           </p>
         )}
         {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div
-              className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-                msg.role === 'user'
-                  ? 'bg-blue-500 text-white rounded-br-sm'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm'
-              }`}
-            >
-              {msg.content}
+          <div
+            key={i}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div className={`max-w-[85%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div
+                className="t-mono mb-1 text-[9px] uppercase tracking-[0.18em] text-ink-500"
+              >
+                {msg.role === 'user' ? 'YOU' : 'QUILL'}
+              </div>
+              <div
+                className="whitespace-pre-wrap px-3 py-2 leading-relaxed"
+                style={{
+                  color: msg.role === 'user' ? 'var(--paper-0)' : 'var(--ink-900)',
+                  fontFamily:
+                    msg.role === 'user' ? 'var(--font-ui)' : 'var(--font-display)',
+                  fontSize: msg.role === 'user' ? 13 : 15,
+                  fontStyle: msg.role === 'user' ? 'normal' : 'italic',
+                  background:
+                    msg.role === 'user' ? 'var(--ink-900)' : 'var(--paper-1)',
+                  border:
+                    msg.role === 'user' ? '1px solid var(--ink-900)' : '1px solid var(--rule)',
+                  borderRadius: 2,
+                }}
+              >
+                {msg.content}
+              </div>
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-gray-700 px-4 py-3 rounded-2xl rounded-bl-sm">
-              <div className="flex gap-1 items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div
+              className="px-3 py-2"
+              style={{
+                background: 'var(--paper-1)',
+                border: '1px solid var(--rule)',
+                borderRadius: 2,
+              }}
+            >
+              <div className="flex items-center gap-1" aria-label="Chatbot loading">
+                {[0, 150, 300].map((delay) => (
+                  <span
+                    key={delay}
+                    className="h-1.5 w-1.5 animate-bounce rounded-full"
+                    style={{
+                      animationDelay: `${delay}ms`,
+                      background: 'var(--ink-500)',
+                    }}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -159,25 +234,26 @@ const ChatBot = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+      <div
+        className="flex gap-2 p-3"
+        style={{ borderTop: '1px solid var(--rule)' }}
+      >
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           placeholder={t('chatbot_placeholder')}
-          className="flex-1 text-base sm:text-sm px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white outline-none focus:border-blue-400 transition-colors"
+          className="input-ms min-w-0 flex-1 text-base sm:text-sm"
         />
         <button
+          type="button"
           onClick={sendMessage}
           disabled={isLoading || !input.trim()}
-          className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="btn-ink grid shrink-0 place-items-center px-3 py-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Send message"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-            <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z" />
-          </svg>
+          -&gt;
         </button>
       </div>
     </div>
@@ -186,30 +262,26 @@ const ChatBot = () => {
   return (
     <div ref={buttonRef}>
       <button
+        type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-lg dark:text-white"
+        className="grid place-items-center"
         aria-label="Toggle chatbot"
+        aria-pressed={isOpen}
+        style={{
+          width: 36,
+          height: 36,
+          color: 'var(--ink-900)',
+          fontFamily: 'var(--font-display)',
+          fontSize: 18,
+          fontStyle: 'italic',
+          background: 'var(--paper-1)',
+          border: '1px solid var(--rule-strong)',
+          borderRadius: 2,
+          boxShadow: 'var(--shadow-press)',
+          cursor: 'pointer',
+        }}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-          <defs>
-            <linearGradient id="chatbot-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#00c6ff" />
-              <stop offset="100%" stopColor="#0072ff" />
-            </linearGradient>
-          </defs>
-          {/* Antenna */}
-          <rect x="11" y="1" width="2" height="3" rx="1" fill="url(#chatbot-gradient)" />
-          <circle cx="12" cy="1.5" r="1" fill="url(#chatbot-gradient)" />
-          {/* Head */}
-          <rect x="3" y="4" width="18" height="15" rx="3" fill="url(#chatbot-gradient)" />
-          {/* Eyes */}
-          <circle cx="9" cy="10.5" r="2" fill="white" />
-          <circle cx="15" cy="10.5" r="2" fill="white" />
-          <circle cx="9" cy="10.5" r="1" fill="url(#chatbot-gradient)" />
-          <circle cx="15" cy="10.5" r="1" fill="url(#chatbot-gradient)" />
-          {/* Mouth */}
-          <rect x="7.5" y="15" width="9" height="2" rx="1" fill="white" />
-        </svg>
+        Q
       </button>
 
       {isOpen && createPortal(panel, document.body)}

@@ -1,0 +1,559 @@
+{
+  "screenshots": [
+    "home-desktop-light.png",
+    "about-desktop-light.png",
+    "projects-desktop-light.png",
+    "contact-desktop-light.png",
+    "home-desktop-dark.png",
+    "about-desktop-dark.png",
+    "projects-desktop-dark.png",
+    "contact-desktop-dark.png",
+    "home-mobile-light.png",
+    "about-mobile-light.png",
+    "projects-mobile-light.png",
+    "contact-mobile-light.png",
+    "home-mobile-dark.png",
+    "about-mobile-dark.png",
+    "projects-mobile-dark.png",
+    "contact-mobile-dark.png",
+    "chatbot-desktop-light.png",
+    "chatbot-desktop-dark.png",
+    "chatbot-mobile-light.png",
+    "chatbot-mobile-dark.png",
+    "home-canvas-after-start.png",
+    "contact-canvas.png"
+  ],
+  "routeChecks": [
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "dark",
+      "viewport": "desktop",
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 50,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 64,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 275,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/about",
+      "label": "about",
+      "mode": "dark",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 44,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 64,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 2864,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/contact",
+      "label": "contact",
+      "mode": "dark",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 50,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 56,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 313,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/projects",
+      "label": "projects",
+      "mode": "dark",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 50,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 55,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 64,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 1031,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "light",
+      "viewport": "desktop",
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 50,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 64,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 275,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/about",
+      "label": "about",
+      "mode": "light",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 44,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 64,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 2864,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/contact",
+      "label": "contact",
+      "mode": "light",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "About",
+          "w": 50,
+          "h": 28
+        },
+        {
+          "text": "Projects",
+          "w": 62,
+          "h": 28
+        },
+        {
+          "text": "Contact",
+          "w": 56,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 313,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/projects",
+      "label": "projects",
+      "mode": "light",
+      "viewport": "desktop",
+      "scrollWidth": 1425,
+      "innerWidth": 1440,
+      "horizontalScroll": false,
+      "tooSmallControls": [
+        {
+          "text": "Giới Thiệu",
+          "w": 83,
+          "h": 28
+        },
+        {
+          "text": "Dự Án",
+          "w": 48,
+          "h": 28
+        },
+        {
+          "text": "Liên Hệ",
+          "w": 63,
+          "h": 28
+        }
+      ],
+      "visibleTextLength": 954,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0
+    },
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "dark",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 189,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/about",
+      "label": "about",
+      "mode": "dark",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 2798,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/contact",
+      "label": "contact",
+      "mode": "dark",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 247,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/projects",
+      "label": "projects",
+      "mode": "dark",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 965,
+      "darkRoot": true,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "light",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 189,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/about",
+      "label": "about",
+      "mode": "light",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 2798,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/contact",
+      "label": "contact",
+      "mode": "light",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 247,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    },
+    {
+      "route": "/projects",
+      "label": "projects",
+      "mode": "light",
+      "viewport": "mobile",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "horizontalScroll": false,
+      "tooSmallControls": [],
+      "visibleTextLength": 965,
+      "darkRoot": false,
+      "faultVisible": false,
+      "legacyVisibleClassCount": 0,
+      "versionVisible": false
+    }
+  ],
+  "interactions": [
+    {
+      "name": "mobile menu opens, navigates, closes",
+      "pass": true,
+      "detail": {
+        "pathname": "/projects"
+      }
+    },
+    {
+      "name": "theme toggle changes theme without reload",
+      "pass": true,
+      "detail": {
+        "before": false,
+        "after": true
+      }
+    },
+    {
+      "name": "language toggle exposes valid choices and changes language",
+      "pass": true,
+      "detail": {
+        "options": [
+          "Select vi",
+          "Select zh"
+        ],
+        "current": "VI"
+      }
+    },
+    {
+      "name": "chatbot open/type/close/outside-click without send",
+      "pass": true,
+      "detail": {
+        "typed": true,
+        "closed": true,
+        "outsideClosed": true
+      }
+    },
+    {
+      "name": "contact fields focus/type/blur preserve values; submit avoided",
+      "pass": true,
+      "detail": {
+        "name": "Local Tester",
+        "email": "local@example.test",
+        "message": "Visual smoke only; not submitted.",
+        "submitText": "Gửi Lời Nhắn"
+      }
+    },
+    {
+      "name": "alert role exists by code-level DOM contract when rendered",
+      "pass": true,
+      "detail": {
+        "codeInspection": "Alert.tsx preserves role=\"alert\"; not forced in browser to avoid submitting Contact form."
+      }
+    },
+    {
+      "name": "projects slideshow controls and external links present",
+      "pass": true,
+      "detail": {
+        "imageButtons": 15,
+        "buttonSizes": [
+          {
+            "label": "View image 1",
+            "w": 32,
+            "h": 32
+          },
+          {
+            "label": "View image 2",
+            "w": 32,
+            "h": 32
+          },
+          {
+            "label": "View image 3",
+            "w": 32,
+            "h": 32
+          },
+          {
+            "label": "View image 4",
+            "w": 32,
+            "h": 32
+          },
+          {
+            "label": "View image 1",
+            "w": 32,
+            "h": 32
+          },
+          {
+            "label": "View image 2",
+            "w": 32,
+            "h": 32
+          }
+        ],
+        "externalLinks": [
+          {
+            "text": "Live Demo ->",
+            "href": "http://127.0.0.1:5175/"
+          },
+          {
+            "text": "View Source Code",
+            "href": "https://github.com/hvngpham002/3D_Viet-Hung-Portfolio"
+          },
+          {
+            "text": "Live Demo ->",
+            "href": "https://hack.wpi.edu/index.html"
+          },
+          {
+            "text": "Live Demo ->",
+            "href": "https://gwent-learning-project.vercel.app/"
+          },
+          {
+            "text": "View Source Code",
+            "href": "https://github.com/hvngpham002/gwent-learning-project"
+          }
+        ],
+        "layoutShiftPx": 0
+      }
+    },
+    {
+      "name": "home start flow and keyboard/control buttons reachable",
+      "pass": true,
+      "detail": [
+        {
+          "label": "Q key",
+          "present": true
+        },
+        {
+          "label": "W key",
+          "present": true
+        },
+        {
+          "label": "E key",
+          "present": true
+        },
+        {
+          "label": "R key",
+          "present": true
+        },
+        {
+          "label": "Move Left",
+          "present": true
+        },
+        {
+          "label": "Move Right",
+          "present": true
+        }
+      ]
+    }
+  ],
+  "canvas": [
+    {
+      "name": "home-canvas-after-start.png",
+      "width": 1440,
+      "height": 900,
+      "sampled": 20250,
+      "uniqueSampledColors": 10000,
+      "luminanceMin": 2.14,
+      "luminanceMax": 238.47,
+      "luminanceStdDev": 55.62,
+      "nonblank": true
+    },
+    {
+      "name": "contact-canvas.png",
+      "width": 535,
+      "height": 752,
+      "sampled": 20116,
+      "uniqueSampledColors": 3836,
+      "luminanceMin": 8.06,
+      "luminanceMax": 222.19,
+      "luminanceStdDev": 32.03,
+      "nonblank": true
+    }
+  ],
+  "consoleIssues": []
+}
