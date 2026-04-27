@@ -8,45 +8,73 @@ const LanguageToggle = () => {
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
-    setIsOpen(false); // Close dropdown after selection
+    setIsOpen(false);
   };
 
-  // Language options
   const languages = [
-    { code: '', flag: '🌐' },
-    { code: 'en', flag: '/icons/usa-flag.webp' },
-    { code: 'vi', flag: '/icons/vietnam-flag.webp' },
-    { code: 'zh', flag: '/icons/china-flag.webp' },
+    { code: 'en', label: 'EN', flag: '/icons/usa-flag.webp' },
+    { code: 'vi', label: 'VI', flag: '/icons/vietnam-flag.webp' },
+    { code: 'zh', label: 'ZH', flag: '/icons/china-flag.webp' },
   ];
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language);
-
-  const availableLanguages = languages.filter((lang) => lang.code !== i18n.language);
+  const currentLanguage = languages.find((lang) => lang.code === i18n.language) ?? languages[0];
+  const availableLanguages = languages.filter((lang) => lang.code !== currentLanguage.code);
 
   return (
     <div className="relative inline-block">
-      {/* Toggle Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 flex items-center justify-center rounded-full shadow-lg cursor-pointer text-lg dark:text-white"
-        aria-label="Toggle Language Menu"
+        aria-label="Toggle language menu"
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 2,
+          background: 'var(--paper-1)',
+          border: '1px solid var(--rule-strong)',
+          color: 'var(--ink-900)',
+          fontFamily: 'var(--font-mono)',
+          fontWeight: 700,
+          fontSize: 11,
+          letterSpacing: '0.08em',
+          boxShadow: 'var(--shadow-press)',
+          cursor: 'pointer',
+        }}
       >
-        <img src={currentLanguage?.flag} alt={currentLanguage?.code} className="w-6 h-6" />
+        {currentLanguage.label}
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
         <ul
-          className="absolute -mt-10 top-full left-0 w-10 bg-gray-100 rounded-full shadow-lg overflow-hidden dark:bg-gray-800 "
+          className="absolute right-0 top-full z-[60] mt-1"
+          style={{
+            background: 'var(--paper-1)',
+            border: '1px solid var(--rule-strong)',
+            boxShadow: 'var(--shadow-card)',
+            minWidth: 80,
+          }}
         >
-          {availableLanguages.map((lang) => (
+          {availableLanguages.map((lang, index) => (
             <li key={lang.code}>
               <button
+                type="button"
                 onClick={() => changeLanguage(lang.code)}
-                className="w-full flex items-center justify-center px-2 py-2 hover:bg-gray-300 text-lg dark:text-white"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left"
                 aria-label={`Select ${lang.code}`}
+                style={{
+                  background: 'transparent',
+                  color: 'var(--ink-900)',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 600,
+                  fontSize: 11,
+                  letterSpacing: '0.08em',
+                  borderBottom:
+                    index < availableLanguages.length - 1 ? '1px dotted var(--rule)' : 'none',
+                  cursor: 'pointer',
+                }}
               >
-                {lang.flag === '🌐' ? lang.flag : <img src={lang.flag} alt={lang.code} className="w-6 h-6" />}
+                <img src={lang.flag} alt="" className="h-5 w-5" />
+                {lang.label}
               </button>
             </li>
           ))}

@@ -8,7 +8,6 @@ import "./i18n";
 
 import "./styles/reset.css";
 import "./styles/index.css";
-import "./styles/button.css";
 
 import App from "./App";
 

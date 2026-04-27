@@ -48,11 +48,13 @@
     "about_exp_title_2": "Technical Lead & Market Analyst",
     "about_exp_title_3": "Software Developer & Technical Staff",
     "about_exp_title_4": "Web Developer",
+    "about_exp_title_5": "Cloud Engineering Intern",
 
     "about_exp_company_1": "NVIDIA",
     "about_exp_company_2": "Mingju Consulting & Management",
     "about_exp_company_3": "New England Clean Energy",
     "about_exp_company_4": "Minh Hung Investment & Development JSC",
+    "about_exp_company_5": "Saigon Think Inc.",
 
     "about_exp_company_1_desc_1": "Integrated host-side C++ tooling support and enhanced display driver firmware for DRIVE Thor SoC, enabling safety-critical automotive applications with improved error detection and compliance with functional safety standards.",
     "about_exp_company_1_desc_2": "Developed React-based GUI components to visualize tool input/output, streamlining validation workflows, and contributed to toolchain documentation to accelerate adoption across partner teams.",
@@ -65,6 +67,9 @@
 
     "about_exp_company_4_desc_1": "Developed a full-stack e-commerce platform with Laravel and React, integrating role-based authentication, payment processing, and automated inventory syncing.",
     "about_exp_company_4_desc_2": "Built a dynamic CMS for product management, optimized API reliability with testing, and designed a responsive UI for seamless user experience.",
+
+    "about_exp_company_5_desc_1": "Acquired foundational knowledge of cloud architecture by assisting in the configuration of Azure resources, including Azure Blob Storage for unstructured data and Azure SQL for relational records.",
+    "about_exp_company_5_desc_2": "Gained hands-on experience with low-code development by building simple UIs with Microsoft PowerApps for data validation and manual record entry.",
 
     "projects_live_demo": "Live Demo",
     "projects_source_code": "View Source Code",

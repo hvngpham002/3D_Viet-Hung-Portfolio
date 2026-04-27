@@ -49,11 +49,13 @@
     "about_exp_title_2": "Trưởng Nhóm Kỹ Thuật & Chuyên Viên Phân Tích Thị Trường",
     "about_exp_title_3": "Nhân viên Phát Triển Phần Mềm & Kỹ Thuật",
     "about_exp_title_4": "Kỹ Sư Phát Triển Web",
+    "about_exp_title_5": "Thực Tập Sinh Kỹ Thuật Đám Mây",
 
     "about_exp_company_1": "NVIDIA",
     "about_exp_company_2": "Công Ty Tư Vấn & Quản Lý Minh Châu",
     "about_exp_company_3": "Công Ty Năng Lượng Mới New England",
     "about_exp_company_4": "Công Ty CP Đầu Tư & Phát Triển Minh Hưng",
+    "about_exp_company_5": "Saigon Think Inc.",
 
     "about_exp_company_1_desc_1": "Tích hợp hỗ trợ công cụ C++ phía máy chủ và nâng cao phần mềm trình điều khiển hiển thị cho DRIVE Thor SoC, giúp các ứng dụng ô tô an toàn quan trọng cải thiện khả năng phát hiện lỗi và tuân thủ các tiêu chuẩn an toàn chức năng.",
     "about_exp_company_1_desc_2": "Phát triển các thành phần giao diện người dùng dựa trên React để trực quan hóa đầu vào/đầu ra của công cụ, hợp lý hóa quy trình xác thực, và đóng góp vào tài liệu bộ công cụ để đẩy nhanh việc áp dụng trong các nhóm đối tác.",
@@ -66,6 +68,9 @@
 
     "about_exp_company_4_desc_1": "Phát triển nền tảng thương mại điện tử full-stack với Laravel và React, tích hợp xác thực theo vai trò, xử lý thanh toán và đồng bộ kho hàng tự động.",
     "about_exp_company_4_desc_2": "Xây dựng hệ thống CMS để quản lý sản phẩm, tối ưu hóa độ tin cậy của API bằng kiểm thử, và thiết kế giao diện người dùng đáp ứng để mang lại trải nghiệm mượt mà.",
+
+    "about_exp_company_5_desc_1": "Tiếp thu kiến thức nền tảng về kiến trúc đám mây thông qua việc hỗ trợ cấu hình các tài nguyên Azure, bao gồm Azure Blob Storage cho dữ liệu phi cấu trúc và Azure SQL cho dữ liệu quan hệ.",
+    "about_exp_company_5_desc_2": "Tích lũy kinh nghiệm thực hành với phát triển low-code bằng cách xây dựng các giao diện đơn giản bằng Microsoft PowerApps để xác thực dữ liệu và nhập liệu thủ công.",
 
     "projects_live_demo": "Xem Demo",
     "projects_source_code": "Xem Code",

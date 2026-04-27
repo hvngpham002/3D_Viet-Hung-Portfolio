@@ -20,7 +20,7 @@ const App = () => {
 
   return (
     <div className={themeMode === 'dark' ? 'dark' : ''}>
-      <main className="bg-slate-300/50 dark:bg-slate-800">
+      <main className="paper grain vignette min-h-screen">
         <Router>
           <Navbar />
           <Suspense fallback={<Loader />}>
@@ -33,8 +33,7 @@ const App = () => {
           </Suspense>
         </Router>
 
-      {/* Version Mark */}
-      <VersionMark version={APP_VERSION}/>
+        <VersionMark version={APP_VERSION} />
       </main>
     </div>
   );

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { Suspense, useRef, useState, useEffect, lazy } from "react";
-import emailjs from "@emailjs/browser";
+import emailjs, { EmailJSResponseStatus } from "@emailjs/browser";
 import { useTranslation } from "react-i18next";
 import { Canvas } from "@react-three/fiber";
 import { reloadTranslations } from "../i18n";
@@ -26,8 +26,33 @@ import { RootState } from "../redux/store";
 import useAlert from "../hooks/useAlert";
 import Alert from "../components/Alert";
 
+const emailJsPublicKey = import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY;
+
 // Initialize EmailJS with your public key
-emailjs.init(import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY);
+emailjs.init({
+  publicKey: emailJsPublicKey,
+});
+
+const getEmailJsErrorMessage = (error: unknown) => {
+  if (error instanceof EmailJSResponseStatus) {
+    return error.text || `EmailJS request failed with status ${error.status}`;
+  }
+
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "text" in error &&
+    typeof error.text === "string"
+  ) {
+    return error.text;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "An error occurred";
+};
 
 interface FormData {
   name: string;
@@ -247,6 +272,11 @@ const Contact = () => {
   >("idle");
 
   const { alert, showAlert, hideAlert } = useAlert();
+  const translatedSendingLabel = t("contact_sending");
+  const sendingLabel =
+    translatedSendingLabel === "contact_sending"
+      ? `${t("contact_send_message")}...`
+      : translatedSendingLabel;
 
   const formRef = useRef<HTMLFormElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -280,14 +310,26 @@ const Contact = () => {
           from_email: form.email,
           to_email: "hung.v.pham002@gmail.com",
           message: form.message,
+        },
+        {
+          publicKey: emailJsPublicKey,
         }
       );
 
       setForm({ name: "", email: "", message: "" });
+      showAlert({ text: "Message sent successfully!", type: "success" });
+      setCurrentAnimation("attack");
+
+      setTimeout(() => {
+        hideAlert();
+        setCurrentAnimation("idle");
+      }, 2500);
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[Contact] EmailJS send failed:", error);
       setCurrentAnimation("idle");
       showAlert({
-        text: error instanceof Error ? error.message : "An error occurred",
+        text: getEmailJsErrorMessage(error),
         type: "danger",
       });
 
@@ -295,15 +337,7 @@ const Contact = () => {
         hideAlert();
       }, 2500);
     } finally {
-      showAlert({ text: "Message sent successfully!", type: "success" });
-      setCurrentAnimation("attack");
       setIsLoading(false);
-
-      setTimeout(() => {
-        hideAlert();
-        setCurrentAnimation("idle");
-        setForm({ name: "", email: "", message: "" });
-      }, 2500);
     }
   };
 
@@ -361,122 +395,165 @@ const Contact = () => {
 
   return (
     <>
-      <section className="relative flex lg:flex-row flex-col max-container h-[100svh] overflow-hidden">
+      <section className="relative mx-auto flex min-h-[calc(100svh-64px)] w-full max-w-6xl flex-col px-6 pb-10 pt-28 sm:px-8 lg:px-10">
         {alert.show && <Alert {...alert} />}
-        <div className="flex-1 min-w-[50%] flex flex-col px-3 lg:px-4 py-1 lg:py-4 lg:h-auto">
-          {isTranslationsLoading ? (
-            <div className="loading-bar h-8 w-auto rounded-md bg-gray-500 dark:bg-gray-700" />
-          ) : (
-            <>
-              <h1 className="text-2xl font-semibold dark:text-white mb-1 lg:mb-0">
-                {t("contact_title")}
-              </h1>
-            </>
-          )}
-          <form
-            ref={formRef}
-            className="w-full flex flex-col gap-1.5 lg:gap-7 mt-1 lg:mt-14"
-            onSubmit={handleSubmit}
-          >
-            {isTranslationsLoading ? (
-              <React.Fragment>
-                <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700  py-0.5 lg:py-2 mt-1" />
-                <div className="loading-bar h-16 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
-                <div className="loading-bar h-24 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 lg:py-2 mt-1" />
-                <div className="loading-bar h-8 lg:h-10 w-auto rounded-md bg-gray-500 dark:bg-gray-700 py-0.5 mt-1 lg:mt-0" />
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_name")}:
-                  <input
-                    type="text"
-                    name="name"
-                    className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                    placeholder={t("Sir Astorias, The Abysswalker")}
-                    required
-                    value={form.name}
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                  />
-                </label>
-                <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_email")}:
-                  <input
-                    type="email"
-                    name="email"
-                    className="input h-8 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                    placeholder={t("sif@gmail.com")}
-                    required
-                    value={form.email}
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                  />
-                </label>
-                <label className="text-black-500 font-semibold dark:text-white">
-                  {t("contact_message")}:
-                  <textarea
-                    name="message"
-                    rows={2}
-                    className="textarea h-12 lg:h-auto dark:bg-gray-800 dark:text-white py-0.5 lg:py-2 mt-1"
-                    placeholder={t("contact_message_placeholder")}
-                    required
-                    value={form.message}
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                  />
-                </label>
 
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`btn text-xs lg:text-md h-8 lg:h-10 flex items-center justify-center mt-1 lg:mt-0 ${
-                    isLoading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isLoading ? t("Sending...") : t("contact_send_message")}
-                </button>
-              </React.Fragment>
+        <div className="card-paper grid min-h-[680px] grid-cols-1 overflow-hidden lg:grid-cols-2">
+          <div className="flex flex-col p-6 sm:p-8 lg:border-r lg:border-rule-strong lg:p-12">
+            {isTranslationsLoading ? (
+              <div className="space-y-4">
+                <div className="loading-bar h-4 w-32" />
+                <div className="loading-bar h-14 w-full max-w-md" />
+                <div className="loading-bar h-8 w-full max-w-sm" />
+              </div>
+            ) : (
+              <div>
+                <p className="t-eyebrow">Chapter IV</p>
+                <h1 className="t-display mt-3 text-[clamp(2.75rem,7vw,4.5rem)] text-ink-900">
+                  {t("contact_title")}
+                </h1>
+                <p className="t-display-italic mt-4 max-w-md text-lg leading-relaxed text-ink-700">
+                  Sif is on watch. The bonfire is lit. I read everything.
+                </p>
+              </div>
             )}
-          </form>
-        </div>
-        <div ref={canvasContainerRef} className="lg:w-1/2 w-full lg:h-auto">
-          <Canvas
-            shadows
-            dpr={[1, 2]}
-            camera={{
-              position: [0, 0, 5],
-              fov: 75,
-              near: 0.1,
-              far: 1000,
-            }}
-            gl={{
-              antialias: true,
-              toneMapping: THREE.ACESFilmicToneMapping,
-              outputColorSpace: THREE.SRGBColorSpace,
-              premultipliedAlpha: false,
-              powerPreference: "high-performance",
-              stencil: false,
-              depth: true,
-            }}
-            className="h-full"
-          >
-            <Suspense
-              fallback={
-                <Html center>
-                  <div className="custom-spinner mt-20" />
-                </Html>
-              }
+
+            <form
+              ref={formRef}
+              className="mt-10 grid w-full gap-7"
+              onSubmit={handleSubmit}
             >
-              <Scene currentAnimation={currentAnimation} />
-            </Suspense>
-          </Canvas>
+              {isTranslationsLoading ? (
+                <React.Fragment>
+                  <div className="loading-bar h-16 w-full" />
+                  <div className="loading-bar h-16 w-full" />
+                  <div className="loading-bar h-40 w-full" />
+                  <div className="loading-bar h-11 w-full max-w-52" />
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <label className="block">
+                    <span className="t-eyebrow block">
+                      {t("contact_name")}
+                    </span>
+                    <input
+                      type="text"
+                      name="name"
+                      className="input-ms mt-2"
+                      placeholder="Sir Astorias, The Abysswalker"
+                      required
+                      value={form.name}
+                      onChange={handleChange}
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="t-eyebrow block">
+                      {t("contact_email")}
+                    </span>
+                    <input
+                      type="email"
+                      name="email"
+                      className="input-ms mt-2"
+                      placeholder="sif@gmail.com"
+                      required
+                      value={form.email}
+                      onChange={handleChange}
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="t-eyebrow block">
+                      {t("contact_message")}
+                    </span>
+                    <textarea
+                      name="message"
+                      rows={5}
+                      className="input-ms mt-2 min-h-[160px] resize-y"
+                      placeholder={t("contact_message_placeholder")}
+                      required
+                      value={form.message}
+                      onChange={handleChange}
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                    />
+                  </label>
+
+                  <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="t-mono text-[11px] uppercase text-ink-500">
+                      ENC. EMAILJS - OWL POST
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className={`btn-ink w-full sm:w-auto ${
+                        isLoading ? "pointer-events-none opacity-60" : ""
+                      }`}
+                    >
+                      {isLoading ? sendingLabel : t("contact_send_message")}
+                    </button>
+                  </div>
+                </React.Fragment>
+              )}
+            </form>
+          </div>
+
+          <div
+            ref={canvasContainerRef}
+            className="relative min-h-[380px] w-full overflow-hidden bg-paper-2 lg:min-h-[540px]"
+          >
+            <Canvas
+              shadows
+              dpr={[1, 2]}
+              camera={{
+                position: [0, 0, 5],
+                fov: 75,
+                near: 0.1,
+                far: 1000,
+              }}
+              gl={{
+                antialias: true,
+                toneMapping: THREE.ACESFilmicToneMapping,
+                outputColorSpace: THREE.SRGBColorSpace,
+                premultipliedAlpha: false,
+                powerPreference: "high-performance",
+                stencil: false,
+                depth: true,
+              }}
+              className="h-full w-full"
+            >
+              <Suspense
+                fallback={
+                  <Html center>
+                    <div className="custom-spinner mt-20" />
+                  </Html>
+                }
+              >
+                <Scene currentAnimation={currentAnimation} />
+              </Suspense>
+            </Canvas>
+
+            <div
+              className="pointer-events-none absolute bottom-5 left-5 max-w-[calc(100%-2.5rem)] border border-rule-strong px-4 py-3 shadow-card backdrop-blur-sm"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--paper-0) 80%, transparent)",
+              }}
+            >
+              <p className="t-eyebrow mb-1">Now playing</p>
+              <p className="t-display-italic text-base text-ink-900">
+                Sif waits by the bonfire...
+              </p>
+            </div>
+          </div>
         </div>
       </section>
-      <footer className="py-4 text-center text-gray-500 text-sm">
+
+      <footer className="t-eyebrow pb-6 text-center text-ink-300">
         © 2025 Viet Hung Pham. All rights reserved.
       </footer>
     </>

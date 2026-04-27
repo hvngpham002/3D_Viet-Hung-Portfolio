@@ -1,40 +1,77 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { fadeIn, textVariant } from "../utils/motion";
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getExperiences, getSkills } from "../services/supabaseService";
 import type { experience, skill } from "../types/supabase";
-import type { ReactNode } from "react";
-import React from "react";
 
-interface RadialMenuItemProps {
-  rotate?: number;
-  children: ReactNode;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}
+type SkillGroupDefinition = {
+  label: string;
+  names: string[];
+};
 
-const RadialMenuItem = ({
-  rotate = 0,
-  children,
-  onClick,
-}: RadialMenuItemProps) => {
-  return (
-    <motion.div
-      className="absolute w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center cursor-pointer"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{
-        scale: 1,
-        opacity: 1,
-        x: Math.cos(rotate * (Math.PI / 180)) * 110 - 16,
-        y: Math.sin(rotate * (Math.PI / 180)) * 110 - 16,
-      }}
-      whileHover={{ scale: 1.2 }}
-      onClick={onClick}
-    >
-      {children}
-    </motion.div>
+type SkillGroup = {
+  label: string;
+  skills: skill[];
+};
+
+const skillGroupDefinitions: SkillGroupDefinition[] = [
+  {
+    label: "Languages",
+    names: ["TypeScript", "JavaScript", "Python", "Java", "C", "C++"],
+  },
+  {
+    label: "Frontend",
+    names: ["React", "Redux", "Tailwind", "SASS"],
+  },
+  {
+    label: "Backend & Tools",
+    names: ["Node.js", "Git"],
+  },
+];
+
+const normalizeSkillName = (name: string) => name.trim().toLowerCase();
+
+const groupSkills = (skills: skill[]): SkillGroup[] => {
+  const skillsByName = new Map(
+    skills.map((currentSkill) => [
+      normalizeSkillName(currentSkill.name),
+      currentSkill,
+    ])
   );
+  const matchedSkillNames = new Set<string>();
+
+  const groupedSkills = skillGroupDefinitions
+    .map(({ label, names }) => {
+      const matchedSkills = names.flatMap((name) => {
+        const normalizedName = normalizeSkillName(name);
+        const matchedSkill = skillsByName.get(normalizedName);
+
+        if (!matchedSkill) {
+          return [];
+        }
+
+        matchedSkillNames.add(normalizedName);
+        return [matchedSkill];
+      });
+
+      return { label, skills: matchedSkills };
+    })
+    .filter((group) => group.skills.length > 0);
+
+  const additionalSkills = skills.filter(
+    (currentSkill) => !matchedSkillNames.has(normalizeSkillName(currentSkill.name))
+  );
+
+  if (additionalSkills.length > 0) {
+    groupedSkills.push({
+      label: "Additional",
+      skills: additionalSkills,
+    });
+  }
+
+  return groupedSkills;
 };
 
 const About = () => {
@@ -64,20 +101,31 @@ const About = () => {
     fetchData();
   }, []);
 
+  const skillGroups = useMemo(() => groupSkills(skills), [skills]);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center px-4 pt-16">
+        <div className="plate w-full max-w-sm text-center">
+          <p className="t-eyebrow mb-3">Chapter I</p>
+          <p className="t-display-italic text-2xl text-ink-900">
+            {t("Loading assets...")}
+          </p>
+          <div className="loading-bar mx-auto mt-6 h-2 w-full max-w-[220px]" />
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500 text-center">
-          <h3 className="text-xl font-bold mb-2">Error Loading Data</h3>
-          <p>{error}</p>
+      <div className="flex min-h-screen items-center justify-center px-4 pt-16">
+        <div className="card-paper w-full max-w-md p-6 text-center">
+          <p className="t-eyebrow mb-3">Chapter Interrupted</p>
+          <h1 className="t-display-italic text-3xl text-accent">
+            Error Loading Data
+          </h1>
+          <p className="t-ui mt-4 text-sm leading-6 text-ink-700">{error}</p>
         </div>
       </div>
     );
@@ -88,222 +136,212 @@ const About = () => {
       <motion.section
         initial="hidden"
         animate="show"
-        className="max-container min-h-screen py-32 px-4 sm:px-6 lg:px-8"
+        className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-28 sm:px-6 lg:px-8"
       >
-        {/* Hero Section */}
         <motion.div
           variants={textVariant()}
-          className="mb-8 flex flex-col items-center"
+          className="mb-12 grid items-center gap-8 md:mb-14 lg:grid-cols-[220px_1fr] lg:gap-10"
         >
-          <div className="relative inline-block profile-container">
-            <motion.div className="relative cursor-pointer">
+          <div className="relative justify-self-center lg:justify-self-start">
+            <div
+              className="w-[196px] p-1.5"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule-strong)",
+                boxShadow: "var(--shadow-card)",
+              }}
+            >
               <img
                 src="/images/profile.webp"
-                alt="Profile"
-                className="w-44 h-44 rounded-full border-4 border-gray-300 transition-transform duration-300"
+                alt={t("about_name")}
+                className="aspect-square w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <AnimatePresence>
-                  <React.Fragment>
-                    {/* <RadialMenuItem
-                      rotate={-65}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open("/Viet Hung Resume.pdf", "_blank");
-                      }}
-                    >
-                      <img
-                        src="/images/cv.svg"
-                        alt="Resume"
-                        className="w-6 h-6 invert"
-                        loading="lazy"
-                      />
-                    </RadialMenuItem> */}
-                    <RadialMenuItem
-                      rotate={-45}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(
-                          "https://linkedin.com/in/vhungpham",
-                          "_blank"
-                        );
-                      }}
-                    >
-                      <svg
-                        className="w-5 h-5 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                      </svg>
-                    </RadialMenuItem>
-                    <RadialMenuItem
-                      rotate={-25}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open("https://github.com/hvngpham002", "_blank");
-                      }}
-                    >
-                      <img
-                        src="/icons/github.svg"
-                        alt="GitHub"
-                        className="w-5 h-5 invert"
-                        loading="lazy"
-                      />
-                    </RadialMenuItem>
-                  </React.Fragment>
-                </AnimatePresence>
-              </div>
-            </motion.div>
+            </div>
+            <div className="absolute -bottom-3 -right-3 flex gap-2">
+              <a
+                href="https://linkedin.com/in/vhungpham"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open LinkedIn profile"
+                className="seal h-8 w-8 text-[11px] no-underline"
+              >
+                in
+              </a>
+              <a
+                href="https://github.com/hvngpham002"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open GitHub profile"
+                className="seal h-8 w-8 text-[11px] no-underline"
+              >
+                gh
+              </a>
+            </div>
           </div>
-          <h1 className="text-2xl md:text-4xl font-bold dark:text-white mt-4">
-            {t("about_greeting")}{" "}
-            <span className="blue-gradient_text drop-shadow">
-              {t("about_name")}.
-            </span>
-          </h1>
+
+          <div className="text-center lg:text-left">
+            <p className="t-eyebrow">Chapter I · Of the Author</p>
+            <h1 className="t-display mt-3 text-[clamp(3.25rem,10vw,5.75rem)] text-ink-900">
+              {t("about_greeting")}{" "}
+              <em className="text-accent">{t("about_name")}.</em>
+            </h1>
+            <p className="t-display-italic mx-auto mt-4 max-w-xl text-lg leading-7 text-ink-700 lg:mx-0">
+              {t("Welcome to My Journey")}
+            </p>
+            <div className="hairline fancy mt-8" aria-hidden="true" />
+          </div>
         </motion.div>
 
-        {/* Bio Section */}
         <motion.div
-          variants={fadeIn("up", "spring", 0.5, 1)}
-          className="mb-12 md:mb-24"
+          variants={fadeIn("up", "spring", 0.2, 1)}
+          className="plate mb-14"
         >
-          <p className="text-base md:text-lg leading-relaxed text-gray-800 dark:text-gray-300 px-4 md:px-0 lg:indent-12">
+          <p className="t-drop t-ui m-0 text-base leading-8 text-ink-900">
             {t("about_bio")}
           </p>
         </motion.div>
 
-        {/* Skills Grid */}
-        <motion.div
-          variants={fadeIn("up", "spring", 0.7, 1)}
-          className="mb-12 md:mb-24"
+        <motion.section
+          variants={fadeIn("up", "spring", 0.35, 1)}
+          className="mb-14"
+          aria-labelledby="about-skills-heading"
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8 dark:text-white px-4 md:px-0">
-            {t("about_skills")}
-          </h2>
-          <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 px-2 md:px-0">
-            {skills.map((skill, index) => (
-              <div
-                key={skill.id || index}
-                className="flex flex-col md:flex-row items-center p-2 md:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-              >
-                <img
-                  src={`/icons/${skill.icon}`}
-                  alt={skill.name}
-                  className="w-6 h-6 md:w-7 md:h-7 md:mr-3 mb-1 md:mb-0"
-                  loading="lazy"
-                />
-                <span className="text-gray-800 dark:text-gray-300 hidden md:block">
-                  {skill.name}
-                </span>
-              </div>
+          <div className="rule-double mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <span className="t-eyebrow">Chapter II</span>
+            <h2
+              id="about-skills-heading"
+              className="t-display-italic text-2xl text-ink-900"
+            >
+              {t("about_skills")}
+            </h2>
+            <span className="t-eyebrow">{skills.length}</span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {skillGroups.map((group) => (
+              <article key={group.label} className="plate">
+                <p className="t-eyebrow mb-4">{group.label}</p>
+                <ul className="grid gap-3">
+                  {group.skills.map((currentSkill, index) => (
+                    <li
+                      key={currentSkill.id ?? `${group.label}-${currentSkill.name}`}
+                      className="flex items-center gap-3"
+                    >
+                      <span
+                        className="t-mono grid h-7 w-7 shrink-0 place-items-center border text-[10px] text-ink-500"
+                        style={{
+                          background: index % 2 === 0 ? "var(--paper-1)" : "var(--paper-0)",
+                          borderColor: "var(--rule-strong)",
+                        }}
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="t-display-italic text-lg leading-6 text-ink-900">
+                        {currentSkill.name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
             ))}
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Experience Timeline */}
-        <motion.div
-          variants={fadeIn("up", "spring", 0.9, 1)}
-          className="px-2 md:px-0"
+        <motion.section
+          variants={fadeIn("up", "spring", 0.5, 1)}
+          aria-labelledby="about-experience-heading"
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8 dark:text-white">
-            {t("about_exp")}
-          </h2>
-          <div className="relative flex flex-col items-center">
-            {/* Central vertical line */}
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 w-1 bg-gray-200 dark:bg-gray-700 h-full z-0" style={{ minHeight: experiences.length * 180 }} />
-            <div className="w-full flex flex-col">
+          <div className="rule-double mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <span className="t-eyebrow">Chapter III</span>
+            <h2
+              id="about-experience-heading"
+              className="t-display-italic text-2xl text-ink-900"
+            >
+              {t("about_exp")}
+            </h2>
+            <span className="t-eyebrow">{experiences.length}</span>
+          </div>
+
+          <div className="relative">
+            <div
+              className="absolute bottom-0 left-[18px] top-0 w-px bg-rule-strong md:left-1/2"
+              aria-hidden="true"
+            />
+            <ol className="space-y-7 md:space-y-8">
               {experiences.map((exp, index) => {
                 const isLeft = index % 2 === 0;
-                // Calculate dynamic minHeight based on points length (if available)
-                // Use 120px as base, add 24px per point if points exist, else 120px
-                const pointsLength = Array.isArray(exp.points) ? exp.points.length : 0;
-                const minHeight = 120 + (pointsLength > 0 ? pointsLength * 24 : 0);
+                const company = t(exp.company);
+                const role = t(exp.role);
+
                 return (
-                  <div
-                    key={exp.id || index}
-                    className={`relative flex w-full items-center z-10
-                      ${
-                      // On md+ screens, alternate left/right. On small screens, always center.
-                      'justify-center md:justify-' + (isLeft ? 'start' : 'end')
-                      }
-                    `}
-                    style={{ minHeight }}
+                  <li
+                    key={exp.id ?? `${exp.year}-${exp.company}`}
+                    className="relative pl-14 md:grid md:grid-cols-[minmax(0,1fr)_56px_minmax(0,1fr)] md:items-start md:pl-0"
                   >
-                    {/* Timeline dot and year */}
-                    {/* On mobile, place dot/year inline with card; on md+, keep absolute center */}
-                    <div
-                      className={
-                        `flex flex-col items-center z-20
-                        md:absolute md:left-1/2 md:-translate-x-1/2
-                        ${
-                        // On mobile, put dot to the left of the card
-                        'mr-4 md:mr-0'
-                        }
-                        `
-                      }
-                    >
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center border-2 border-blue-400 shadow-md relative">
-                        <img
-                          src={`/images/${exp.logo}`}
-                          alt={exp.company}
-                          className="w-8 h-8 md:w-10 md:h-10 object-contain"
-                          loading="lazy"
-                        />
-                        <img
-                          src={`/icons/${exp.country}`}
-                          alt="Country flag"
-                          className="w-4 h-4 md:w-5 md:h-5 absolute -top-1 -right-1"
-                          loading="lazy"
-                        />
-                      </div>
-                      <span className="text-sm md:text-md font-semibold dark:text-white mt-2">
-                        {exp.year}
+                    <div className="absolute left-0 top-4 z-20 md:static md:col-start-2 md:row-start-1 md:flex md:justify-center md:pt-3">
+                      <span className="seal h-9 w-9 text-xs">
+                        {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
-                    {/* Experience card */}
-                    <div
-                      className={`w-full max-w-xl flex
-                        md:w-1/2
-                        ${
-                        // On md+ screens, alternate left/right. On small screens, always center and row with dot
-                        'justify-center items-center flex-row ' +
-                        (isLeft ? 'md:pr-16 md:pr-24 md:justify-end' : 'md:pl-16 md:pl-24 md:justify-start')
-                        }
-                      `}
+
+                    <article
+                      className={`card-paper z-10 p-5 md:row-start-1 md:p-6 ${
+                        isLeft
+                          ? "md:col-start-1 md:mr-7"
+                          : "md:col-start-3 md:ml-7"
+                      }`}
                     >
-                      {/* On mobile, dot/year is already rendered inline; on md+, it's absolutely centered */}
-                      <div className="bg-white dark:bg-gray-700 p-3 md:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow w-full">
-                        <div className="flex flex-col">
-                          <h3 className="text-lg md:text-xl font-semibold dark:text-white">
-                            {t(exp.role)}
-                          </h3>
-                          <h4 className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-                            @ {t(exp.company)}
-                          </h4>
+                      <div className="mb-4 flex items-start gap-4">
+                        <div
+                          className="grid h-11 w-11 shrink-0 place-items-center border p-1.5"
+                          style={{
+                            background: "var(--paper-2)",
+                            borderColor: "var(--rule-strong)",
+                          }}
+                        >
+                          <img
+                            src={`/images/${exp.logo}`}
+                            alt={company}
+                            className="max-h-full max-w-full object-contain"
+                            loading="lazy"
+                          />
                         </div>
-                        {/* <ul className="list-disc pl-4 md:pl-5 space-y-1 md:space-y-2 mt-2">
-                          {exp.points.map((point, pointIndex) => (
-                            <li
-                              key={pointIndex}
-                              className="text-xs md:text-base text-gray-600 dark:text-gray-400"
-                            >
-                              {t(point)}
-                            </li>
-                          ))}
-                        </ul> */}
+                        <div className="min-w-0">
+                          <div className="mb-2 flex flex-wrap items-center gap-2">
+                            <span className="t-mono text-[10px] uppercase tracking-[0.18em] text-ink-500">
+                              {exp.year}
+                            </span>
+                            <img
+                              src={`/icons/${exp.country}`}
+                              alt=""
+                              className="h-4 w-5 object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                          <h3 className="t-display-italic text-2xl leading-7 text-ink-900">
+                            {role}
+                          </h3>
+                          <p className="t-ui mt-1 text-sm font-semibold text-accent">
+                            {company}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+
+                      <ul className="t-ui list-disc space-y-2 pl-5 text-sm leading-6 text-ink-500 marker:text-accent">
+                        {exp.points.map((point) => (
+                          <li key={point}>{t(point)}</li>
+                        ))}
+                      </ul>
+                    </article>
+                  </li>
                 );
               })}
-            </div>
+            </ol>
           </div>
-        </motion.div>
+        </motion.section>
       </motion.section>
-      <footer className="py-4 text-center text-gray-500 text-sm">
+      <footer className="t-eyebrow px-4 pb-8 text-center text-ink-300">
         © 2025 Viet Hung Pham. All rights reserved.
       </footer>
     </>

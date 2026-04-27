@@ -1,13 +1,35 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const Alert = ({ type, text }: { type: string; text: string }) => {
-  return (
-    <div className='absolute top-20 left-0 right-0 flex justify-center items-center'>
-        <div className={`${type === 'danger' ? 'bg-red-800' : 'bg-blue-800'} p-2 text-indigo-100 leading-none flex lg:inline-flex items-center`} role='alert'>
-            <p className={`${type === 'danger' ? 'bg-red-500' : 'bg-blue-500'} flex rounded uppercase px-2 py-1 font-semibold mr-3 text-xs`}>{type === 'danger' ? 'Failed' : 'Success'}</p>
-            <p className='mr-2 text-left'>{text}</p>
-        </div>
-    </div>
-  )
-}
+  const isDanger = type === "danger";
 
-export default Alert
+  return (
+    <div className="pointer-events-none fixed left-0 right-0 top-20 z-[60] flex items-center justify-center px-4">
+      <div
+        className="pointer-events-auto inline-flex max-w-[calc(100vw-2rem)] items-stretch border text-paper-0"
+        role="alert"
+        style={{
+          background: isDanger ? "var(--accent)" : "var(--ink-900)",
+          borderColor: isDanger ? "var(--accent)" : "var(--ink-900)",
+          boxShadow: "var(--shadow-card)",
+        }}
+      >
+        <p
+          className="t-mono grid place-items-center px-3 py-2 text-[10px] font-bold uppercase leading-none text-paper-0 sm:px-4"
+          style={{
+            background: isDanger
+              ? "color-mix(in srgb, var(--accent) 72%, #000)"
+              : "var(--ink-700)",
+            letterSpacing: "0.18em",
+          }}
+        >
+          {isDanger ? "FAILED" : "SENT"}
+        </p>
+        <p className="t-display-italic px-4 py-2 text-left text-[15px] leading-snug text-paper-0 sm:px-5">
+          {text}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Alert;

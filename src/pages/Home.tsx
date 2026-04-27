@@ -8,6 +8,7 @@ import {
   lazy,
   memo,
   useMemo,
+  type ButtonHTMLAttributes,
 } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -45,6 +46,39 @@ type SceneContentProps = {
 };
 
 type ScreenAdjustment = [[number, number, number], THREE.Vector3, THREE.Euler];
+
+type ControlButtonProps = {
+  label: string;
+  cap?: string;
+  ariaLabel: string;
+  size?: "desktop" | "mobile";
+  handlers?: ButtonHTMLAttributes<HTMLButtonElement>;
+};
+
+const ControlButton = ({
+  label,
+  cap,
+  ariaLabel,
+  size = "desktop",
+  handlers,
+}: ControlButtonProps) => {
+  const sizeClasses =
+    size === "mobile"
+      ? "h-12 w-12 text-base"
+      : "h-16 w-16 text-lg";
+
+  return (
+    <button
+      type="button"
+      className={`btn-stamp flex-col gap-0.5 touch-none select-none ${sizeClasses}`}
+      aria-label={ariaLabel}
+      {...handlers}
+    >
+      <span className="select-none leading-none">{label}</span>
+      {cap && <span className="cap select-none">{cap}</span>}
+    </button>
+  );
+};
 
 const Home = () => {
   const [isRotating, setIsRotating] = useState(false);
@@ -156,7 +190,7 @@ const Home = () => {
     <>
       {/* Loader at the top level with highest z-index */}
       {isLoading && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 z-[999] bg-gray-100 dark:bg-gray-800">
+        <div className="fixed inset-0 z-[999]">
           <Loader onStarted={() => setIsLoading(false)} />
         </div>
       )}
@@ -230,210 +264,141 @@ const Home = () => {
 
         {/* Control Buttons */}
         {/* Desktop layout: visible on medium screens and up */}
-        <div className="hidden md:flex absolute bottom-8 left-0 right-0 items-center justify-center gap-4 pointer-events-auto select-none">
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            {...leftHandlers}
-            aria-label="Move Left"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 dark:text-white text-black select-none"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-            <span className="text-xs font-medium dark:text-white text-black mt-1 select-none">
-              LEFT
-            </span>
-          </button>
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            {...rightHandlers}
-            aria-label="Move Right"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 dark:text-white text-black select-none"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-            <span className="text-xs font-medium dark:text-white text-black mt-1 select-none">
-              RIGHT
-            </span>
-          </button>
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            onTouchStart={() => handleMoveStart("q")}
-            onTouchEnd={() => handleMoveEnd("q")}
-            onMouseDown={() => handleMoveStart("q")}
-            onMouseUp={() => handleMoveEnd("q")}
-            onMouseLeave={() => handleMoveEnd("q")}
-            aria-label="Q key"
-          >
-            <span className="text-lg font-bold dark:text-white text-black select-none">
-              Q
-            </span>
-          </button>
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            onTouchStart={() => handleMoveStart("w")}
-            onTouchEnd={() => handleMoveEnd("w")}
-            onMouseDown={() => handleMoveStart("w")}
-            onMouseUp={() => handleMoveEnd("w")}
-            onMouseLeave={() => handleMoveEnd("w")}
-            aria-label="W key"
-          >
-            <span className="text-lg font-bold dark:text-white text-black select-none">
-              W
-            </span>
-          </button>
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            onTouchStart={() => handleMoveStart("e")}
-            onTouchEnd={() => handleMoveEnd("e")}
-            onMouseDown={() => handleMoveStart("e")}
-            onMouseUp={() => handleMoveEnd("e")}
-            onMouseLeave={() => handleMoveEnd("e")}
-            aria-label="E key"
-          >
-            <span className="text-lg font-bold dark:text-white text-black select-none">
-              E
-            </span>
-          </button>
-          <button
-            className="w-16 h-16 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-            onTouchStart={() => handleMoveStart("r")}
-            onTouchEnd={() => handleMoveEnd("r")}
-            onMouseDown={() => handleMoveStart("r")}
-            onMouseUp={() => handleMoveEnd("r")}
-            onMouseLeave={() => handleMoveEnd("r")}
-            aria-label="R key"
-          >
-            <span className="text-lg font-bold dark:text-white text-black select-none">
-              R
-            </span>
-          </button>
+        <div className="absolute bottom-8 left-0 right-0 hidden items-center justify-center gap-3 pointer-events-auto select-none md:flex">
+          <ControlButton
+            label="<"
+            cap="LEFT"
+            ariaLabel="Move Left"
+            handlers={leftHandlers}
+          />
+          <ControlButton
+            label=">"
+            cap="RIGHT"
+            ariaLabel="Move Right"
+            handlers={rightHandlers}
+          />
+          <div
+            className="mx-1 h-14 w-px self-stretch"
+            style={{ background: "var(--rule)" }}
+            aria-hidden="true"
+          />
+          <ControlButton
+            label="Q"
+            cap="PIRO"
+            ariaLabel="Q key"
+            handlers={{
+              onTouchStart: () => handleMoveStart("q"),
+              onTouchEnd: () => handleMoveEnd("q"),
+              onMouseDown: () => handleMoveStart("q"),
+              onMouseUp: () => handleMoveEnd("q"),
+              onMouseLeave: () => handleMoveEnd("q"),
+            }}
+          />
+          <ControlButton
+            label="W"
+            cap="CELE"
+            ariaLabel="W key"
+            handlers={{
+              onTouchStart: () => handleMoveStart("w"),
+              onTouchEnd: () => handleMoveEnd("w"),
+              onMouseDown: () => handleMoveStart("w"),
+              onMouseUp: () => handleMoveEnd("w"),
+              onMouseLeave: () => handleMoveEnd("w"),
+            }}
+          />
+          <ControlButton
+            label="E"
+            cap="TRK"
+            ariaLabel="E key"
+            handlers={{
+              onTouchStart: () => handleMoveStart("e"),
+              onTouchEnd: () => handleMoveEnd("e"),
+              onMouseDown: () => handleMoveStart("e"),
+              onMouseUp: () => handleMoveEnd("e"),
+              onMouseLeave: () => handleMoveEnd("e"),
+            }}
+          />
+          <ControlButton
+            label="R"
+            cap="WHIRL"
+            ariaLabel="R key"
+            handlers={{
+              onTouchStart: () => handleMoveStart("r"),
+              onTouchEnd: () => handleMoveEnd("r"),
+              onMouseDown: () => handleMoveStart("r"),
+              onMouseUp: () => handleMoveEnd("r"),
+              onMouseLeave: () => handleMoveEnd("r"),
+            }}
+          />
         </div>
 
         {/* Mobile layout: visible on small screens */}
-        <div className="flex md:hidden flex-col absolute bottom-8 left-0 right-0 items-center justify-center gap-4 pointer-events-auto select-none">
-          <div className="flex gap-4">
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              onTouchStart={() => handleMoveStart("q")}
-              onTouchEnd={() => handleMoveEnd("q")}
-              onMouseDown={() => handleMoveStart("q")}
-              onMouseUp={() => handleMoveEnd("q")}
-              onMouseLeave={() => handleMoveEnd("q")}
-              aria-label="Q key"
-            >
-              <span className="text-lg font-bold dark:text-white text-black select-none">
-                Q
-              </span>
-            </button>
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              onTouchStart={() => handleMoveStart("w")}
-              onTouchEnd={() => handleMoveEnd("w")}
-              onMouseDown={() => handleMoveStart("w")}
-              onMouseUp={() => handleMoveEnd("w")}
-              onMouseLeave={() => handleMoveEnd("w")}
-              aria-label="W key"
-            >
-              <span className="text-lg font-bold dark:text-white text-black select-none">
-                W
-              </span>
-            </button>
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              onTouchStart={() => handleMoveStart("e")}
-              onTouchEnd={() => handleMoveEnd("e")}
-              onMouseDown={() => handleMoveStart("e")}
-              onMouseUp={() => handleMoveEnd("e")}
-              onMouseLeave={() => handleMoveEnd("e")}
-              aria-label="E key"
-            >
-              <span className="text-lg font-bold dark:text-white text-black select-none">
-                E
-              </span>
-            </button>
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              onTouchStart={() => handleMoveStart("r")}
-              onTouchEnd={() => handleMoveEnd("r")}
-              onMouseDown={() => handleMoveStart("r")}
-              onMouseUp={() => handleMoveEnd("r")}
-              onMouseLeave={() => handleMoveEnd("r")}
-              aria-label="R key"
-            >
-              <span className="text-lg font-bold dark:text-white text-black select-none">
-                R
-              </span>
-            </button>
+        <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center justify-center gap-4 pointer-events-auto select-none md:hidden">
+          <div className="flex gap-3">
+            <ControlButton
+              label="Q"
+              ariaLabel="Q key"
+              size="mobile"
+              handlers={{
+                onTouchStart: () => handleMoveStart("q"),
+                onTouchEnd: () => handleMoveEnd("q"),
+                onMouseDown: () => handleMoveStart("q"),
+                onMouseUp: () => handleMoveEnd("q"),
+                onMouseLeave: () => handleMoveEnd("q"),
+              }}
+            />
+            <ControlButton
+              label="W"
+              ariaLabel="W key"
+              size="mobile"
+              handlers={{
+                onTouchStart: () => handleMoveStart("w"),
+                onTouchEnd: () => handleMoveEnd("w"),
+                onMouseDown: () => handleMoveStart("w"),
+                onMouseUp: () => handleMoveEnd("w"),
+                onMouseLeave: () => handleMoveEnd("w"),
+              }}
+            />
+            <ControlButton
+              label="E"
+              ariaLabel="E key"
+              size="mobile"
+              handlers={{
+                onTouchStart: () => handleMoveStart("e"),
+                onTouchEnd: () => handleMoveEnd("e"),
+                onMouseDown: () => handleMoveStart("e"),
+                onMouseUp: () => handleMoveEnd("e"),
+                onMouseLeave: () => handleMoveEnd("e"),
+              }}
+            />
+            <ControlButton
+              label="R"
+              ariaLabel="R key"
+              size="mobile"
+              handlers={{
+                onTouchStart: () => handleMoveStart("r"),
+                onTouchEnd: () => handleMoveEnd("r"),
+                onMouseDown: () => handleMoveStart("r"),
+                onMouseUp: () => handleMoveEnd("r"),
+                onMouseLeave: () => handleMoveEnd("r"),
+              }}
+            />
           </div>
-          <div className="flex gap-4">
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              {...leftHandlers}
-              aria-label="Move Left"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-4 h-4 dark:text-white text-black select-none"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-              <span className="text-[0.6rem] font-medium dark:text-white text-black mt-1 select-none">
-                LEFT
-              </span>
-            </button>
-            <button
-              className="w-12 h-12 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 dark:border-white/20 border-gray-700 flex flex-col items-center justify-center active:scale-95 transition-transform shadow-lg hover:bg-white/30 dark:hover:bg-gray-800/30 select-none touch-none"
-              {...rightHandlers}
-              aria-label="Move Right"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-4 h-4 dark:text-white text-black select-none"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                />
-              </svg>
-              <span className="text-[0.6rem] font-medium dark:text-white text-black mt-1 select-none">
-                RIGHT
-              </span>
-            </button>
+          <div className="flex gap-3">
+            <ControlButton
+              label="<"
+              cap="LEFT"
+              ariaLabel="Move Left"
+              size="mobile"
+              handlers={leftHandlers}
+            />
+            <ControlButton
+              label=">"
+              cap="RIGHT"
+              ariaLabel="Move Right"
+              size="mobile"
+              handlers={rightHandlers}
+            />
           </div>
         </div>
       </div>

@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
-import arrow from "/icons/arrow.svg";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { getHomeInfo } from "../services/supabaseService";
 import type { homeInfo } from "../types/supabase";
 
@@ -14,30 +11,53 @@ type InfoBoxProps = {
   link: string;
   linkText: string;
   isVisible: boolean;
+  stage: number;
 };
 
-const InfoBox = ({ text, link, linkText, isVisible }: InfoBoxProps) => {
+const stageLabel = (stage: number) => {
+  const roman = ["", "I", "II", "III", "IV"][stage] || String(stage);
+  return `Stage ${roman}`;
+};
 
-  const themeMode = useSelector((state: RootState) => state.theme.mode);
-
+const InfoBox = ({ text, link, linkText, isVisible, stage }: InfoBoxProps) => {
   return (
     <div
-      className={`text-lg sm:text-lg md:text-xl sm:leading-snug text-center py-3 sm:py-4 px-4 sm:px-8 dark:text-white mx-5 flex flex-col items-center gap-5 transition-opacity duration-300 relative z-10
-            ${isVisible ? "opacity-100" : "opacity-0"}`}
+      className={`mx-5 max-w-2xl transition-opacity duration-150 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
     >
-      <h1 className="max-w-[700px] text-base sm:text-base md:text-xl">{text}</h1>
-      <Link
-        to={link}
-        className={`fill-button ${themeMode === 'dark' ? 'fill-button-dark' : ''} group flex items-center justify-center gap-1.5 px-6 py-2.5 font-semibold text-xs sm:text-base rounded-full dark:border-white`}
+      <div
+        className="corners relative px-6 py-7 text-center sm:px-8"
+        style={{
+          background: "color-mix(in srgb, var(--paper-0) 78%, transparent)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid var(--rule-strong)",
+          boxShadow: "var(--shadow-card)",
+        }}
       >
-        {linkText}
-        <img
-          src={arrow}
-          className="w-3.5 h-3.5 brightness-0 dark:invert
-                    group-hover:invert dark:group-hover:filter-none"
-          draggable="false"
-        />
-      </Link>
+        <span className="corner-tl" />
+        <span className="corner-br" />
+        <div className="t-eyebrow mb-3">-- {stageLabel(stage)} --</div>
+        {text && (
+          <h1
+            className="font-display italic text-ink-900"
+            style={{
+              fontSize: "clamp(18px, 2.4vw, 22px)",
+              fontWeight: 500,
+              lineHeight: 1.4,
+            }}
+          >
+            "{text}"
+          </h1>
+        )}
+        {link && linkText && (
+          <div className="mt-5 flex justify-center">
+            <Link to={link} className="btn-quill no-underline">
+              {linkText} -&gt;
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -97,6 +117,7 @@ const HomeInfo = ({ currentStage }: HomeInfoProps) => {
       link={content.link}
       linkText={content.linkText}
       isVisible={isVisible}
+      stage={currentStage ?? 1}
     />
   );
 };
